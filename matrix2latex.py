@@ -29,8 +29,8 @@ def assertKeyAlignment(value, n):
         else:
             counter[v] = 1
     length = counter['c'] + counter['l'] + counter['r']
-    assert length == n,\
-           "Error: %g of %g alignments given '%s'\n" % (length, n, value)
+#    assert length == n,\
+#           "Error: %g of %g alignments given '%s'\n" % (length, n, value)
 
 def assertListString(value, key):
     assert isinstance(value, list),\
@@ -145,7 +145,7 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
     formatColumn = None
 
     if "formatColumns" in keywords:
-        alignment = "c|" + "c"*(n-1)    # c|cccc
+        alignment = "c" + "c"*(n-1)    # c|cccc
     else:
         alignment = "c"*n               # cccc
     
@@ -153,7 +153,6 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
     columnLabels = None
     caption = None
     label = None
-    sigDigit = None
 
     #
     # User-defined values
@@ -169,7 +168,7 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
             formatNumber = None
         elif key == "alignment":
             if len(value) == 1:
-                if "formatColumns" in keywords: alignment = value+"|" + value*(n-1) # r|rrrr
+                if "formatColumns" in keywords: alignment = value+"" + value*(n-1) # r|rrrr
                 else: alignment = value*n # rrrr
             else:
                 alignment = value
@@ -180,16 +179,13 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
         elif key == "columnLabels":
             assertListString(value, "columnLabels")
             columnLabels = value
-            alignment = "r|" + alignment
+            alignment = "r" + alignment
         elif key == "caption":
             assertStr(value, "caption")
             caption = value
         elif key == "label":
             assertStr(value, "label")
             label = value
-        elif key == "sigDigit":
-            # todo: assert
-            sigDigit = value
         else:
             sys.stderr.write("Error: key not recognized '%s'\n" % key)
             sys.exit(2)
@@ -215,6 +211,7 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
     else:                               # if filename is not given or of invalid type, 
         f = sys.stdout         # print to screen
 
+    print "opening", f
     #
     # Begin block
     # 
@@ -224,10 +221,13 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
         # special environments:
         if environments[ixEnv] == "table":
             f.write("[ht]")
-#         elif environments[ixEnv] == "center":
-#             if caption != None:
-#                 f.write("\n"+"\t"*ixEnv)
-#                 f.write(r"\caption{%s}" % caption)
+        elif environments[ixEnv] == "center":
+            if caption != None:
+                f.write("\n\t"*ixEnv)
+                f.write("\\caption{%s}" % fixEngineeringNotation.fix(caption))
+            if label != None:
+                f.write("\n\t"*ixEnv)
+                f.write("\\label{%s}" % label)
         elif environments[ixEnv] == "tabular":
             f.write("{" + alignment + "}\n")
             f.write("\t"*ixEnv)
@@ -261,17 +261,29 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
                 if columnLabels != None:
                     f.write("%s & " % columnLabels[i])
                     
-            e = matr[i, j]            # current element
-            if e != None:
-                if sigDigit != None:
-                    formated = significantDigits(e, sigDigit)
-                else:
-                    formated = formatColumn[j] % matr[i, j]
-                if "e" in formatColumn[j]:
-                    formated = fixEngineeringNotation.fix(formated)
-                f.write(formated)
+            if '%s' not in formatColumn[j]:
+                try:
+                    e = float(matr[i, j])            # current element
+                except ValueError:
+                    e = matr[i, j]
+                    formatColumn[j] = '%s'
             else:
+                e = matr[i, j]
+
+            if e == None:
                 f.write("NaN")
+            elif e == inf:
+                f.write(r"$\infty$")
+            else:
+                fcj = formatColumn[j]
+                #ix = fcj.find("%")
+                # new format: %4 for four significant digits
+                #if (len(fcj) >= 2 and ix != -1 and fcj[ix+1].isdigit()):
+                #    formated = '$'+significantDigits(e, int(fcj[ix+1:ix+2]))+'$' # todo:FIX
+                #else:
+                formated = fcj % e
+                formated = fixEngineeringNotation.fix(formated, table=True) # fix 1e+2
+                f.write(formated)
 
             if j != n-1:                # not last row
                 f.write(" & ")
@@ -286,12 +298,7 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
         ixEnv = len(environments)-1 - ixEnv # reverse order
         # special environments:
         if environments[ixEnv] == "center":
-            if caption != None:
-                f.write("\t"*ixEnv)
-                f.write("\\caption{%s}\n" % caption)
-            if label != None:
-                f.write("\t"*ixEnv)
-                f.write("\\label{%s}\n" % label)
+            pass
         elif environments[ixEnv] == "tabular":
             f.write("\t"*ixEnv)
             f.write(r"\bottomrule"+"\n")
@@ -299,17 +306,28 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
         f.write(r"\end{%s}" % environments[ixEnv])
         f.write("\n")
 
+    # Return string representation of file
+    s = ""
+    if f != sys.stdout:
+        f.close()
+        f = open(filename,'r')
+        s = f.read()
+        f.close()
+    return s
 
 if __name__ == '__main__':
     from numpy import *
     m = matrix('1 2 4;3 4 6')
     m = matrix('1 2 4;2 2 1;2 1 2')
     matrix2latex(m)
-    matrix2latex(m, None, "table", "center", "tabular", format="$%.2f$", alignment='lcr')
-    cl = ["a", "b", "c"]
-    matrix2latex(m, None, format="$%.2f$", alignment='lcr',
-                 columnLabels=cl,caption="test", label="2", rowLabels=['d', 'e', 'f', 'g'])
-    matrix2latex(matrix(m), None, "align*", "pmatrix", format="%g", alignment='c')
-#     matrix2latex(m, None)
+    print matrix2latex(m, 'tmp.tex')
+#     matrix2latex(m, None, "table", "center", "tabular", format="$%.2f$", alignment='lcr')
+#     cl = ["a", "b", "c"]
+#     rl = ['d', 'e', 'f', 'g']
+#     matrix2latex(m, None, format="$%.2g$", alignment='lcr',
+#                  columnLabels=cl,caption="test", label="2", rowLabels=rl)
+#     matrix2latex(matrix(m), None, "align*", "pmatrix", format="%g", alignment='c')
+#     matrix2latex(m, None, columnLabels=cl, caption="Hello", label="la")
+#     matrix2latex([['a', 'b', '1'], ['1', '2', '3']], format='%s')
 
 
