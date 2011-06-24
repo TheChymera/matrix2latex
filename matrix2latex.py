@@ -3,6 +3,8 @@ import fixEngineeringNotation
 from sigDigit import significantDigits
 import sys
 from error import *                     # error handling
+# For sagetex the function must return string instead of writing to file or to stdout
+from myString import StringWithWrite
 
 def matrix2latex(matr, filename=None, *environments, **keywords):
     r'''
@@ -21,7 +23,7 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
     
     filename:
     File to place output, extension .tex is added automatically. File can be included in a LaTeX
-    document by \input{filename}. If filename is None or not a string, output will be printed to screen.
+    document by \input{filename}. If filename is None or not a string, output will be returned in a string
     
     *environments:
     Use matrix2latex(m, None, "align*", "pmatrix", ...) for matrix.
@@ -175,9 +177,9 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
         if label == None:
             label = filename.replace(".tex", "")
     else:                               # if filename is not given or of invalid type, 
-        f = sys.stdout         # print to screen
+        f = StringWithWrite()
+        #f = sys.stdout         # print to screen
 
-    print "opening", f
     #
     # Begin block
     # 
@@ -273,19 +275,17 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
         f.write("\n")
 
     # Return string representation of file
-    s = ""
-    if f != sys.stdout:
+    try:
         f.close()
-        f = open(filename,'r')
-        s = f.read()
-        f.close()
-    return s
+    except AttributeError:
+        pass
+    return f.__str__()
 
 if __name__ == '__main__':
     from numpy import *
     m = matrix('1 2 4;3 4 6')
     m = matrix('1 2 4;2 2 1;2 1 2')
-    matrix2latex(m)
+    print matrix2latex(m)
     print matrix2latex(m, 'tmp.tex')
 #     matrix2latex(m, None, "table", "center", "tabular", format="$%.2f$", alignment='lcr')
 #     cl = ["a", "b", "c"]
