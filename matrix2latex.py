@@ -8,7 +8,7 @@ from myString import StringWithWrite
 
 def matrix2latex(matr, filename=None, *environments, **keywords):
     r'''
-    Takes a python matrix and converts to a LaTeX table or matrix.
+    Takes a python matrix or nested list and converts to a LaTeX table or matrix.
     Author: ob@cakebox.net
 
     This software is published under the GNU GPL, by the free software
@@ -17,7 +17,7 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
     Argument:
     
     matrix:
-    A numpy matrix.
+    A numpy matrix or a nested list
     TODO:
     Any python structure that looks like a rektangular matrix.
     
@@ -143,10 +143,10 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
             assertKeyAlignment(alignment, n)
         elif key == "rowLabels":
             assertListString(value, "rowLabels")
-            rowLabels = value
+            rowLabels = list(value)
         elif key == "columnLabels":
             assertListString(value, "columnLabels")
-            columnLabels = value
+            columnLabels = list(value)
             alignment = "r" + alignment
         elif key == "caption":
             assertStr(value, "caption")
@@ -166,6 +166,9 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
         formatColumn = list()
         for j in range(0, n):
             formatColumn.append(formatNumber)
+
+    if columnLabels != None and rowLabels != None and len(rowLabels) == n:
+        rowLabels.insert(0, "")
 
     # 
     # Set outputFile
@@ -285,15 +288,15 @@ if __name__ == '__main__':
     from numpy import *
     m = matrix('1 2 4;3 4 6')
     m = matrix('1 2 4;2 2 1;2 1 2')
-    print matrix2latex(m)
+    print matrix2latex(m),
     print matrix2latex(m, 'tmp.tex')
-#     matrix2latex(m, None, "table", "center", "tabular", format="$%.2f$", alignment='lcr')
-#     cl = ["a", "b", "c"]
-#     rl = ['d', 'e', 'f', 'g']
-#     matrix2latex(m, None, format="$%.2g$", alignment='lcr',
-#                  columnLabels=cl,caption="test", label="2", rowLabels=rl)
-#     matrix2latex(matrix(m), None, "align*", "pmatrix", format="%g", alignment='c')
-#     matrix2latex(m, None, columnLabels=cl, caption="Hello", label="la")
-#     matrix2latex([['a', 'b', '1'], ['1', '2', '3']], format='%s')
+    print matrix2latex(m, None, "table", "center", "tabular", format="$%.2f$", alignment='lcr')
+    cl = ["a", "b", "c"]
+    rl = ['d', 'e', 'f', 'g']
+    print matrix2latex(m, None, format="$%.2g$", alignment='lcr',
+                 columnLabels=cl,caption="test", label="2", rowLabels=rl)
+    print matrix2latex(matrix(m), None, "align*", "pmatrix", format="%g", alignment='c')
+    print matrix2latex(m, None, columnLabels=cl, caption="Hello", label="la")
+    print matrix2latex([['a', 'b', '1'], ['1', '2', '3']], format='%s')
 
 
