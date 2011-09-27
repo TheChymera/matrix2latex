@@ -74,8 +74,6 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
     Default is filename without extension.
     
     Example: todo: test
-    from numpy import matrix
-    from matrix2latex import matrix2latex
     m = matrix("1 2 4;3 4 6") # or
     m = [[1, 2, 4], [3, 4, 6]]
     matrix2latex(m, "test", "table", "center", "tabular", format="$%.2f$", alignment="lcr")
@@ -94,7 +92,9 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
     #
     if not isinstance(matr, matrix):
         matr = matrix(matr).H
-        
+    if 'transpose' in keywords:
+        if keywords['transpose']:
+            matr = matr.H
     #
     # Define matrix-size
     # 
@@ -154,6 +154,8 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
         elif key == "label":
             assertStr(value, "label")
             label = value
+        elif key == "transpose":
+            pass                        # already taken care of (top of function)
         else:
             sys.stderr.write("Error: key not recognized '%s'\n" % key)
             sys.exit(2)
@@ -194,10 +196,10 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
             f.write("[ht]")
         elif environments[ixEnv] == "center":
             if caption != None:
-                f.write("\n\t"*ixEnv)
+                f.write("\n"+"\t"*ixEnv)
                 f.write("\\caption{%s}" % fixEngineeringNotation.fix(caption))
             if label != None:
-                f.write("\n\t"*ixEnv)
+                f.write("\n"+"\t"*ixEnv)
                 f.write("\\label{%s}" % label)
         elif environments[ixEnv] == "tabular":
             f.write("{" + alignment + "}\n")
