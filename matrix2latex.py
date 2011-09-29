@@ -1,13 +1,14 @@
 from numpy import *
-import fixEngineeringNotation
-from sigDigit import significantDigits
 import sys
+# my stuff:
+import fixEngineeringNotation
 from error import *                     # error handling
 # For sagetex the function must return string instead of writing to file or to stdout
 from myString import StringWithWrite
 
 def matrix2latex(matr, filename=None, *environments, **keywords):
     r'''
+    TODO: update documentation (lots of undocumented features)
     Takes a python matrix or nested list and converts to a LaTeX table or matrix.
     Author: ob@cakebox.net
 
@@ -237,9 +238,11 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
             if '%s' not in formatColumn[j]:
                 try:
                     e = float(matr[i, j])            # current element
-                except ValueError:
+                except ValueError: # can't convert to float, use string
                     e = matr[i, j]
                     formatColumn[j] = '%s'
+                except TypeError:       # raised for None
+                    e = None
             else:
                 e = matr[i, j]
 
@@ -249,15 +252,9 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
                 f.write(r"$\infty$")
             else:
                 fcj = formatColumn[j]
-                #ix = fcj.find("%")
-                # new format: %4 for four significant digits
-                #if (len(fcj) >= 2 and ix != -1 and fcj[ix+1].isdigit()):
-                #    formated = '$'+significantDigits(e, int(fcj[ix+1:ix+2]))+'$' # todo:FIX
-                #else:
                 formated = fcj % e
                 formated = fixEngineeringNotation.fix(formated, table=True) # fix 1e+2
                 f.write(formated)
-
             if j != n-1:                # not last row
                 f.write(" & ")
             else:                       # last row
@@ -301,4 +298,6 @@ if __name__ == '__main__':
     print matrix2latex(m, None, columnLabels=cl, caption="Hello", label="la")
     print matrix2latex([['a', 'b', '1'], ['1', '2', '3']], format='%s')
 
-
+    m = [[1,2,4], [2,2,1], [2,1,2]]
+    m[0][0] = None
+    print matrix2latex(m)

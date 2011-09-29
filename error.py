@@ -1,3 +1,5 @@
+# Error handling for matrix2latex.py,
+# todo: don't yell at errors, fix them!
 # To clean the code, error handling is moved to small functions
 def assertStr(value, key):
     assert isinstance(value, str), \
