@@ -15,12 +15,18 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
     This software is published under the GNU GPL, by the free software
     foundation. For further reading see: http://www.gnu.org/licenses/licenses.html#GPL
 
-    Argument:
+    The following packages and definitions are recommended in the latex preamble (before \begin{document})
+    \providecommand{\e}[1]{\ensuremath{\times 10^{#1}}} % scientific notation, 1\e{9} will print as 1x10^9
+    \usepackage{amsmath} % needed for pmatrix
+    \usepackage{booktabs} % Fancy tables (not needed for matrices)
+
+    Arguments:
     
     matrix:
     A numpy matrix or a nested list
     TODO:
-    Any python structure that looks like a rektangular matrix.
+    - Any python structure that looks like a rektangular matrix.
+    - Remove dependency on numpy (might be more portable to other systems)
     
     filename:
     File to place output, extension .tex is added automatically. File can be included in a LaTeX
@@ -40,6 +46,11 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
     matrix2latex(m, "test", ...)
     
     **keywords:
+    transpose:
+    Flips the table around in case you messed up. Equivalent to
+    matrix2latex(m.H, ...)
+    if m is a numpy matrix.
+    
     format:
     Printf-syntax format, e.g. $%.2f$. Default is $%g$.
     This format is then used for all the elements in the table.
@@ -73,12 +84,16 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
     label:
     Used to insert \label{...} after \end{tabular}
     Default is filename without extension.
+
+    Both caption and label will do nothing if tabular environment is not used.
     
     Example: todo: test
     m = matrix("1 2 4;3 4 6") # or
     m = [[1, 2, 4], [3, 4, 6]]
     matrix2latex(m, "test", "table", "center", "tabular", format="$%.2f$", alignment="lcr")
-    produces:
+    # or since table, center and tabular is default:
+    matrix2latex(m, "test", format="$%.2f$", alignment="lcr")
+    # produces:
     \begin{table}[ht]
       \begin{center}
         \begin{tabular}{lcr}
@@ -283,7 +298,6 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
     return f.__str__()
 
 if __name__ == '__main__':
-    from numpy import *
     m = matrix('1 2 4;3 4 6')
     m = matrix('1 2 4;2 2 1;2 1 2')
     print matrix2latex(m),
