@@ -105,7 +105,6 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
            "Expected positive matrix dimensions, got %g by %g matrix" % (m, n)
     if "formatColumns" in keywords:
         n += 1
-    
     #
     # Default values
     #
@@ -298,6 +297,5 @@ if __name__ == '__main__':
     print matrix2latex(m, None, columnLabels=cl, caption="Hello", label="la")
     print matrix2latex([['a', 'b', '1'], ['1', '2', '3']], format='%s')
 
-    m = [[1,2,4], [2,2,1], [2,1,2]]
-    m[0][0] = None
-    print matrix2latex(m)
+    m = [[1,None,None], [2,2,1], [2,1,2]]
+    print matrix2latex(m, transpose=True)
