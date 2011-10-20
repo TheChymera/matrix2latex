@@ -8,7 +8,7 @@ from myString import StringWithWrite
 
 def matrix2latex(matr, filename=None, *environments, **keywords):
     r'''
-    TODO: update documentation (lots of undocumented features)
+    TODO: improve documentation
     Takes a python matrix or nested list and converts to a LaTeX table or matrix.
     Author: ob@cakebox.net
 
