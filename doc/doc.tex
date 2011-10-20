@@ -1,0 +1,165 @@
+\input{tex/texPreamble}
+\title{Documentation for matrix2latex}
+
+\begin{document}
+\maketitle
+Takes a python matrix or nested list and converts to a LaTeX table or matrix.
+Author: ob@cakebox.net
+
+This software is published under the GNU GPL, by the free software
+foundation. For further reading see: 
+\url{http://www.gnu.org/licenses/licenses.html#GPL}
+
+The following packages and definitions are recommended in the latex preamble 
+\begin{verbatim}
+% scientific notation, 1\e{9} will print as 1x10^9
+\providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}
+\usepackage{amsmath} % needed for pmatrix
+\usepackage{booktabs} % Fancy tables
+...
+\begin{document}
+...
+\end{verbatim}
+
+\section{Arguments}
+  
+\subsection{matrix}
+  A numpy matrix or a nested list
+  TODO:
+  - Any python structure that looks like a rektangular matrix.
+  - Remove dependency on numpy (might be more portable to other systems)
+
+\subsection{Filename}
+  File to place output, extension .tex is added automatically. File can be included in a LaTeX
+  document by \verb!\input{filename}!. If filename is None or not a string, output will be returned in a string
+  
+\subsection{*environments}
+  Use 
+\lstinline{matrix2latex(m, None, "align*", "pmatrix", ...)} for matrix.
+  This will give
+  \begin{align*}
+    \begin{pmatrix}
+    \end{pmatrix}
+  \end{align*}
+  Use 
+\lstinline{matrix2latex(m, "test", "table", "center", "tabular" ...)} for table.
+  Table is default so given no arguments: table, center and tabular will be used.
+  The above command is then equivalent to
+  matrix2latex(m, "test", ...)
+  
+\subsection{**keywords}
+\subsubsection{transpose}
+  Flips the table around in case you messed up. Equivalent to
+  matrix2latex(m.H, ...)
+  if m is a numpy matrix.
+  
+\subsubsection{format}
+  Printf syntax format, e.g. \lstinline{$%.2f$}. Default is \lstinline{$%g$}.
+  This format is then used for all the elements in the table.
+  
+\subsubsection{formatColumn}
+  A list of printf-syntax formats, e.g. \lstinline{[$%.2f$, $%g$]}
+  Must be of same length as the number of columns.
+  Format i is then used for column i.
+  
+\subsubsection{alignment}
+  Used as an option when tabular is given as enviroment.
+  \verb!\begin{tabular}{alignment}!
+    A latex alignment like c, l or r.
+    Can be given either as one per column e.g. "ccc".
+    Or if only a single character is given e.g. "c",
+    it will produce the correct amount depending on the number of columns.
+    Default is "r".
+
+\subsubsection{rowLabels}
+    A row at the top used to label the columns.
+    Must be a list of strings.
+
+\subsubsection{columnLabels}
+    A column used to label the rows.
+    Must be a list of strings
+
+\subsubsection{caption}
+    Use to define a caption for your table.
+    Inserts \verb!\caption! after \verb!\end{tabular}!.
+
+\subsubsection{label}
+  Used to insert \verb!\label{...}! after \verb!\end{tabular}!
+Default is filename without extension.
+
+Both caption and label will do nothing if tabular environment is not used.
+\begin{sagesilent}
+import sys
+sys.path.append('../')
+\end{sagesilent}
+\begin{sageblock}
+from matrix2latex import matrix2latex
+from numpy import matrix
+m = matrix("1 2 4;3 4 6") # numpy matrix or
+m = [[1, 2, 4], [3, 4, 6]] # python nested list
+matrix2latex(m, "test", "table", "center", "tabular", format="$%.2f$", alignment="lcr")
+# or since table, center and tabular is default:
+t = matrix2latex(m, format="$%.2f$", alignment="lcr")
+# produces:
+\end{sageblock}
+\sage{t}
+
+\section{Usage examples}
+
+\subsection{Minimal}
+\begin{sageblock}
+from matrix2latex import matrix2latex
+m = [[1, 2, 3], [1, 4, 9]] # python nested list
+t = matrix2latex(m)
+print t
+\end{sageblock}
+\sage{t}
+
+\subsection{Labels}
+Using the same minimal example from above we can add row labels
+\begin{sageblock}
+rl = ['$x$', '$x^2$']
+t = matrix2latex(m, rowLabels=rl)
+\end{sageblock}
+\sage{t}
+
+Or swapping it around
+\begin{sageblock}
+cl = ['$x$', '$x^2$']
+t = matrix2latex(m, columnLabels=cl, transpose=True)
+\end{sageblock}
+\sage{t}
+
+\subsection{Caption}
+We can easily add a caption
+\begin{sageblock}
+t = matrix2latex(m, rowLabels=rl, 
+                 caption='Nice table!')
+\end{sageblock}
+\sage{t}
+
+\subsection{Label}
+We can use \lstinline{label='niceTable'} but if we save it to file
+the default label is the filename, so:
+\begin{sageblock}
+matrix2latex(m, 'niceTable', rowLabels=rl, 
+                 caption='Nice table!')
+\end{sageblock}
+can be referenced by \verb!\ref{niceTable}!. Table \ref{niceTable}
+was included in latex by \verb!\input{niceTable}!.
+\input{niceTable}
+
+TODO: add simple real world example.
+% \begin{table}[ht]
+%   \begin{center}
+%     \begin{tabular}{lcr}
+%       $1.00$ & $2.00$ & $4.00$\\
+%       $3.00$ & $4.00$ & $6.00$\\
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+
+
+%\bibliographystyle{IEEEtran}
+%\bibliography{doc}
+\end{document}

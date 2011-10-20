@@ -96,9 +96,12 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
     # produces:
     \begin{table}[ht]
       \begin{center}
+        \label{test}
         \begin{tabular}{lcr}
-          $1.00$ & $2.00$ & $4.00$\\
-          $3.00$ & $4.00$ & $6.00$\\
+          \toprule
+          $1$ & $2$ & $4$\\
+          $3$ & $4$ & $6$
+          \bottomrule
         \end{tabular}
       \end{center}
     \end{table}
