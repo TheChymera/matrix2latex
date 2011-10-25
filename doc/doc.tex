@@ -26,8 +26,10 @@ The following packages and definitions are recommended in the latex preamble
 \subsection{matrix}
   A numpy matrix or a nested list
   TODO:
-  - Any python structure that looks like a rektangular matrix.
-  - Remove dependency on numpy (might be more portable to other systems)
+\begin{itemize}
+\item Any python structure that looks like a rektangular matrix.
+\item Remove dependency on numpy (might be more portable to other systems)
+\end{itemize}
 
 \subsection{Filename}
   File to place output, extension .tex is added automatically. File can be included in a LaTeX
@@ -39,13 +41,15 @@ The following packages and definitions are recommended in the latex preamble
   This will give
   \begin{align*}
     \begin{pmatrix}
+      1 & 2 \\
+      3 & 4
     \end{pmatrix}
   \end{align*}
   Use 
 \lstinline{matrix2latex(m, "test", "table", "center", "tabular" ...)} for table.
   Table is default so given no arguments: table, center and tabular will be used.
   The above command is then equivalent to
-  matrix2latex(m, "test", ...)
+\lstinline{matrix2latex(m, "test", ...)}
   
 \subsection{**keywords}
 \subsubsection{transpose}
