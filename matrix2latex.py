@@ -1,5 +1,6 @@
 from numpy import *
 import sys
+import os.path
 # my stuff:
 import fixEngineeringNotation
 from error import *                     # error handling
@@ -82,8 +83,8 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
     Inserts \caption after \end{tabular}.
 
     label:
-    Used to insert \label{...} after \end{tabular}
-    Default is filename without extension.
+    Used to insert \label{tab:...} after \end{tabular}
+    Default is base filename without extension.
 
     Both caption and label will do nothing if tabular environment is not used.
     
@@ -96,7 +97,7 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
     # produces:
     \begin{table}[ht]
       \begin{center}
-        \label{test}
+        \label{tab:test}
         \begin{tabular}{lcr}
           \toprule
           $1$ & $2$ & $4$\\
@@ -171,7 +172,10 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
             caption = value
         elif key == "label":
             assertStr(value, "label")
-            label = value
+            if value.startswith('tab:'):
+                label = value[len('tab:'):] # this will be added later in the code, avoids 'tab:tab:' as label
+            else:
+                label = value
         elif key == "transpose":
             pass                        # already taken care of (top of function)
         else:
@@ -198,7 +202,8 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
             filename += '.tex'
         f = open(filename, 'w')
         if label == None:
-            label = filename.replace(".tex", "")
+            label = os.path.basename(filename) # get basename
+            label = label.replace(".tex", "")  # remove extension. TODO: bug with filename=foo.texFoo.tex
     else:                               # if filename is not given or of invalid type, 
         f = StringWithWrite()
         #f = sys.stdout         # print to screen
@@ -218,7 +223,7 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
                 f.write("\\caption{%s}" % fixEngineeringNotation.fix(caption))
             if label != None:
                 f.write("\n"+"\t"*ixEnv)
-                f.write("\\label{%s}" % label)
+                f.write("\\label{tab:%s}" % label)
         elif environments[ixEnv] == "tabular":
             f.write("{" + alignment + "}\n")
             f.write("\t"*ixEnv)
