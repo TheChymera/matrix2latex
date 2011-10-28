@@ -9,103 +9,164 @@ from myString import StringWithWrite
 
 def matrix2latex(matr, filename=None, *environments, **keywords):
     r'''
-    TODO: improve documentation
-    Takes a python matrix or nested list and converts to a LaTeX table or matrix.
-    Author: ob@cakebox.net
+A pdf version of this documentation is available as doc<date>.pdf
+Takes a python matrix or nested list and converts to a LaTeX table or matrix.
+Author: ob@cakebox.net, inspired by the work of koehler@in.tum.de who has written
+a similar package for matlab
+\url{http://www.mathworks.com/matlabcentral/fileexchange/4894-matrix2latex}
 
-    This software is published under the GNU GPL, by the free software
-    foundation. For further reading see: http://www.gnu.org/licenses/licenses.html#GPL
+This software is published under the GNU GPL, by the free software
+foundation. For further reading see: 
+\url{http://www.gnu.org/licenses/licenses.html#GPL}
 
-    The following packages and definitions are recommended in the latex preamble (before \begin{document})
-    \providecommand{\e}[1]{\ensuremath{\times 10^{#1}}} % scientific notation, 1\e{9} will print as 1x10^9
-    \usepackage{amsmath} % needed for pmatrix
-    \usepackage{booktabs} % Fancy tables (not needed for matrices)
+The following packages and definitions are recommended in the latex preamble 
+% scientific notation, 1\e{9} will print as 1x10^9
+\providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}
+\usepackage{amsmath} % needed for pmatrix
+\usepackage{booktabs} % Fancy tables
+...
+\begin{document}
+...
 
-    Arguments:
-    
-    matrix:
-    A numpy matrix or a nested list
-    TODO:
-    - Any python structure that looks like a rektangular matrix.
-    - Remove dependency on numpy (might be more portable to other systems)
-    
-    filename:
-    File to place output, extension .tex is added automatically. File can be included in a LaTeX
-    document by \input{filename}. If filename is None or not a string, output will be returned in a string
-    
-    *environments:
-    Use matrix2latex(m, None, "align*", "pmatrix", ...) for matrix.
-    This will give
-    \begin{align*}
-    \t\begin{pmatrix}
-    \t\t...
-    \t\end{pmatrix}
-    \end{align*}
-    Use matrix2latex(m, "test", "table", "center", "tabular" ...) for table.
-    Table is default so given no arguments: table, center and tabular will be used.
-    The above command is then equivalent to
-    matrix2latex(m, "test", ...)
-    
-    **keywords:
-    transpose:
-    Flips the table around in case you messed up. Equivalent to
-    matrix2latex(m.H, ...)
-    if m is a numpy matrix.
-    
-    format:
-    Printf-syntax format, e.g. $%.2f$. Default is $%g$.
-    This format is then used for all the elements in the table.
-    
-    formatColumn:
-    A list of printf-syntax formats, e.g. [$%.2f$, $%g$]
-    Must be of same length as the number of columns.
-    Format i is then used for column i.
-    
-    alignment:
-    Used as an option when tabular is given as enviroment.
-    \begin{tabular}{alignment}
-    A latex alignment like c, l or r.
-    Can be given either as one per column e.g. "ccc".
-    Or if only a single character is given e.g. "c",
-    it will produce the correct amount depending on the number of columns.
-    Default is "r".
+Arguments:
+  
+matrix
+  A numpy matrix or a nested list
+  TODO:
+\begin{itemize}
+\item Any python structure that looks like a rektangular matrix.
+\item Remove dependency on numpy (might be more portable to other systems)
+\end{itemize}
 
-    rowLabels:
+Filename
+  File to place output, extension .tex is added automatically. File can be included in a LaTeX
+  document by \verb!\input{filename}!. If filename is None or not a string, output will be returned in a string
+  
+*environments
+  Use 
+matrix2latex(m, None, "align*", "pmatrix", ...) for matrix.
+  This will give
+  \begin{align*}
+    \begin{pmatrix}
+      1 & 2 \\
+      3 & 4
+    \end{pmatrix}
+  \end{align*}
+  Use 
+matrix2latex(m, "test", "table", "center", "tabular" ...) for table.
+  Table is default so given no arguments: table, center and tabular will be used.
+  The above command is then equivalent to \\
+matrix2latex(m, "test", ...)
+
+Example
+
+  from matrix2latex import matrix2latex
+  m = [[1, 2, 3], [1, 4, 9]] # python nested list
+  t = matrix2latex(m)
+  print t
+
+\begin{lstlisting}
+  \begin{table}[ht]
+    \begin{center}
+      \begin{tabular}{cc}
+        \toprule
+        $1$ & $1$\\
+        $2$ & $4$\\
+        $3$ & $9$\\
+        \bottomrule
+      \end{tabular}
+    \end{center}
+  \end{table}
+\end{lstlisting}
+
+
+**keywords
+rowLabels
     A row at the top used to label the columns.
     Must be a list of strings.
 
-    columnLabels:
+Using the same example from above we can add row labels
+
+rl = ['$x$', '$x^2$']
+t = matrix2latex(m, rowLabels=rl)
+
+
+
+columnLabels
     A column used to label the rows.
     Must be a list of strings
 
-    caption:
+transpose
+Flips the table around in case you messed up. Equivalent to
+matrix2latex(m.H, ...)
+if m is a numpy matrix.
+Note the use of columnLabels in the example.
+cl = ['$x$', '$x^2$']
+t = matrix2latex(m, columnLabels=cl, transpose=True)
+
+
+
+caption
     Use to define a caption for your table.
-    Inserts \caption after \end{tabular}.
+    Inserts \verb!\caption! after \verb!\end{tabular}!.
+Always use informative captions!
 
-    label:
-    Used to insert \label{tab:...} after \end{tabular}
-    Default is base filename without extension.
+t = matrix2latex(m, rowLabels=rl, 
+                 caption='Nice table!')
 
-    Both caption and label will do nothing if tabular environment is not used.
-    
-    Example: todo: test
-    m = matrix("1 2 4;3 4 6") # or
-    m = [[1, 2, 4], [3, 4, 6]]
-    matrix2latex(m, "test", "table", "center", "tabular", format="$%.2f$", alignment="lcr")
-    # or since table, center and tabular is default:
-    matrix2latex(m, "test", format="$%.2f$", alignment="lcr")
-    # produces:
-    \begin{table}[ht]
-      \begin{center}
-        \label{tab:test}
-        \begin{tabular}{lcr}
-          \toprule
-          $1$ & $2$ & $4$\\
-          $3$ & $4$ & $6$
-          \bottomrule
-        \end{tabular}
-      \end{center}
-    \end{table}
+
+
+label
+Used to insert \verb!\label{tab:...}! after \verb!\end{tabular}!
+Default is filename without extension.
+
+We can use label='niceTable' but if we save it to file
+the default label is the filename, so:
+
+matrix2latex(m, 'niceTable', rowLabels=rl, 
+                 caption='Nice table!')
+
+can be referenced by \verb!\ref{tab:niceTable}!. Table \ref{tab:niceTable}
+was included in latex by \verb!\input{niceTable}!.
+
+format
+Printf syntax format, e.g. $%.2f$. Default is $%g$.
+  This format is then used for all the elements in the table.
+
+m = [[1, 2, 3], [1, 1/2, 1/3]]
+rl = ['$x$', '$1/x$']
+t = matrix2latex(m, rowLabels=rl,
+                 format='%.2f')
+
+  
+formatColumn
+A list of printf-syntax formats, e.g. [$%.2f$, $%g$]
+Must be of same length as the number of columns.
+Format i is then used for column i.
+This is useful if some of your data should be printed with more significant figures
+than other parts
+
+t = matrix2latex(m, rowLabels=rl,
+                 formatColumn=['%g', '%.2f'])
+
+
+alignment
+Used as an option when tabular is given as enviroment.
+\verb!\begin{tabular}{alignment}!
+A latex alignment like c, l or r.
+Can be given either as one per column e.g. "ccc".
+Or if only a single character is given e.g. "c",
+it will produce the correct amount depending on the number of columns.
+Default is "r".
+
+Note that many of these options only has an effect when typesetting a table,
+if the correct environment is not given the arguments are simply ignored.
+
+The options presented by this program represents what I need when creating a table,
+if you need a more sophisticated table you must either change the python code
+(feel free to submit a patch) or manually adjust the output afterwards.
+\url{http://en.wikibooks.org/wiki/LaTeX/Tables} gives an excellent overview
+of some advanced table techniques.
     '''
     #
     # Check for numpy matrix
