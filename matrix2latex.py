@@ -1,11 +1,13 @@
 from numpy import *
 import sys
 import os.path
+from StringIO import StringIO
+
 # my stuff:
 import fixEngineeringNotation
 from error import *                     # error handling
 # For sagetex the function must return string instead of writing to file or to stdout
-from myString import StringWithWrite
+#from myString import StringWithWrite
 
 def matrix2latex(matr, filename=None, *environments, **keywords):
     r'''
@@ -266,7 +268,7 @@ of some advanced table techniques.
             label = os.path.basename(filename) # get basename
             label = label.replace(".tex", "")  # remove extension. TODO: bug with filename=foo.texFoo.tex
     else:                               # if filename is not given or of invalid type, 
-        f = StringWithWrite()
+        f = StringIO()#StringWithWrite()
         #f = sys.stdout         # print to screen
 
     #
@@ -361,11 +363,14 @@ of some advanced table techniques.
             f.write("\n")
 
     # Return string representation of file
-    try:
-        f.close()
-    except AttributeError:
-        pass
-    return f.__str__()
+    if isinstance(f, StringIO):
+        ret = f.getvalue()
+    else:
+        ret = ''
+        
+    f.close()
+
+    return ret
 
 if __name__ == '__main__':
     m = matrix('1 2 4;3 4 6')
