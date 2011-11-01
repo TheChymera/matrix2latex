@@ -369,16 +369,20 @@ of some advanced table techniques.
 if __name__ == '__main__':
     m = matrix('1 2 4;3 4 6')
     m = matrix('1 2 4;2 2 1;2 1 2')
-    print matrix2latex(m),
-    print matrix2latex(m, 'tmp.tex')
-    print matrix2latex(m, None, "table", "center", "tabular", format="$%.2f$", alignment='lcr')
+    print(matrix2latex(m))
+    print(matrix2latex(m, 'tmp.tex'))
+    print(matrix2latex(m, None, "table", "center", "tabular", format="$%.2f$", alignment='lcr'))
     cl = ["a", "b", "c"]
     rl = ['d', 'e', 'f', 'g']
-    print matrix2latex(m, None, format="$%.2g$", alignment='lcr',
-                 columnLabels=cl,caption="test", label="2", rowLabels=rl)
-    print matrix2latex(matrix(m), None, "align*", "pmatrix", format="%g", alignment='c')
-    print matrix2latex(m, None, columnLabels=cl, caption="Hello", label="la")
-    print matrix2latex([['a', 'b', '1'], ['1', '2', '3']], format='%s')
+    print(matrix2latex(m, None, format="$%.2g$", alignment='lcr',
+                 columnLabels=cl,caption="test", label="2", rowLabels=rl))
+    print(matrix2latex(matrix(m), None, "align*", "pmatrix", format="%g", alignment='c'))
+    print(matrix2latex(m, None, columnLabels=cl, caption="Hello", label="la"))
+    print(matrix2latex([['a', 'b', '1'], ['1', '2', '3']], format='%s'))
 
     m = [[1,None,None], [2,2,1], [2,1,2]]
-    print matrix2latex(m, transpose=True)
+    print(matrix2latex(m, transpose=True))
+
+    # TODO:
+#     m = [[1], [2,2,1], [2,1,2]]
+#     print matrix2latex(m, transpose=True)

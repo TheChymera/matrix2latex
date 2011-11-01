@@ -9,10 +9,10 @@ def fix(s, table=False):
     """
     i = re.search('e[-+]\d\d', s)
     while i != None:
-	before = s[:i.start()]
-	number = s[i.start()+1:i.start()+4]
-	after = s[i.end():]
-	# print 'before', before
+        before = s[:i.start()]
+        number = s[i.start()+1:i.start()+4]
+        after = s[i.end():]
+#       print 'before', before
 # 	print 'number', number
 # 	print 'after', after
         if table:
@@ -20,6 +20,6 @@ def fix(s, table=False):
         else:
             num = "%(#)3d" % {'#': int(number)}
             
-        s = '%s\\e{%s}%s' % (before, num, after)            
-	i = re.search('e[-+]\d\d', s)
+        s = '%s\\e{%s}%s' % (before, num, after)
+        i = re.search('e[-+]\d\d', s)
     return s
