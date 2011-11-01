@@ -357,7 +357,8 @@ of some advanced table techniques.
             f.write(r"\bottomrule"+"\n")
         f.write("\t"*ixEnv)
         f.write(r"\end{%s}" % environments[ixEnv])
-        f.write("\n")
+        if ixEnv != 0:
+            f.write("\n")
 
     # Return string representation of file
     try:
