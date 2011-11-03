@@ -6,8 +6,6 @@ from StringIO import StringIO
 # my stuff:
 import fixEngineeringNotation
 from error import *                     # error handling
-# For sagetex the function must return string instead of writing to file or to stdout
-#from myString import StringWithWrite
 
 def matrix2latex(matr, filename=None, *environments, **keywords):
     r'''
@@ -195,7 +193,7 @@ of some advanced table techniques.
     formatColumn = None
 
     if "formatColumns" in keywords:
-        alignment = "c" + "c"*(n-1)    # c|cccc
+        alignment = "c" + "c"*(n-1)    # ccccc
     else:
         alignment = "c"*n               # cccc
     
@@ -218,7 +216,7 @@ of some advanced table techniques.
             formatNumber = None
         elif key == "alignment":
             if len(value) == 1:
-                if "formatColumns" in keywords: alignment = value+"" + value*(n-1) # r|rrrr
+                if "formatColumns" in keywords: alignment = value+"" + value*(n-1) # rrrrr
                 else: alignment = value*n # rrrr
             else:
                 alignment = value
