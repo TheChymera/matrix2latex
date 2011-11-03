@@ -122,6 +122,22 @@ def test_labels3():
 		\end{tabular}
 	\end{center}
         \end{table}""")
+
+def test_alignment1():
+    t = matrix2latex(m, alignment='r')
+    t = t.split('\n')[2].strip()
+    assert t == r"\begin{tabular}{rrr}", t
+
+def test_alignment2():
+    t = matrix2latex(m, alignment='rcl')
+    t = t.split('\n')[2].strip()
+    assert t == r"\begin{tabular}{rcl}", t
+
+def test_alignment3():
+    t = matrix2latex(m, alignment='rcl', columnLabels=["a", "b"])
+    t = t.split('\n')[2].strip()        # pick out only third line
+    assert t == r"\begin{tabular}{rrcl}", t
+    
 #     print(matrix2latex(matrix(m), None, "align*", "pmatrix", format="%g", alignment='c'))
 #     print(matrix2latex(m, None, columnLabels=cl, caption="Hello", label="la"))
 #     print(matrix2latex([['a', 'b', '1'], ['1', '2', '3']], format='%s'))
