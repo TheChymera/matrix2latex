@@ -17,8 +17,8 @@ foundation. For further reading see:
 \item Provide installation.
 \item Remove dependency on numpy (might be more portable to other systems)
 and will allow for more flexible input (for instance non-rectangular).
-\item Add test suite.
-\item Improve error handling by fixing errors.
+\item Complete test suite.
+\item Improve error handling by fixing errors instead of crashing.
 \item Clean the preamble for this documentation.
 \item Code is given in all kinds of fonts in this document. Fix!
 \end{itemize}
@@ -163,19 +163,51 @@ t = matrix2latex(m, rowLabels=rl,
 Used as an option when tabular is given as enviroment.
 \verb!\begin{tabular}{alignment}!
 A latex alignment like c, l or r.
-Can be given either as one per column e.g. "ccc".
-Or if only a single character is given e.g. "c",
+Can be given either as one per column e.g. ``ccc''.
+Or if only a single character is given e.g. ``c'',
 it will produce the correct amount depending on the number of columns.
-Default is "r".
+Default is ``c'', if you use \lstinline{columnLabels} it will always use
+``r'' as the alignment for that column.
+\begin{sageblock}
+m = [[1, 1/2, 1/3], [1, 1/2, 1/3]]
+t = matrix2latex(m, alignment='rc')
+\end{sageblock}
+\sage{t}
 
+But what if I want vertical rules in my table? Well, this package is built
+on top of booktabs for publication ready tables and the booktabs documentation clearly
+states ``Never, ever use vertical rule''. But as long as you are not publishing your table,
+you could simply use
+\begin{sageblock}
+t = matrix2latex(m, alignment='|r||c|')
+\end{sageblock}
+\sage{t}
+
+\subsubsection{General considerations}
 Note that many of these options only has an effect when typesetting a table,
 if the correct environment is not given the arguments are simply ignored.
+To give an example of a very useless function call
+\begin{sageblock}
+t1 = matrix2latex(m, None, "align*", "pmatrix",
+                 alignment='rc',
+                 caption='hello world',
+                 label='test')
+# produces the exact same thing as
+t2 = matrix2latex(m, None, "align*", "pmatrix")
+assert t1 == t2
+\end{sageblock}
+\sage{t1}
+The scary thing is that \lstinline{rowLabels} actually works when creating a matrix,
+it just looks a bit wierd.
 
 The options presented by this program represents what I need when creating a table,
 if you need a more sophisticated table you must either change the python code
 (feel free to submit a patch) or manually adjust the output afterwards.
 \url{http://en.wikibooks.org/wiki/LaTeX/Tables} gives an excellent overview
 of some advanced table techniques.
+
+The booktabs.pdf documentation is an excellent guide to proper table creation,
+matrix2latex does not incorporate all the features of this package (yet).
 %Both caption and label will do nothing if tabular environment is not used.
 % \begin{sagesilent}
 % import sys
