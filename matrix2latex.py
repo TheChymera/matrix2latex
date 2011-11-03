@@ -281,10 +281,10 @@ of some advanced table techniques.
         elif environments[ixEnv] == "center":
             if caption != None:
                 f.write("\n"+"\t"*ixEnv)
-                f.write("\\caption{%s}" % fixEngineeringNotation.fix(caption))
+                f.write(r"\caption{%s}" % fixEngineeringNotation.fix(caption))
             if label != None:
                 f.write("\n"+"\t"*ixEnv)
-                f.write("\\label{tab:%s}" % label)
+                f.write(r"\label{tab:%s}" % label)
         elif environments[ixEnv] == "tabular":
             f.write("{" + alignment + "}\n")
             f.write("\t"*ixEnv)
