@@ -1,11 +1,10 @@
-from numpy import *
 import sys
 import os.path
-from StringIO import StringIO
 
 # my stuff:
 import fixEngineeringNotation
 from error import *                     # error handling
+from IOString import IOString
 
 def matrix2latex(matr, filename=None, *environments, **keywords):
     r'''
@@ -40,7 +39,7 @@ matrix
 
 Filename
   File to place output, extension .tex is added automatically. File can be included in a LaTeX
-  document by \verb!\input{filename}!. If filename is None or not a string, output will be returned in a string
+  document by \verb!\input{filename}!. Output will always be returned in a string
   
 *environments
   Use 
@@ -171,37 +170,44 @@ of some advanced table techniques.
     #
     # Check for numpy matrix
     #
-    if not isinstance(matr, matrix):
-        matr = matrix(matr).H
-    if 'transpose' in keywords:
-        if keywords['transpose']:
-            matr = matr.H
+    try:
+        import numpy as np
+        # convert input to list
+        if isinstance(matr, np.matrix):
+            matr = matr.tolist()
+        inf = np.inf
+    except ImportError:
+        # no numpy, unlikely input is numpy matrix
+        inf = sys.maxint
+    
     #
     # Define matrix-size
     # 
-    m = size(matr, 0)
-    n = size(matr, 1)
-    assert m > 0 and n > 0,\
-           "Expected positive matrix dimensions, got %g by %g matrix" % (m, n)
-    if "formatColumns" in keywords:
-        n += 1
+    m = len(matr)
+    n = len(matr[0])
+    assert m > 0 and n > 0, "Expected positive matrix dimensions, got %g by %g matrix" % (m, n)
+    
     #
     # Default values
     #
+
     # Keywords
     formatNumber = "$%g$"
     formatColumn = None
-
-    if "formatColumns" in keywords:
-        alignment = "c" + "c"*(n-1)    # ccccc
-    else:
-        alignment = "c"*n               # cccc
+    alignment = "c"*n               # cccc
     
     rowLabels = None
     columnLabels = None
     caption = None
     label = None
 
+    # 
+    # Conflicts
+    #
+    if "format" in keywords and "formatColumn" in keywords:
+        print('Using both format and formatColumn is not supported, using formatColumn')
+        del keywords["format"]
+        
     #
     # User-defined values
     # 
@@ -216,8 +222,7 @@ of some advanced table techniques.
             formatNumber = None
         elif key == "alignment":
             if len(value) == 1:
-                if "formatColumns" in keywords: alignment = value+"" + value*(n-1) # rrrrr
-                else: alignment = value*n # rrrr
+                alignment = value*n # rrrr
             else:
                 alignment = value
             assertKeyAlignment(alignment, n)
@@ -258,6 +263,7 @@ of some advanced table techniques.
     # 
     # Set outputFile
     # 
+    f = None
     if isinstance(filename, str):
         if not filename.endswith('.tex'): # assure propper file extension
             filename += '.tex'
@@ -265,10 +271,8 @@ of some advanced table techniques.
         if label == None:
             label = os.path.basename(filename) # get basename
             label = label.replace(".tex", "")  # remove extension. TODO: bug with filename=foo.texFoo.tex
-    else:                               # if filename is not given or of invalid type, 
-        f = StringIO()#StringWithWrite()
-        #f = sys.stdout         # print to screen
 
+    f = IOString(f)
     #
     # Begin block
     # 
@@ -320,14 +324,14 @@ of some advanced table techniques.
                     
             if '%s' not in formatColumn[j]:
                 try:
-                    e = float(matr[i, j])            # current element
+                    e = float(matr[i][j])            # current element
                 except ValueError: # can't convert to float, use string
-                    e = matr[i, j]
+                    e = matr[i][j]
                     formatColumn[j] = '%s'
                 except TypeError:       # raised for None
                     e = None
             else:
-                e = matr[i, j]
+                e = matr[i][j]
 
             if e == None:
                 f.write("NaN")
@@ -360,19 +364,13 @@ of some advanced table techniques.
         if ixEnv != 0:
             f.write("\n")
 
-    # Return string representation of file
-    if isinstance(f, StringIO):
-        ret = f.getvalue()
-    else:
-        ret = ''
-        
     f.close()
-
-    return ret
+    return f.__str__()
 
 if __name__ == '__main__':
-    m = matrix('1 2 4;3 4 6')
-    m = matrix('1 2 4;2 2 1;2 1 2')
+#     m = matrix('1 2 4;3 4 6')
+#     m = matrix('1 2 4;2 2 1;2 1 2')
+    m = [[1, 2, 3], [3, 4, 5]]
     print(matrix2latex(m))
     print(matrix2latex(m, 'tmp.tex'))
     print(matrix2latex(m, None, "table", "center", "tabular", format="$%.2f$", alignment='lcr'))
@@ -380,7 +378,7 @@ if __name__ == '__main__':
     rl = ['d', 'e', 'f', 'g']
     print(matrix2latex(m, None, format="$%.2g$", alignment='lcr',
                  columnLabels=cl,caption="test", label="2", rowLabels=rl))
-    print(matrix2latex(matrix(m), None, "align*", "pmatrix", format="%g", alignment='c'))
+    print(matrix2latex(m, None, "align*", "pmatrix", format="%g", alignment='c'))
     print(matrix2latex(m, None, columnLabels=cl, caption="Hello", label="la"))
     print(matrix2latex([['a', 'b', '1'], ['1', '2', '3']], format='%s'))
 
