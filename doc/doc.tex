@@ -23,6 +23,14 @@ and will allow for more flexible input (for instance non-rectangular).
 \item Code is given in all kinds of fonts in this document. Fix!
 \end{itemize}
 
+\section{Compatibility}
+\begin{sagesilent}
+import sys
+sys.path.append('../')
+from test_compatibility import compatibleTable
+\end{sagesilent}
+\sage{compatibleTable}
+
 \section{Installation}
 The following packages and definitions are recommended in the latex preamble 
 \begin{verbatim}
