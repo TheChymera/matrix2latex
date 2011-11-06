@@ -1,20 +1,17 @@
 # tests for matrix2latex.py
 from matrix2latex import matrix2latex
-from numpy import matrix
-m = matrix('1 2 3;4 5 6')
+# from numpy import matrix
+# m = matrix('1 2 3;4 5 6')
+m = [[1, 2, 3], [4, 5, 6]]
 
 def assertEqual(x, y):
     # assert each line is equal, ignoring leading and trailing spaces
     x = x.split('\n')
     y = y.split('\n')
-    assert len(x) == len(y), "len(x) != len(y), {0} != {1}\n'{2}'\n!=\n'{3}'".format(len(x),
-                                                                                   len(y),
-                                                                                   x,
-                                                                                   y)
-    for ix in range(len(x)):
-        a = x[ix].strip()
-        b = y[ix].strip()
-        assert a == b, "line {2} not equal '{0}' != '{1}'".format(a, b, ix)
+    for a, b in map(None, x, y):
+        if a.strip() != b.strip():
+            print(a,b)
+            raise AssertionError
 
 def test_simple():
     t = matrix2latex(m)
@@ -24,6 +21,20 @@ def test_simple():
 		\toprule
 			$1$ & $2$ & $3$\\
 			$4$ & $5$ & $6$\\
+		\bottomrule
+		\end{tabular}
+	\end{center}
+        \end{table}""")
+
+def test_transpose():
+    t = matrix2latex(m, transpose=True)
+    assertEqual(t, r"""\begin{table}[ht]
+	\begin{center}
+		\begin{tabular}{ccc}
+		\toprule
+			$1$ & $4$\\
+			$2$ & $5$\\
+			$3$ & $6$\\
 		\bottomrule
 		\end{tabular}
 	\end{center}
@@ -137,10 +148,16 @@ def test_alignment3():
     t = matrix2latex(m, alignment='rcl', columnLabels=["a", "b"])
     t = t.split('\n')[2].strip()        # pick out only third line
     assert t == r"\begin{tabular}{rrcl}", t
-    
+
 #     print(matrix2latex(matrix(m), None, "align*", "pmatrix", format="%g", alignment='c'))
 #     print(matrix2latex(m, None, columnLabels=cl, caption="Hello", label="la"))
 #     print(matrix2latex([['a', 'b', '1'], ['1', '2', '3']], format='%s'))
 
 #     m = [[1,None,None], [2,2,1], [2,1,2]]
 #     print(matrix2latex(m, transpose=True))
+
+if __name__ == '__main__':
+    import test
+    for d in test.__dict__:
+        if 'test_' in d:
+            eval(d+'()')

@@ -184,7 +184,14 @@ of some advanced table techniques.
     # Define matrix-size
     # 
     m = len(matr)
-    n = len(matr[0])
+    try:
+        n = len(matr[0])
+    except TypeError: # no length in this dimension (vector...)
+        newMatr = list()
+        [newMatr.append([matr[ix]]) for ix in range(m)]
+        matr = newMatr
+        m = len(matr)
+        n = len(matr[0])
     assert m > 0 and n > 0, "Expected positive matrix dimensions, got %g by %g matrix" % (m, n)
     
     #
@@ -243,7 +250,15 @@ of some advanced table techniques.
             else:
                 label = value
         elif key == "transpose":
-            pass                        # already taken care of (top of function)
+            newMatr = list()
+            for j in range(0, n):
+                row = list()
+                for i in range(0, m):
+                    row.append(matr[i][j])
+                newMatr.append(row)
+            matr = newMatr
+            m = len(matr)
+            n = len(matr[0])
         else:
             sys.stderr.write("Error: key not recognized '%s'\n" % key)
             sys.exit(2)
