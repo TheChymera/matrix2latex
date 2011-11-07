@@ -6,6 +6,7 @@
 import os
 from subprocess import call
 from matrix2latex import matrix2latex
+
 table = list()
 cl = list()
 
@@ -21,6 +22,5 @@ for major in range(2, 3+1):
             if ret == 0: table.append(["True"])
             else: table.append(["False"])
             cl.append(python)
-
-compatibleTable = matrix2latex(table, columnLabels=cl, rowLabels=['Compatible'])
+compatibleTable = matrix2latex(table, 'doc/compatibleTable', columnLabels=cl, rowLabels=['Compatible'])
 print compatibleTable

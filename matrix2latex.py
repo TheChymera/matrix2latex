@@ -5,7 +5,7 @@ import os.path
 import fixEngineeringNotation
 from error import *                     # error handling
 from IOString import IOString
-
+    
 def matrix2latex(matr, filename=None, *environments, **keywords):
     r'''
 A pdf version of this documentation is available as doc<date>.pdf
@@ -179,7 +179,7 @@ of some advanced table techniques.
     except ImportError:
         # no numpy, unlikely input is numpy matrix
         inf = sys.maxint
-    
+
     #
     # Define matrix-size
     # 
@@ -187,6 +187,7 @@ of some advanced table techniques.
     try:
         n = len(matr[0])
     except TypeError: # no length in this dimension (vector...)
+        # convert [1, 2] to [[1], [2]]
         newMatr = list()
         [newMatr.append([matr[ix]]) for ix in range(m)]
         matr = newMatr
@@ -202,7 +203,7 @@ of some advanced table techniques.
     formatNumber = "$%g$"
     formatColumn = None
     alignment = "c"*n               # cccc
-    
+
     rowLabels = None
     columnLabels = None
     caption = None
@@ -256,9 +257,10 @@ of some advanced table techniques.
                 for i in range(0, m):
                     row.append(matr[i][j])
                 newMatr.append(row)
-            matr = newMatr
-            m = len(matr)
-            n = len(matr[0])
+            copyKeywords = dict(keywords) # cant del original since we are inside for loop.
+            del copyKeywords['transpose']
+            # Recursion!
+            return matrix2latex(newMatr, filename, *environments, **copyKeywords)
         else:
             sys.stderr.write("Error: key not recognized '%s'\n" % key)
             sys.exit(2)
