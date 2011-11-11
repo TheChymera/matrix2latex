@@ -185,7 +185,26 @@ def test_alignment3():
     t = t.split('\n')[2].strip()        # pick out only third line
     assert t == r"\begin{tabular}{rr|c|l}", t
 
-#     print(matrix2latex(matrix(m), None, "align*", "pmatrix", format="%g", alignment='c'))
+def test_alignment_withoutTable():
+    t = matrix2latex(m, None, "align*", "pmatrix", format="$%.2f$", alignment='c')
+    assertEqual(t, r"""\begin{align*}
+      \begin{pmatrix}
+        $1.00$ & $2.00$ & $3.00$\\
+        $4.00$ & $5.00$ & $6.00$\\
+      \end{pmatrix}
+    \end{align*}""")
+
+def test_numpy():
+    import numpy as np
+    for a in (np.matrix, np.array):
+        t = matrix2latex(a(m), None, "align*", "pmatrix")
+        assertEqual(t, r"""\begin{align*}
+      \begin{pmatrix}
+        $1$ & $2$ & $3$\\
+        $4$ & $5$ & $6$\\
+      \end{pmatrix}
+    \end{align*}""")
+                
 #     print(matrix2latex(m, None, columnLabels=cl, caption="Hello", label="la"))
 #     print(matrix2latex([['a', 'b', '1'], ['1', '2', '3']], format='%s'))
 

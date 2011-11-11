@@ -168,17 +168,12 @@ if you need a more sophisticated table you must either change the python code
 of some advanced table techniques.
     '''
     #
-    # Check for numpy matrix
+    # Convert to list
     #
     try:
-        import numpy as np
-        # convert input to list
-        if isinstance(matr, np.matrix):
-            matr = matr.tolist()
-        inf = np.inf
-    except ImportError:
-        # no numpy, unlikely input is numpy matrix
-        inf = sys.maxint
+        matr = matr.tolist()
+    except AttributeError:
+        pass # lets hope it looks like a list
 
     #
     # Define matrix-size
@@ -352,8 +347,10 @@ of some advanced table techniques.
 
             if e == None:
                 f.write("NaN")
-            elif e == inf:
+            elif e == float('inf'):
                 f.write(r"$\infty$")
+            elif e == float('-inf'):
+                f.write(r"$-\infty$")                
             else:
                 fcj = formatColumn[j]
                 formated = fcj % e
