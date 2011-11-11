@@ -1,7 +1,5 @@
 # tests for matrix2latex.py
 from matrix2latex import matrix2latex
-# from numpy import matrix
-# m = matrix('1 2 3;4 5 6')
 m = [[1, 2, 3], [4, 5, 6]]
 
 def loopTwoLists(x, y):
@@ -210,15 +208,18 @@ def test_alignment_withoutTable():
     \end{align*}""")
 
 def test_numpy():
-    import numpy as np
-    for a in (np.matrix, np.array):
-        t = matrix2latex(a(m), None, "align*", "pmatrix")
-        assertEqual(t, r"""\begin{align*}
-      \begin{pmatrix}
-        $1$ & $2$ & $3$\\
-        $4$ & $5$ & $6$\\
-      \end{pmatrix}
-    \end{align*}""")
+    try:
+        import numpy as np
+        for a in (np.matrix, np.array):
+            t = matrix2latex(a(m), None, "align*", "pmatrix")
+            assertEqual(t, r"""\begin{align*}
+            \begin{pmatrix}
+            $1$ & $2$ & $3$\\
+            $4$ & $5$ & $6$\\
+            \end{pmatrix}
+            \end{align*}""")
+    except ImportError:
+        pass
 
 def test_string():
     t = matrix2latex([['a', 'b', '1'], ['1', '2', '3']], format='%s')
@@ -249,10 +250,11 @@ def test_none():
           \end{table}""")
 
 def test_infty():
-    import numpy as np
-    m = [[1,np.inf,float('inf')], [2,2,float('-inf')], [-np.inf,1,2]]
-    t = matrix2latex(m)
-    assertEqual(t, r"""\begin{table}[ht]
+    try:
+        import numpy as np
+        m = [[1,np.inf,float('inf')], [2,2,float('-inf')], [-np.inf,1,2]]
+        t = matrix2latex(m)
+        assertEqual(t, r"""\begin{table}[ht]
             \begin{center}
               \begin{tabular}{ccc}
                 \toprule
@@ -263,6 +265,8 @@ def test_infty():
               \end{tabular}
             \end{center}
           \end{table}""")
+    except ImportError:
+        pass
 
 if __name__ == '__main__':
     import test
