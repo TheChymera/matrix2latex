@@ -165,6 +165,21 @@ def test_labels3():
 	\end{center}
         \end{table}""")
 
+def test_labels4():
+    t = matrix2latex(m, None, caption="Hello", label="la")
+    assertEqual(t, r"""\begin{table}[ht]
+      \begin{center}
+        \caption{Hello}
+        \label{tab:la}
+        \begin{tabular}{ccc}
+          \toprule
+          $1$ & $2$ & $3$\\
+          $4$ & $5$ & $6$\\
+          \bottomrule
+        \end{tabular}
+      \end{center}
+    \end{table}""")
+    
 def test_alignment1():
     t = matrix2latex(m, alignment='r')
     t = t.split('\n')[2].strip()
@@ -204,12 +219,50 @@ def test_numpy():
         $4$ & $5$ & $6$\\
       \end{pmatrix}
     \end{align*}""")
-                
-#     print(matrix2latex(m, None, columnLabels=cl, caption="Hello", label="la"))
-#     print(matrix2latex([['a', 'b', '1'], ['1', '2', '3']], format='%s'))
 
-#     m = [[1,None,None], [2,2,1], [2,1,2]]
-#     print(matrix2latex(m, transpose=True))
+def test_string():
+    t = matrix2latex([['a', 'b', '1'], ['1', '2', '3']], format='%s')
+    assertEqual(t, r"""\begin{table}[ht]
+      \begin{center}
+        \begin{tabular}{ccc}
+          \toprule
+          a & b & 1\\
+          1 & 2 & 3\\
+          \bottomrule
+        \end{tabular}
+      \end{center}
+    \end{table}""")
+
+def test_none():
+    m = [[1,None,None], [2,2,1], [2,1,2]]
+    t = matrix2latex(m)
+    assertEqual(t, r"""\begin{table}[ht]
+            \begin{center}
+              \begin{tabular}{ccc}
+                \toprule
+                $1$ & NaN & NaN\\
+                $2$ & $2$ & $1$\\
+                $2$ & $1$ & $2$\\
+                \bottomrule
+              \end{tabular}
+            \end{center}
+          \end{table}""")
+
+def test_infty():
+    import numpy as np
+    m = [[1,np.inf,float('inf')], [2,2,float('-inf')], [-np.inf,1,2]]
+    t = matrix2latex(m)
+    assertEqual(t, r"""\begin{table}[ht]
+            \begin{center}
+              \begin{tabular}{ccc}
+                \toprule
+                $1$ & $\infty$ & $\infty$\\
+                $2$ & $2$ & $-\infty$\\
+                $-\infty$ & $1$ & $2$\\
+                \bottomrule
+              \end{tabular}
+            \end{center}
+          \end{table}""")
 
 if __name__ == '__main__':
     import test
