@@ -31,15 +31,11 @@ Arguments:
   
 matrix
   A numpy matrix or a nested list
-  TODO:
-\begin{itemize}
-\item Any python structure that looks like a rektangular matrix.
-\item Remove dependency on numpy (might be more portable to other systems)
-\end{itemize}
 
 Filename
   File to place output, extension .tex is added automatically. File can be included in a LaTeX
-  document by \verb!\input{filename}!. Output will always be returned in a string
+  document by \input{filename}. Output will always be returned in a string. If filename is None
+  or not a string it is ignored.
   
 *environments
   Use 
@@ -78,7 +74,6 @@ Example
   \end{table}
 \end{lstlisting}
 
-
 **keywords
 rowLabels
     A row at the top used to label the columns.
@@ -88,8 +83,6 @@ Using the same example from above we can add row labels
 
 rl = ['$x$', '$x^2$']
 t = matrix2latex(m, rowLabels=rl)
-
-
 
 columnLabels
     A column used to label the rows.
@@ -103,8 +96,6 @@ Note the use of columnLabels in the example.
 cl = ['$x$', '$x^2$']
 t = matrix2latex(m, columnLabels=cl, transpose=True)
 
-
-
 caption
     Use to define a caption for your table.
     Inserts \verb!\caption! after \verb!\end{tabular}!.
@@ -112,8 +103,6 @@ Always use informative captions!
 
 t = matrix2latex(m, rowLabels=rl, 
                  caption='Nice table!')
-
-
 
 label
 Used to insert \verb!\label{tab:...}! after \verb!\end{tabular}!
@@ -137,7 +126,6 @@ rl = ['$x$', '$1/x$']
 t = matrix2latex(m, rowLabels=rl,
                  format='%.2f')
 
-  
 formatColumn
 A list of printf-syntax formats, e.g. [$%.2f$, $%g$]
 Must be of same length as the number of columns.
@@ -147,7 +135,6 @@ than other parts
 
 t = matrix2latex(m, rowLabels=rl,
                  formatColumn=['%g', '%.2f'])
-
 
 alignment
 Used as an option when tabular is given as enviroment.
