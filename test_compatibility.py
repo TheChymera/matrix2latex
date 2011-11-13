@@ -30,6 +30,9 @@ for major in range(2, 3+1):
 
 if call("pypy-c" + " -c 'pass'", shell=True, stderr=file(os.devnull, "w")) == 0:
     test("pypy-c", table, cl)
-        
-compatibleTable = matrix2latex(table, 'doc/compatibleTable', columnLabels=cl, rowLabels=['Compatible'])
+
+c = "Does 'python test.py' return 0?"
+compatibleTable = matrix2latex(table, 'doc/compatibleTable',
+                               columnLabels=cl, rowLabels=['Compatible'],
+                               caption=c)
 print compatibleTable

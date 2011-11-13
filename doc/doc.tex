@@ -242,7 +242,8 @@ it just looks a bit wierd.
 
 The options presented by this program represents what I need when creating a table,
 if you need a more sophisticated table you must either change the python code
-(feel free to submit a patch) or manually adjust the output afterwards.
+(feel free to submit a patch), manually adjust the output afterwards
+or adjust the input (remember that the input can be a nested list of strings).
 \url{http://en.wikibooks.org/wiki/LaTeX/Tables} gives an excellent overview
 of some advanced table techniques.
 
@@ -288,6 +289,8 @@ we use the python package timeit, the rest of the code is mostly unchanged.
 \lstinputlisting[firstline=46]{factorial.py}
 \input{facT}
 
+As an additional example, see \verb!test_compatibility.py! to see how table \ref{tab:compatibleTable}
+was created.
 %\bibliographystyle{IEEEtran}
 %\bibliography{doc}
  \end{document}
