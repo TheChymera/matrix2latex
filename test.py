@@ -218,7 +218,9 @@ def test_numpy():
             $4$ & $5$ & $6$\\
             \end{pmatrix}
             \end{align*}""")
-    except ImportError:
+    # Systems without numpy raises import error,
+    # pypy raises attribute since matrix is not implemented, this is ok.
+    except (ImportError, AttributeError):
         pass
 
 def test_string():
@@ -249,7 +251,7 @@ def test_none():
             \end{center}
           \end{table}""")
 
-def test_infty():
+def test_infty1():
     try:
         import numpy as np
         m = [[1,np.inf,float('inf')], [2,2,float('-inf')], [-np.inf,1,2]]
@@ -265,9 +267,26 @@ def test_infty():
               \end{tabular}
             \end{center}
           \end{table}""")
-    except ImportError:
+    except (ImportError, AttributeError):
         pass
 
+def test_infty2():
+    # same as above but without numpy
+    inf = float('inf')
+    m = [[1,inf,float('inf')], [2,2,float('-inf')], [-inf,1,2]]
+    t = matrix2latex(m)
+    assertEqual(t, r"""\begin{table}[ht]
+        \begin{center}
+          \begin{tabular}{ccc}
+            \toprule
+            $1$ & $\infty$ & $\infty$\\
+            $2$ & $2$ & $-\infty$\\
+            $-\infty$ & $1$ & $2$\\
+            \bottomrule
+          \end{tabular}
+        \end{center}
+      \end{table}""")
+    
 if __name__ == '__main__':
     import test
     for d in test.__dict__:
