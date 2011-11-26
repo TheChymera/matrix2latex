@@ -6,4 +6,4 @@ Your current working directory is always on your PYTHONPATH.
 
 Hint: on unix systems do:
 echo $PYTHONPATH
-to see a list of locations. Windows users: ask google about PYTHONPATH.
+to see a list of locations. Other users: ask google about PYTHONPATH for your operating system.
