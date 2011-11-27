@@ -184,21 +184,16 @@ def test_alignment1():
     assert t == r"\begin{tabular}{rrr}", t
 
 def test_alignment2():
-    t = matrix2latex(m, alignment='r', columnLabels=["a", "b"])
-    t = t.split('\n')[2].strip()
-    assert t == r"\begin{tabular}{rrrr}", t
-
-def test_alignment3():
     t = matrix2latex(m, alignment='rcl')
     t = t.split('\n')[2].strip()
     assert t == r"\begin{tabular}{rcl}", t
 
-def test_alignment4():
+def test_alignment3():
     t = matrix2latex(m, alignment='rcl', columnLabels=["a", "b"])
     t = t.split('\n')[2].strip()        # pick out only third line
     assert t == r"\begin{tabular}{rrcl}", t
 
-def test_alignment5():
+def test_alignment3():
     t = matrix2latex(m, alignment='r|c|l', columnLabels=["a", "b"])
     t = t.split('\n')[2].strip()        # pick out only third line
     assert t == r"\begin{tabular}{rr|c|l}", t
