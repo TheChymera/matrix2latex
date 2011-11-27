@@ -239,7 +239,7 @@ of some advanced table techniques.
                 for i in range(0, m):
                     row.append(matr[i][j])
                 newMatr.append(row)
-            copyKeywords = dict(keywords) # cant del original since we are inside for loop.
+            copyKeywords = dict(keywords) # can't del original since we are inside for loop.
             del copyKeywords['transpose']
             # Recursion!
             return matrix2latex(newMatr, filename, *environments, **copyKeywords)
