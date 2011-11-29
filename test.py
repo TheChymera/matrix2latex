@@ -184,9 +184,18 @@ def test_alignment1():
     assert t == r"\begin{tabular}{rrr}", t
 
 def test_alignment2():
-    t = matrix2latex(m, alignment='r', columnLabels=["a", "b"])
+    cl = ["a", "b"]
+    rl = ["names", "c", "d", "e"]
+    t = matrix2latex(m, alignment='r', columnLabels=cl, rowLabels = rl)
     t = t.split('\n')[2].strip()
     assert t == r"\begin{tabular}{rrrr}", t
+
+def test_alignment2b():
+    rl = ["a", "b"]
+    cl = ["names", "c", "d", "e"]
+    t = matrix2latex(m, alignment='r', columnLabels=cl, rowLabels = rl, transpose=True)
+    t = t.split('\n')[2].strip()
+    assert t == r"\begin{tabular}{rrr}", t
 
 def test_alignment3():
     t = matrix2latex(m, alignment='rcl')
@@ -248,13 +257,20 @@ def test_none():
             \begin{center}
               \begin{tabular}{ccc}
                 \toprule
-                $1$ & NaN & NaN\\
+                $1$ & - & -\\
                 $2$ & $2$ & $1$\\
                 $2$ & $1$ & $2$\\
                 \bottomrule
               \end{tabular}
             \end{center}
           \end{table}""")
+    
+    m2 = [[1,float('NaN'),float('NaN')], [2,2,1], [2,1,2]]
+    t2 = matrix2latex(m)    
+    assertEqual(t2, t)
+
+    t3 = matrix2latex(m, format='$%d$')
+    assertEqual(t3, t)
 
 def test_infty1():
     try:

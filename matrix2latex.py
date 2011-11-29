@@ -332,8 +332,8 @@ of some advanced table techniques.
             else:
                 e = matr[i][j]
 
-            if e == None:
-                f.write("NaN")
+            if e == None or e == float('NaN'):
+                f.write("-")
             elif e == float('inf'):
                 f.write(r"$\infty$")
             elif e == float('-inf'):
