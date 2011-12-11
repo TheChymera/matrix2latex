@@ -1,0 +1,180 @@
+%%%simple
+\begin{table}[ht]
+  \begin{center}
+    \begin{tabular}{ccc}
+      \toprule
+      $1$ & $2$ & $3$\\
+      $4$ & $5$ & $6$\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+%%%transpose1
+\begin{table}[ht]
+  \begin{center}
+    \begin{tabular}{cc}
+      \toprule
+      $1$ & $4$\\
+      $2$ & $5$\\
+      $3$ & $6$\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+%%%transpose2
+\begin{table}[ht]
+  \begin{center}
+    \begin{tabular}{cc}
+      \toprule
+      a & b\\
+      \midrule
+      $1$ & $4$\\
+      $2$ & $5$\\
+      $3$ & $6$\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+%%%file
+\begin{table}[ht]
+  \begin{center}
+    \label{tab:tmp}
+    \begin{tabular}{ccc}
+      \toprule
+      $1$ & $2$ & $3$\\
+      $4$ & $5$ & $6$\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+%%%environment1
+\begin{table}[ht]
+  \begin{center}
+    \begin{tabular}{ccc}
+      \toprule
+      $1$ & $2$ & $3$\\
+      $4$ & $5$ & $6$\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+%%%environment2
+\begin{foo}
+  \begin{bar}
+    $1$ & $2$ & $3$\\
+    $4$ & $5$ & $6$\\
+  \end{bar}
+\end{foo}
+%%%labels1
+\begin{table}[ht]
+  \begin{center}
+    \begin{tabular}{rccc}
+      \toprule
+      & c & d & e\\
+      \midrule
+      a & $1$ & $2$ & $3$\\
+      b & $4$ & $5$ & $6$\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+%%%labels2
+\begin{table}[ht]
+  \begin{center}
+    \begin{tabular}{rccc}
+      \toprule
+      names & c & d & e\\
+      \midrule
+      a & $1$ & $2$ & $3$\\
+      b & $4$ & $5$ & $6$\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+%%%labels3
+\begin{table}[ht]
+  \begin{center}
+    \begin{tabular}{rccc}
+      \toprule
+      names & c & d & e\\
+      \midrule
+      a & $1$ & $2$ & $3$\\
+      b & $4$ & $5$ & $6$\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+%%%labels4
+\begin{table}[ht]
+  \begin{center}
+    \caption{Hello}
+    \label{tab:la}
+    \begin{tabular}{ccc}
+      \toprule
+      $1$ & $2$ & $3$\\
+      $4$ & $5$ & $6$\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+%%%alignment_withoutTable
+\begin{align*}
+  \begin{pmatrix}
+    $1.00$ & $2.00$ & $3.00$\\
+    $4.00$ & $5.00$ & $6.00$\\
+  \end{pmatrix}
+\end{align*}
+%%%numpy
+\begin{align*}
+  \begin{pmatrix}
+    $1$ & $2$ & $3$\\
+    $4$ & $5$ & $6$\\
+  \end{pmatrix}
+\end{align*}
+%%%string
+\begin{table}[ht]
+  \begin{center}
+    \begin{tabular}{ccc}
+      \toprule
+      a & b & 1\\
+      1 & 2 & 3\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+%%%none
+\begin{table}[ht]
+  \begin{center}
+    \begin{tabular}{ccc}
+      \toprule
+      $1$ & - & -\\
+      $2$ & $2$ & $1$\\
+      $2$ & $1$ & $2$\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+%%%infty1
+\begin{table}[ht]
+  \begin{center}
+    \begin{tabular}{ccc}
+      \toprule
+      $1$ & $\infty$ & $\infty$\\
+      $2$ & $2$ & $-\infty$\\
+      $-\infty$ & $1$ & $2$\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+%%%infty2
+\begin{table}[ht]
+  \begin{center}
+    \begin{tabular}{ccc}
+      \toprule
+      $1$ & $\infty$ & $\infty$\\
+      $2$ & $2$ & $-\infty$\\
+      $-\infty$ & $1$ & $2$\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}

@@ -18,6 +18,16 @@ along with matrix2latex. If not, see <http://www.gnu.org/licenses/>.
 from matrix2latex import matrix2latex
 m = [[1, 2, 3], [4, 5, 6]]
 
+f = open('../common/test.tex')
+answers = dict()
+for line in f:
+    if line.startswith('%%%'):
+        name = line[3:-1]               # ignore %%% and \n
+        answers[name] = ''
+    else:
+        answers[name] += line
+
+print answers
 def loopTwoLists(x, y):
     for ix in range(max([len(x), len(y)])):
         try: a = x[ix].strip()
@@ -26,9 +36,10 @@ def loopTwoLists(x, y):
         except: b = ''
         yield a, b
 
-def assertEqual(x, y):
+def assertEqual(x, name):
     # assert each line is equal, ignoring leading and trailing spaces
     print(x)
+    y = answers[name]
     x = x.split('\n')
     y = y.split('\n')
     correct = True
@@ -43,103 +54,37 @@ def assertEqual(x, y):
 
 def test_simple():
     t = matrix2latex(m)
-    assertEqual(t, r"""\begin{table}[ht]
-	\begin{center}
-		\begin{tabular}{ccc}
-		\toprule
-			$1$ & $2$ & $3$\\
-			$4$ & $5$ & $6$\\
-		\bottomrule
-		\end{tabular}
-	\end{center}
-        \end{table}""")
+    assertEqual(t, "simple")
 
 def test_transpose1():
     t = matrix2latex(m, transpose=True)
-    assertEqual(t, r"""\begin{table}[ht]
-	\begin{center}
-		\begin{tabular}{cc}
-		\toprule
-			$1$ & $4$\\
-			$2$ & $5$\\
-			$3$ & $6$\\
-		\bottomrule
-		\end{tabular}
-	\end{center}
-        \end{table}""")
+    assertEqual(t, "transpose1")
 
 def test_transpose2():
     cl = ["a", "b"]
     t = matrix2latex(m, transpose=True, rowLabels=cl)
-    assertEqual(t, r"""\begin{table}[ht]
-	\begin{center}
-		\begin{tabular}{cc}
-		\toprule
-                a & b\\
-                \midrule
-			$1$ & $4$\\
-			$2$ & $5$\\
-			$3$ & $6$\\
-		\bottomrule
-		\end{tabular}
-	\end{center}
-        \end{table}""")
+    assertEqual(t, "transpose2")
 
 def test_file():
     matrix2latex(m, 'tmp.tex')
     f = open('tmp.tex')
     content = f.read()
     f.close()
-    assertEqual(content, r"""\begin{table}[ht]
-	\begin{center}
-        \label{tab:tmp}
-		\begin{tabular}{ccc}
-		\toprule
-			$1$ & $2$ & $3$\\
-			$4$ & $5$ & $6$\\
-		\bottomrule
-		\end{tabular}
-	\end{center}
-        \end{table}""")
+    assertEqual(content, "file")
 
 def test_environment1():
     t = matrix2latex(m, None, "table", "center", "tabular")
-    assertEqual(t, r"""\begin{table}[ht]
-	\begin{center}
-		\begin{tabular}{ccc}
-		\toprule
-			$1$ & $2$ & $3$\\
-			$4$ & $5$ & $6$\\
-		\bottomrule
-		\end{tabular}
-	\end{center}
-        \end{table}""")
+    assertEqual(t, "environment1")
  
 def test_environment2():
     t = matrix2latex(m, None, "foo", "bar")
-    assertEqual(t, r"""\begin{foo}
-		\begin{bar}
-			$1$ & $2$ & $3$\\
-			$4$ & $5$ & $6$\\
-		\end{bar}
-	\end{foo}""")
+    assertEqual(t, "environment2")
    
 def test_labels1():
     cl = ["a", "b"]
     rl = ["c", "d", "e"]
     t = matrix2latex(m, None, columnLabels=cl, rowLabels=rl)
-    assertEqual(t, r"""\begin{table}[ht]
-	\begin{center}
-		\begin{tabular}{rccc}
-		\toprule
-			 & c & d & e\\
-			\midrule
-			a & $1$ & $2$ & $3$\\
-			b & $4$ & $5$ & $6$\\
-		\bottomrule
-		\end{tabular}
-	\end{center}
-        \end{table}""")
+    assertEqual(t, "labels1")
 
 def test_labels2():
     # only difference from above test is names, note how above function
@@ -147,18 +92,7 @@ def test_labels2():
     cl = ["a", "b"]
     rl = ["names", "c", "d", "e"]
     t = matrix2latex(m, None, columnLabels=cl, rowLabels=rl)
-    assertEqual(t, r"""\begin{table}[ht]
-	\begin{center}
-		\begin{tabular}{rccc}
-		\toprule
-			names & c & d & e\\
-			\midrule
-			a & $1$ & $2$ & $3$\\
-			b & $4$ & $5$ & $6$\\
-		\bottomrule
-		\end{tabular}
-	\end{center}
-        \end{table}""")
+    assertEqual(t, "labels2")
 
 def test_labels3():
     # pass in environment as dictionary
@@ -166,33 +100,11 @@ def test_labels3():
     e['columnLabels'] = ["a", "b"]
     e['rowLabels'] = ["names", "c", "d", "e"]
     t = matrix2latex(m, None, **e)
-    assertEqual(t, r"""\begin{table}[ht]
-	\begin{center}
-		\begin{tabular}{rccc}
-		\toprule
-			names & c & d & e\\
-			\midrule
-			a & $1$ & $2$ & $3$\\
-			b & $4$ & $5$ & $6$\\
-		\bottomrule
-		\end{tabular}
-	\end{center}
-        \end{table}""")
+    assertEqual(t, "labels3")
 
 def test_labels4():
     t = matrix2latex(m, None, caption="Hello", label="la")
-    assertEqual(t, r"""\begin{table}[ht]
-      \begin{center}
-        \caption{Hello}
-        \label{tab:la}
-        \begin{tabular}{ccc}
-          \toprule
-          $1$ & $2$ & $3$\\
-          $4$ & $5$ & $6$\\
-          \bottomrule
-        \end{tabular}
-      \end{center}
-    \end{table}""")
+    assertEqual(t, "labels4")
     
 def test_alignment1():
     t = matrix2latex(m, alignment='r')
@@ -230,24 +142,14 @@ def test_alignment5():
 
 def test_alignment_withoutTable():
     t = matrix2latex(m, None, "align*", "pmatrix", format="$%.2f$", alignment='c')
-    assertEqual(t, r"""\begin{align*}
-      \begin{pmatrix}
-        $1.00$ & $2.00$ & $3.00$\\
-        $4.00$ & $5.00$ & $6.00$\\
-      \end{pmatrix}
-    \end{align*}""")
+    assertEqual(t, "alignment_withoutTable")
 
 def test_numpy():
     try:
         import numpy as np
         for a in (np.matrix, np.array):
             t = matrix2latex(a(m), None, "align*", "pmatrix")
-            assertEqual(t, r"""\begin{align*}
-            \begin{pmatrix}
-            $1$ & $2$ & $3$\\
-            $4$ & $5$ & $6$\\
-            \end{pmatrix}
-            \end{align*}""")
+            assertEqual(t, "numpy")
     # Systems without numpy raises import error,
     # pypy raises attribute since matrix is not implemented, this is ok.
     except (ImportError, AttributeError):
@@ -255,55 +157,26 @@ def test_numpy():
 
 def test_string():
     t = matrix2latex([['a', 'b', '1'], ['1', '2', '3']], format='%s')
-    assertEqual(t, r"""\begin{table}[ht]
-      \begin{center}
-        \begin{tabular}{ccc}
-          \toprule
-          a & b & 1\\
-          1 & 2 & 3\\
-          \bottomrule
-        \end{tabular}
-      \end{center}
-    \end{table}""")
+    assertEqual(t, "string")
 
 def test_none():
     m = [[1,None,None], [2,2,1], [2,1,2]]
     t = matrix2latex(m)
-    assertEqual(t, r"""\begin{table}[ht]
-            \begin{center}
-              \begin{tabular}{ccc}
-                \toprule
-                $1$ & - & -\\
-                $2$ & $2$ & $1$\\
-                $2$ & $1$ & $2$\\
-                \bottomrule
-              \end{tabular}
-            \end{center}
-          \end{table}""")
+    assertEqual(t, "none")
     
     m2 = [[1,float('NaN'),float('NaN')], [2,2,1], [2,1,2]]
     t2 = matrix2latex(m)    
-    assertEqual(t2, t)
+    assertEqual(t2, "none")
 
     t3 = matrix2latex(m, format='$%d$')
-    assertEqual(t3, t)
+    assertEqual(t3, "none")
 
 def test_infty1():
     try:
         import numpy as np
         m = [[1,np.inf,float('inf')], [2,2,float('-inf')], [-np.inf,1,2]]
         t = matrix2latex(m)
-        assertEqual(t, r"""\begin{table}[ht]
-            \begin{center}
-              \begin{tabular}{ccc}
-                \toprule
-                $1$ & $\infty$ & $\infty$\\
-                $2$ & $2$ & $-\infty$\\
-                $-\infty$ & $1$ & $2$\\
-                \bottomrule
-              \end{tabular}
-            \end{center}
-          \end{table}""")
+        assertEqual(t, "infty1")
     except (ImportError, AttributeError):
         pass
 
@@ -312,17 +185,7 @@ def test_infty2():
     inf = float('inf')
     m = [[1,inf,float('inf')], [2,2,float('-inf')], [-inf,1,2]]
     t = matrix2latex(m)
-    assertEqual(t, r"""\begin{table}[ht]
-        \begin{center}
-          \begin{tabular}{ccc}
-            \toprule
-            $1$ & $\infty$ & $\infty$\\
-            $2$ & $2$ & $-\infty$\\
-            $-\infty$ & $1$ & $2$\\
-            \bottomrule
-          \end{tabular}
-        \end{center}
-      \end{table}""")
+    assertEqual(t, "infty2")
     
 if __name__ == '__main__':
     import test
