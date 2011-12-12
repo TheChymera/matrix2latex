@@ -112,6 +112,8 @@ function table = matrix2latex(matrix, filename, varargin)
             caption = pval;
         elseif strcmpi(pname, 'label')
             label = pval;
+        elseif strcmpi(pname, 'transpose')
+            matrix = matrix';
         else
             error('%s: unknown parameter name %s', mfilename, pname)
         end
@@ -132,7 +134,7 @@ function table = matrix2latex(matrix, filename, varargin)
         %if isempty(matrix)
         % return;
         %end
-        table = ''
+        table = '';
         width = size(matrix, 2);
         height = size(matrix, 1);
 
