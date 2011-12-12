@@ -86,22 +86,25 @@ function test_environment2()
     assertEqual(t, 'environment2');
 end
 test_environment2()
-%{    
-function test_labels1():
-    cl = ['a', 'b']
-    rl = ['c', 'd', 'e']
-    t = matrix2latex(m, None, columnLabels=cl, rowLabels=rl)
-    assertEqual(t, 'labels1')
 
-function test_labels2():
+function test_labels1()
+    cl = {'a', 'b'};
+    rl = {'c', 'd', 'e'};
+    t = matrix2latex(m, '', 'headerRow', rl, 'headerColumn', cl);
+    assertEqual(t, 'labels1')
+end
+test_labels1()
+
+%{
+function test_labels2()
     # only difference from above test is names, note how above function
     # handles having too few rowLabels
-    cl = ['a', 'b']
-    rl = ['names', 'c', 'd', 'e']
+    cl = {'a', 'b'}
+    rl = {'names', 'c', 'd', 'e'}
     t = matrix2latex(m, None, columnLabels=cl, rowLabels=rl)
     assertEqual(t, 'labels2')
 
-function test_labels3():
+function test_labels3()
     # pass in environment as dictionary
     e = dict()
     e['columnLabels'] = ['a', 'b']
@@ -109,49 +112,49 @@ function test_labels3():
     t = matrix2latex(m, None, **e)
     assertEqual(t, 'labels3')
 
-function test_labels4():
+function test_labels4()
     t = matrix2latex(m, None, caption='Hello', label='la')
     assertEqual(t, 'labels4')
     
-function test_alignment1():
+function test_alignment1()
     t = matrix2latex(m, alignment='r')
     t = t.split('\n')[2].strip()
     assert t == r'\begin{tabular}{rrr}', t
 
-function test_alignment2():
-    cl = ['a', 'b']
-    rl = ['names', 'c', 'd', 'e']
+function test_alignment2()
+    cl = {'a', 'b'}
+    rl = {'names', 'c', 'd', 'e'}
     t = matrix2latex(m, alignment='r', columnLabels=cl, rowLabels = rl)
     t = t.split('\n')[2].strip()
     assert t == r'\begin{tabular}{rrrr}', t
 
-function test_alignment2b():
-    rl = ['a', 'b']
-    cl = ['names', 'c', 'd', 'e']
+function test_alignment2b()
+    rl = {'a', 'b'}
+    cl = {'names', 'c', 'd', 'e'}
     t = matrix2latex(m, alignment='r', columnLabels=cl, rowLabels = rl, transpose=True)
     t = t.split('\n')[2].strip()
     assert t == r'\begin{tabular}{rrr}', t
 
-function test_alignment3():
+function test_alignment3()
     t = matrix2latex(m, alignment='rcl')
     t = t.split('\n')[2].strip()
     assert t == r'\begin{tabular}{rcl}', t
 
-function test_alignment4():
-    t = matrix2latex(m, alignment='rcl', columnLabels=['a', 'b'])
+function test_alignment4()
+    t = matrix2latex(m, alignment='rcl', columnLabels={'a', 'b'})
     t = t.split('\n')[2].strip()        # pick out only third line
     assert t == r'\begin{tabular}{rrcl}', t
 
-function test_alignment5():
-    t = matrix2latex(m, alignment='r|c|l', columnLabels=['a', 'b'])
+function test_alignment5()
+    t = matrix2latex(m, alignment='r|c|l', columnLabels={'a', 'b'})
     t = t.split('\n')[2].strip()        # pick out only third line
     assert t == r'\begin{tabular}{rr|c|l}', t
 
-function test_alignment_withoutTable():
+function test_alignment_withoutTable()
     t = matrix2latex(m, None, 'align*', 'pmatrix', format='$%.2f$', alignment='c')
     assertEqual(t, 'alignment_withoutTable')
 
-function test_numpy():
+function test_numpy()
     try:
         import numpy as np
         for a in (np.matrix, np.array):
@@ -162,11 +165,11 @@ function test_numpy():
     except (ImportError, AttributeError):
         pass
 
-function test_string():
+function test_string()
     t = matrix2latex([['a', 'b', '1'], ['1', '2', '3']], format='%s')
     assertEqual(t, 'string')
 
-function test_none():
+function test_none()
     m = [[1,None,None], [2,2,1], [2,1,2]]
     t = matrix2latex(m)
     assertEqual(t, 'none')
@@ -178,7 +181,7 @@ function test_none():
     t3 = matrix2latex(m, format='$%d$')
     assertEqual(t3, 'none')
 
-function test_infty1():
+function test_infty1()
     try:
         import numpy as np
         m = [[1,np.inf,float('inf')], [2,2,float('-inf')], [-np.inf,1,2]]
@@ -187,7 +190,7 @@ function test_infty1():
     except (ImportError, AttributeError):
         pass
 
-function test_infty2():
+function test_infty2()
     # same as above but without numpy
     inf = float('inf')
     m = [[1,inf,float('inf')], [2,2,float('-inf')], [-inf,1,2]]

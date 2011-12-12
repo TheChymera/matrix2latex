@@ -31,9 +31,9 @@ function table = matrix2latex(matrix, filename, varargin)
 %   - filename is a valid filename, without extension, in which the resulting latex code will
 %   be stored. If filename == '' tex code will be printed to screen
 %   - varargs is one ore more of the following (denominator, value) combinations
-%      + 'rowLabels', array -> Can be used to label the rows of the
+%      + 'headerColumn', array -> Can be used to label the rows of the
 %      resulting latex table
-%      + 'columnLabels' or 'headerRow', array -> Can be used to label the columns of the
+%      + 'headerRow', array -> Can be used to label the columns of the
 %      resulting latex table
 %      + 'alignment', 'value' -> Can be used to specify the alginment of
 %      the table within the latex document. Valid arguments are: 'l', 'c',
@@ -50,9 +50,9 @@ function table = matrix2latex(matrix, filename, varargin)
 %
 % Example input:
 %   matrix = [1.5 1.764; 3.523 0.2];
-%   rowLabels = {'row 1', 'row 2'};
+%   headerColumn = {'row 1', 'row 2'};
 %   headerRow = {'col 1', 'col 2'};
-%   matrix2latexTable(matrix, 'out', 'rowLabels', rowLabels, 'headerRow', headerRow, 'alignment', 'c', 'format', '%-6.2f', 'size', 'tiny');
+%   matrix2latexTable(matrix, 'out', 'headerColumn', headerColumn, 'headerRow', headerRow, 'alignment', 'c', 'format', '%-6.2f', 'size', 'tiny');
 %
 % The resulting latex file can be included into any latex document by:
 % /input{out.tex}
@@ -63,9 +63,13 @@ function table = matrix2latex(matrix, filename, varargin)
         error('%s: Incorrect number of arguments', mfilename);
     end
 
-    rowLabels = [];
+    table = '';
+    width = size(matrix, 2);
+    height = size(matrix, 1);
+
+    headerColumn = [];
     headerRow = [];
-    alignment = 'c';
+    alignment = repmat('c', 1, width);
     format = '$%g$';
     textsize = [];
     caption = [];
@@ -75,12 +79,12 @@ function table = matrix2latex(matrix, filename, varargin)
     for j=1:2:(nargin-2)
         pname = varargin{j};
         pval = varargin{j+1};
-        if strcmpi(pname, 'rowlabels')
-            rowLabels = pval;
-            if isnumeric(rowLabels)
-                rowLabels = cellstr(num2str(rowLabels(:)));
+        if strcmpi(pname, 'headerColumn')
+            headerColumn = pval;
+            if isnumeric(headerColumn)
+                headerColumn = cellstr(num2str(headerColumn(:)));
             end
-        elseif strcmpi(pname, 'columnLabels') || strcmpi(pname, 'headerRow')
+        elseif strcmpi(pname, 'headerRow')
             headerRow = pval;
             if isnumeric(headerRow)
                 headerRow = cellstr(num2str(headerRow(:)));
@@ -88,10 +92,14 @@ function table = matrix2latex(matrix, filename, varargin)
         elseif strcmpi(pname, 'alignment')
             okAlignment = {'l', 'c', 'r'};
             if ~isempty(strmatch(pval, okAlignment, 'exact'))
-                alignment = pval;
+                if length(pval) == 1
+                    alignment = repmat(pval, 1, width);
+                else
+                    alignment = pval;
+                end
             else
-                alignment = 'c';
-                warning('%s: Unkown alignment %s. Using l', mfilename, pval);
+                alignment = repmat('c', 1, width);
+                warning('%s: Unkown alignment %s. Using c', mfilename, pval);
             end
         elseif strcmpi(pname, 'format')
             format = lower(pval);
@@ -114,7 +122,12 @@ function table = matrix2latex(matrix, filename, varargin)
         elseif strcmpi(pname, 'label')
             label = ['tab:', pval];
         elseif strcmpi(pname, 'transpose')
-            matrix = matrix';
+            if pval
+                matrix = matrix';
+                varargin{j+1} = false % set transpose to false
+                table = matrix2latex(matrix, filename, varargin{:})
+                return;
+            end
         elseif strcmpi(pname, 'environment')
             environment = pval;
         else
@@ -137,9 +150,6 @@ function table = matrix2latex(matrix, filename, varargin)
         %if isempty(matrix)
         % return;
         %end
-        table = '';
-        width = size(matrix, 2);
-        height = size(matrix, 1);
 
         if isnumeric(matrix)
             matrix = num2cell(matrix);
@@ -170,12 +180,10 @@ function table = matrix2latex(matrix, filename, varargin)
             elseif strcmpi(e, 'tabular')
                 table = [table, sprintf('\\begin{%s}{', e)];
 
-                if(~isempty(rowLabels))
+                if(~isempty(headerColumn))
                     table = [table, sprintf('c')];
                 end
-                for i=1:width
-                    table = [table, sprintf('%c', alignment)];
-                end
+                table = [table, sprintf('%c', alignment)];
                 table = [table, sprintf('}\n')];
                 table = [table, sprintf(repmat('\t',1,ix-1))];
                 table = [table, sprintf('\\toprule\n')];
@@ -193,7 +201,7 @@ function table = matrix2latex(matrix, filename, varargin)
         end
         
         if(~isempty(headerRow))
-            if(~isempty(rowLabels))
+            if(~isempty(headerColumn))
                 table = [table, sprintf('&')];
             end
             table = [table, sprintf('\t\t\t')];
@@ -207,9 +215,9 @@ function table = matrix2latex(matrix, filename, varargin)
         
         for h=1:height
             table = [table, sprintf('\t\t\t')];
-            if(~isempty(rowLabels))
-                %table = [table, sprintf('%s&', rowLabels{h})];
-                table = [table, sprintf('\\text{%s}&', rowLabels{h})];
+            if(~isempty(headerColumn))
+                %table = [table, sprintf('%s&', headerColumn{h})];
+                table = [table, sprintf('\\text{%s}&', headerColumn{h})];
             end
             for w=1:width-1
                 table = [table, sprintf('%s & ', matrix{h, w})];
