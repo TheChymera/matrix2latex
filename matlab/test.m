@@ -91,7 +91,7 @@ function test_labels1()
     cl = {'a', 'b'};
     rl = {'c', 'd', 'e'};
     t = matrix2latex(m, '', 'headerRow', rl, 'headerColumn', cl);
-    assertEqual(t, 'labels1')
+    assertEqual(t, 'labels1');
 end
 test_labels1()
 
