@@ -33,7 +33,7 @@ function table = matrix2latex(matrix, filename, varargin)
 %   - varargs is one ore more of the following (denominator, value) combinations
 %      + 'rowLabels', array -> Can be used to label the rows of the
 %      resulting latex table
-%      + 'columnLabels', array -> Can be used to label the columns of the
+%      + 'columnLabels' or 'headerRow', array -> Can be used to label the columns of the
 %      resulting latex table
 %      + 'alignment', 'value' -> Can be used to specify the alginment of
 %      the table within the latex document. Valid arguments are: 'l', 'c',
@@ -51,8 +51,8 @@ function table = matrix2latex(matrix, filename, varargin)
 % Example input:
 %   matrix = [1.5 1.764; 3.523 0.2];
 %   rowLabels = {'row 1', 'row 2'};
-%   columnLabels = {'col 1', 'col 2'};
-%   matrix2latexTable(matrix, 'out', 'rowLabels', rowLabels, 'columnLabels', columnLabels, 'alignment', 'c', 'format', '%-6.2f', 'size', 'tiny');
+%   headerRow = {'col 1', 'col 2'};
+%   matrix2latexTable(matrix, 'out', 'rowLabels', rowLabels, 'headerRow', headerRow, 'alignment', 'c', 'format', '%-6.2f', 'size', 'tiny');
 %
 % The resulting latex file can be included into any latex document by:
 % /input{out.tex}
@@ -64,9 +64,9 @@ function table = matrix2latex(matrix, filename, varargin)
     end
 
     rowLabels = [];
-    colLabels = [];
+    headerRow = [];
     alignment = 'c';
-    format = [];
+    format = '$%g$';
     textsize = [];
     caption = [];
     label = [];
@@ -79,10 +79,10 @@ function table = matrix2latex(matrix, filename, varargin)
             if isnumeric(rowLabels)
                 rowLabels = cellstr(num2str(rowLabels(:)));
             end
-        elseif strcmpi(pname, 'columnLabels')
-            colLabels = pval;
-            if isnumeric(colLabels)
-                colLabels = cellstr(num2str(colLabels(:)));
+        elseif strcmpi(pname, 'columnLabels') || strcmpi(pname, 'headerRow')
+            headerRow = pval;
+            if isnumeric(headerRow)
+                headerRow = cellstr(num2str(headerRow(:)));
             end
         elseif strcmpi(pname, 'alignment')
             okAlignment = {'l', 'c', 'r'};
@@ -111,7 +111,7 @@ function table = matrix2latex(matrix, filename, varargin)
         elseif strcmpi(pname, 'caption')
             caption = pval;
         elseif strcmpi(pname, 'label')
-            label = pval;
+            label = ['tab:', pval];
         elseif strcmpi(pname, 'transpose')
             matrix = matrix';
         else
@@ -125,7 +125,7 @@ function table = matrix2latex(matrix, filename, varargin)
         end
         %fid = fopen(filename, 'w');
         if isempty(label)
-            label = filename(1:end-4);
+            label = ['tab:', filename(1:end-4)];
         end
         %else
         %fid = 1; % fprintf will print to standard output
@@ -180,29 +180,29 @@ function table = matrix2latex(matrix, filename, varargin)
         %table = [table, sprintf('\\hline\n')];
         table = [table, sprintf('\n\t\t\t\\toprule\n')];
         
-        if(~isempty(colLabels))
+        if(~isempty(headerRow))
             if(~isempty(rowLabels))
                 table = [table, sprintf('&')];
             end
             table = [table, sprintf('\t\t\t')];
             for w=1:width-1
-                table = [table, sprintf('$%s$& ', colLabels{w})];
-                %\textbf{%s}&', colLabels{w})];
+                table = [table, sprintf('%s & ', headerRow{w})];
+                %\textbf{%s}&', headerRow{w})];
             end
-            table = [table, sprintf('$%s$\\\\\n', colLabels{width})];
+            table = [table, sprintf('%s\\\\\n', headerRow{width})];
             table = [table, sprintf('\t\t\t\\midrule\n')];
         end
         
         for h=1:height
             table = [table, sprintf('\t\t\t')];
             if(~isempty(rowLabels))
-                %table = [table, sprintf('$%s$&', rowLabels{h})];
+                %table = [table, sprintf('%s&', rowLabels{h})];
                 table = [table, sprintf('\\text{%s}&', rowLabels{h})];
             end
             for w=1:width-1
-                table = [table, sprintf('$%s$ & ', matrix{h, w})];
+                table = [table, sprintf('%s & ', matrix{h, w})];
             end
-            table = [table, sprintf('$%s$\\\\\n', matrix{h, width})];
+            table = [table, sprintf('%s\\\\\n', matrix{h, width})];
         end
         table = [table, sprintf('\t\t\t\\bottomrule\n')];
 
@@ -214,6 +214,8 @@ function table = matrix2latex(matrix, filename, varargin)
             table = [table, sprintf('\\end{%s}', textsize)];
         end
 
-        %if fid ~= 1 % if file has been opened
-        %fclose(fid)];
-        %end
+        if ~isempty(filename) % if we should write to file
+            fid = fopen(filename, 'w');
+            fwrite(fid, table);
+            fclose(fid);
+        end
