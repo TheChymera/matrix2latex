@@ -70,6 +70,7 @@ function table = matrix2latex(matrix, filename, varargin)
     textsize = [];
     caption = [];
     label = [];
+    environment = {'table', 'center', 'tabular'};
 
     for j=1:2:(nargin-2)
         pname = varargin{j};
@@ -114,6 +115,8 @@ function table = matrix2latex(matrix, filename, varargin)
             label = ['tab:', pval];
         elseif strcmpi(pname, 'transpose')
             matrix = matrix';
+        elseif strcmpi(pname, 'environment')
+            environment = pval;
         else
             error('%s: unknown parameter name %s', mfilename, pname)
         end
@@ -159,23 +162,43 @@ function table = matrix2latex(matrix, filename, varargin)
             table = [table, sprintf('\\begin{%s}\n', textsize)];
         end
 
-        table = [table, sprintf('\\begin{table}[ht]\n')];
-        table = [table, sprintf('\t\\begin{center}\n')];
-        if ~isempty(caption)
-            table = [table, sprintf('\t\\caption{%s}\n', caption)];
-        end
-        if ~isempty(label)
-            table = [table, sprintf('\t\\label{%s}\n', label)];
-        end
-        table = [table, sprintf('\t\t\\begin{tabular}{')];
+        for ix = 1:length(environment)
+            e = environment{ix};
+            table = [table, sprintf(repmat('\t',1,ix-1))];
+            if strcmpi(e, 'table')
+                table = [table, sprintf('\\begin{%s}[ht]\n', e)];
+            elseif strcmpi(e, 'tabular')
+                table = [table, sprintf('\\begin{%s}{', e)];
 
-        if(~isempty(rowLabels))
-            table = [table, sprintf('c')];
+                if(~isempty(rowLabels))
+                    table = [table, sprintf('c')];
+                end
+                for i=1:width
+                    table = [table, sprintf('%c', alignment)];
+                end
+                table = [table, sprintf('}')];
+            elseif strcmpi(e, 'center')
+                table = [table, sprintf('\\begin{%s}\n', e)];
+                if ~isempty(caption)
+                    table = [table, sprintf('\t\\caption{%s}\n', caption)];
+                end
+                if ~isempty(label)
+                    table = [table, sprintf('\t\\label{%s}\n', label)];
+                end
+            else
+                table = [table, sprintf('\\begin{%s}\n', e)];
+            end
         end
-        for i=1:width
-            table = [table, sprintf('%c', alignment)];
-        end
-        table = [table, sprintf('}')];
+        %table = [table, sprintf('\\begin{table}[ht]\n')];
+        %table = [table, sprintf('\t\\begin{center}\n')];
+        %if ~isempty(caption)
+        %    table = [table, sprintf('\t\\caption{%s}\n', caption)];
+        %end
+        %if ~isempty(label)
+        %    table = [table, sprintf('\t\\label{%s}\n', label)];
+        %end
+        %table = [table, sprintf('\t\t\\begin{tabular}{')];
+
         
         %table = [table, sprintf('\\hline\n')];
         table = [table, sprintf('\n\t\t\t\\toprule\n')];
