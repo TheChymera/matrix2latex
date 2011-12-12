@@ -20,7 +20,7 @@ m = [1, 2, 3; 4, 5, 6];
 
 function assertEqual(output, name)
     fid = fopen('../common/test.tex');
-    tline = fgetl(fid)
+    tline = fgetl(fid);
     found = false;
     answer = '';
     output = textscan(output, '%s', 'delimiter', '\n');
@@ -42,30 +42,24 @@ function assertEqual(output, name)
             end
             ix = ix + 1;
         end
-        tline = fgetl(fid)             % prepare next loop
+        tline = fgetl(fid);             % prepare next loop
     end
-    fclose(fid)
+    fclose(fid);
 end
+
 function test_simple()
-    t = matrix2latex(m, '')
+    t = matrix2latex(m, '');
     assertEqual(t, 'simple');
 end
 test_simple()
-%{
-function test_transpose1():
-    t = matrix2latex(m, transpose=True)
-    assertEqual(t, r"""\begin{table}[ht]
-	\begin{center}
-		\begin{tabular}{cc}
-		\toprule
-			$1$ & $4$\\
-			$2$ & $5$\\
-			$3$ & $6$\\
-		\bottomrule
-		\end{tabular}
-	\end{center}
-        \end{table}""")
 
+
+function test_transpose1()
+    t = matrix2latex(m, '', 'transpose', true);
+    assertEqual(t, 'transpose1');
+end
+test_transpose1()
+%{
 function test_transpose2():
     cl = ["a", "b"]
     t = matrix2latex(m, transpose=True, rowLabels=cl)
