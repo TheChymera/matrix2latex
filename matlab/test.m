@@ -80,11 +80,13 @@ function test_environment1()
     assertEqual(t, 'environment1');
 end
 test_environment1()
-%{ 
-function test_environment2():
-    t = matrix2latex(m, None, 'foo', 'bar')
-    assertEqual(t, 'environment2')
-   
+
+function test_environment2()
+    t = matrix2latex(m, '', 'environment', {'foo', 'bar'});
+    assertEqual(t, 'environment2');
+end
+test_environment2()
+%{    
 function test_labels1():
     cl = ['a', 'b']
     rl = ['c', 'd', 'e']

@@ -176,7 +176,9 @@ function table = matrix2latex(matrix, filename, varargin)
                 for i=1:width
                     table = [table, sprintf('%c', alignment)];
                 end
-                table = [table, sprintf('}')];
+                table = [table, sprintf('}\n')];
+                table = [table, sprintf(repmat('\t',1,ix-1))];
+                table = [table, sprintf('\\toprule\n')];
             elseif strcmpi(e, 'center')
                 table = [table, sprintf('\\begin{%s}\n', e)];
                 if ~isempty(caption)
@@ -189,19 +191,6 @@ function table = matrix2latex(matrix, filename, varargin)
                 table = [table, sprintf('\\begin{%s}\n', e)];
             end
         end
-        %table = [table, sprintf('\\begin{table}[ht]\n')];
-        %table = [table, sprintf('\t\\begin{center}\n')];
-        %if ~isempty(caption)
-        %    table = [table, sprintf('\t\\caption{%s}\n', caption)];
-        %end
-        %if ~isempty(label)
-        %    table = [table, sprintf('\t\\label{%s}\n', label)];
-        %end
-        %table = [table, sprintf('\t\t\\begin{tabular}{')];
-
-        
-        %table = [table, sprintf('\\hline\n')];
-        table = [table, sprintf('\n\t\t\t\\toprule\n')];
         
         if(~isempty(headerRow))
             if(~isempty(rowLabels))
@@ -227,12 +216,17 @@ function table = matrix2latex(matrix, filename, varargin)
             end
             table = [table, sprintf('%s\\\\\n', matrix{h, width})];
         end
-        table = [table, sprintf('\t\t\t\\bottomrule\n')];
 
-        table = [table, sprintf('\t\t\\end{tabular}\n')];
-        table = [table, sprintf('\t\\end{center}\n')];
-        table = [table, sprintf('\\end{table}\n')];
-        
+        for ix = length(environment):-1:1
+            e = environment{ix};
+            table = [table, sprintf(repmat('\t',1,ix-1))];
+            if strcmpi(e, 'tabular')
+                table = [table, sprintf(repmat('\t',1,ix-1))];
+                table = [table, sprintf('\\bottomrule\n')];
+            end
+            table = [table, sprintf('\\end{%s}\n', e)];
+        end
+
         if(~isempty(textsize))
             table = [table, sprintf('\\end{%s}', textsize)];
         end
