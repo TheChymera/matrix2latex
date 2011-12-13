@@ -163,57 +163,64 @@ function test_alignment4()
     t = matrix2latex(m, '', 'alignment', 'rcl', 'headerColumn', {'a', 'b'});
     assertLine(t, '\begin{tabular}{rrcl}', 3);
 end
-%{
+test_alignment4()
+
 function test_alignment5()
-    t = matrix2latex(m, alignment='r|c|l', headerColumn={'a', 'b'})
-    t = t.split('\n')[2].strip()        % pick out only third line
-    assert t == r'\begin{tabular}{rr|c|l}', t
+    t = matrix2latex(m, '', 'alignment', 'r|c|l', 'headerColumn', {'a', 'b'});
+    assertLine(t, '\begin{tabular}{rr|c|l}', 3);
+end
+test_alignment5()
 
 function test_alignment_withoutTable()
-    t = matrix2latex(m, None, 'align*', 'pmatrix', format='$%.2f$', alignment='c')
-    assertEqual(t, 'alignment_withoutTable')
+    t = matrix2latex(m, '', 'environment', {'align*', 'pmatrix'}, ...
+                     'format', '$%.2f$', 'alignment', 'c');
+    assertEqual(t, 'alignment_withoutTable');
+end
+test_alignment_withoutTable()
 
-function test_numpy()
-    try:
-        import numpy as np
-        for a in (np.matrix, np.array):
-            t = matrix2latex(a(m), None, 'align*', 'pmatrix')
-            assertEqual(t, 'numpy')
-    % Systems without numpy raises import error,
-    % pypy raises attribute since matrix is not implemented, this is ok.
-    except (ImportError, AttributeError):
-        pass
+% numpy, not an issue
+%function test_numpy()
+%    try:
+%        import numpy as np
+%        for a in (np.matrix, np.array):
+%            t = matrix2latex(a(m), None, 'align*', 'pmatrix')
+%            assertEqual(t, 'numpy')
+%    % Systems without numpy raises import error,
+%    % pypy raises attribute since matrix is not implemented, this is ok.
+%    except (ImportError, AttributeError):
+%        pass
 
 function test_string()
-    t = matrix2latex([['a', 'b', '1'], ['1', '2', '3']], format='%s')
-    assertEqual(t, 'string')
+    t = matrix2latex({'a', 'b', '1'; '1', '2', '3'}, '', 'format', '%s');
+    assertEqual(t, 'string');
+end
+test_string()
 
 function test_none()
-    m = [[1,None,None], [2,2,1], [2,1,2]]
-    t = matrix2latex(m)
-    assertEqual(t, 'none')
+    m = [1,nan,nan; 2,2,1; 2,1,2];
+    t = matrix2latex(m, '');
+    assertEqual(t, 'none');
     
-    m2 = [[1,float('NaN'),float('NaN')], [2,2,1], [2,1,2]]
-    t2 = matrix2latex(m)    
-    assertEqual(t2, 'none')
+    t3 = matrix2latex(m, '', 'format', '$%d$');
+    assertEqual(t3, 'none');
+end
+test_none()
 
-    t3 = matrix2latex(m, format='$%d$')
-    assertEqual(t3, 'none')
-
-function test_infty1()
-    try:
-        import numpy as np
-        m = [[1,np.inf,float('inf')], [2,2,float('-inf')], [-np.inf,1,2]]
-        t = matrix2latex(m)
-        assertEqual(t, 'infty1')
-    except (ImportError, AttributeError):
-        pass
+% numpy, not an issue
+%function test_infty1()
+%    try:
+%        import numpy as np
+%        m = [[1,np.inf,float('inf')], [2,2,float('-inf')], [-np.inf,1,2]]
+%        t = matrix2latex(m)
+%        assertEqual(t, 'infty1')
+%    except (ImportError, AttributeError):
+%        pass
 
 function test_infty2()
     % same as above but without numpy
-    inf = float('inf')
-    m = [[1,inf,float('inf')], [2,2,float('-inf')], [-inf,1,2]]
-    t = matrix2latex(m)
-    assertEqual(t, 'infty2')
-    %}
+    m = [1,inf, inf;, 2,2, -inf; -inf,1,2];
+    t = matrix2latex(m, '');
+    assertEqual(t, 'infty2');
+end
+test_infty2()
 end
