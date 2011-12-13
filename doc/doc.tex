@@ -18,7 +18,7 @@
 
 \begin{document}
 \maketitle
-Takes a python matrix or nested list and converts to a LaTeX table or matrix.
+Takes a python or matlab matrix or nested list and converts to a LaTeX table or matrix.
 Author: ob@cakebox.net, inspired by the work of koehler@in.tum.de who has written
 a similar package for matlab
 \url{http://www.mathworks.com/matlabcentral/fileexchange/4894-matrix2latex}
@@ -37,11 +37,14 @@ foundation. For further reading see:
 \end{itemize}
 
 \section{Compatibility}
+\subsection{Python}
 Table \ref{tab:compatibleTable} reflects the python versions currently installed
 on my system\footnote{Mac OS X 10.6, python installed trough macport.}
 and if the testsuit for matrix2latex passes. If you find a python version where
 it doesn't work let me know.
 \input{compatibleTable}
+\subsection{Matlab}
+For the moment it is only tested with matlab R2009b.
 
 \section{Installation}
 The following packages and definitions are recommended in the latex preamble 
@@ -54,6 +57,7 @@ The following packages and definitions are recommended in the latex preamble
 \begin{document}
 ...
 \end{verbatim}
+\subsection{Python}
 To use the code place the folder matrix2latex/ in our \verb!PYTHONPATH!.
 Your current working directory is always on your \verb!PYTHONPATH!.
 
@@ -62,10 +66,32 @@ Hint: on unix systems do: \\
 to see a list of locations. Other users: ask google about \verb!PYTHONPATH!
 for your operation system.
 
+\subsection{Matlab}
+Place the matlab files in our \verb!MATLABPATH!.
+Your current working directory is always on your \verb!MATLABPATH!.
+
+See the following article from mathworks
+\url{http://www.mathworks.se/help/techdoc/ref/path.html}.
 \section{Arguments}
+The following is for the time being only written for python users. The matlab version should be identical
+in behavior but has slightly different syntax. Examples:
+\begin{lstlisting}[language=matlab]
+% filename == '' will not write to file. 
+% Filename must always be given
+m = [1, 1; 2, 4; 3, 9];
+t = matrix2latex(m, '');
+% keyword arguments are given like this
+% instead of transpose = True
+t = matrix2latex(m, '', 'transpose', true);
+% environment is a keyword argument
+t = matrix2latex(m, '', 'environment', {'align*', 'pmatrix'});
+% if you want to pass in strings you must use cell array
+m = {'a', 'b', '1'; '1', '2', '3'}
+t = matrix2latex(m, '', 'format', '%s');
+\end{lstlisting}
   
 \subsection{matrix}
-  A numpy matrix or a (nested) list. TODO: how abstract input can this thing actually handle?
+  Python: A numpy matrix or a (nested) list. TODO: how abstract input can this thing actually handle?
 
 \subsection{Filename}
   File to place output, extension .tex is added automatically. File can be included in a LaTeX
