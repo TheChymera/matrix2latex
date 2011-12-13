@@ -28,7 +28,7 @@ function assertLine(output, b, lineNr)
     end
 end
 function assertEqual(output, name)
-    fid = fopen('../common/test.tex');
+    fid = fopen('test.tex');
     tline = fgetl(fid);
     found = false;
     answer = '';
