@@ -27,7 +27,6 @@ for line in f:
     else:
         answers[name] += line
 
-print answers
 def loopTwoLists(x, y):
     for ix in range(max([len(x), len(y)])):
         try: a = x[ix].strip()
