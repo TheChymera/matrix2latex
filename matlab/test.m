@@ -18,6 +18,15 @@ function test()
 
 m = [1, 2, 3; 4, 5, 6];
 
+function assertLine(output, b, lineNr)
+    output = textscan(output, '%s', 'delimiter', '\n');
+    a = output{1}{lineNr};
+    a = strtrim(a);
+    b = strtrim(b);
+    if ~strcmp(a, b)
+        error('Invalid! "%s" ~= "%s"', a, b)
+    end
+end
 function assertEqual(output, name)
     fid = fopen('../common/test.tex');
     tline = fgetl(fid);
@@ -120,38 +129,43 @@ function test_labels4()
     assertEqual(t, 'labels4');
 end
 test_labels4()
-%{    
+
 function test_alignment1()
-    t = matrix2latex(m, alignment='r')
-    t = t.split('\n')[2].strip()
-    assert t == r'\begin{tabular}{rrr}', t
+    t = matrix2latex(m, '', 'alignment', 'r');
+    assertLine(t, '\begin{tabular}{rrr}', 3);
+end
+test_alignment1()
 
 function test_alignment2()
-    cl = {'a', 'b'}
-    rl = {'names', 'c', 'd', 'e'}
-    t = matrix2latex(m, alignment='r', columnLabels=cl, rowLabels = rl)
-    t = t.split('\n')[2].strip()
-    assert t == r'\begin{tabular}{rrrr}', t
+    cl = {'a', 'b'};
+    rl = {'names', 'c', 'd', 'e'};
+    t = matrix2latex(m, '', 'alignment', 'r', 'headerColumn', cl, 'headerRow', rl);
+    assertLine(t, '\begin{tabular}{rrrr}', 3);
+end
+test_alignment2()
 
 function test_alignment2b()
-    rl = {'a', 'b'}
-    cl = {'names', 'c', 'd', 'e'}
-    t = matrix2latex(m, alignment='r', columnLabels=cl, rowLabels = rl, transpose=True)
-    t = t.split('\n')[2].strip()
-    assert t == r'\begin{tabular}{rrr}', t
+    rl = {'a', 'b'};
+    cl = {'names', 'c', 'd', 'e'};
+    t = matrix2latex(m, '', 'alignment', 'r', 'headerColumn', cl, 'headerRow', ...
+                     rl, 'transpose', true);
+    assertLine(t, '\begin{tabular}{rrr}', 3);
+end
+test_alignment2b()
 
 function test_alignment3()
-    t = matrix2latex(m, alignment='rcl')
-    t = t.split('\n')[2].strip()
-    assert t == r'\begin{tabular}{rcl}', t
+    t = matrix2latex(m, '', 'alignment', 'rcl');
+    assertLine(t, '\begin{tabular}{rcl}', 3);
+end
+test_alignment3()
 
 function test_alignment4()
-    t = matrix2latex(m, alignment='rcl', columnLabels={'a', 'b'})
-    t = t.split('\n')[2].strip()        % pick out only third line
-    assert t == r'\begin{tabular}{rrcl}', t
-
+    t = matrix2latex(m, '', 'alignment', 'rcl', 'headerColumn', {'a', 'b'});
+    assertLine(t, '\begin{tabular}{rrcl}', 3);
+end
+%{
 function test_alignment5()
-    t = matrix2latex(m, alignment='r|c|l', columnLabels={'a', 'b'})
+    t = matrix2latex(m, alignment='r|c|l', headerColumn={'a', 'b'})
     t = t.split('\n')[2].strip()        % pick out only third line
     assert t == r'\begin{tabular}{rr|c|l}', t
 
