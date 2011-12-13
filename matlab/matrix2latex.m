@@ -152,7 +152,13 @@ function table = matrix2latex(matrix, filename, varargin)
             matrix = num2cell(matrix);
             for h=1:height
                 for w=1:width
-                    if(~isempty(format))
+                    if isnan(matrix{h, w})
+                        matrix{h, w} = '-';
+                    elseif matrix{h, w} == inf
+                        matrix{h, w} = '$\infty$';
+                    elseif matrix{h, w} == -inf
+                        matrix{h, w} = '$-\infty$';
+                    elseif(~isempty(format))
                         if iscellstr(format) % if formatColumns
                             matrix{h, w} = num2str(matrix{h, w}, format{w});
                         end
@@ -214,7 +220,7 @@ function table = matrix2latex(matrix, filename, varargin)
         end
         
         for h=1:height
-            table = [table, sprintf('\t\t\t')];
+            table = [table, sprintf(repmat('\t',1,height))];
             if(~isempty(headerColumn))
                 table = [table, sprintf('%s & ', headerColumn{h})];
             end
