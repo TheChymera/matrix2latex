@@ -95,27 +95,32 @@ function test_labels1()
 end
 test_labels1()
 
-%{
 function test_labels2()
-    # only difference from above test is names, note how above function
-    # handles having too few rowLabels
-    cl = {'a', 'b'}
-    rl = {'names', 'c', 'd', 'e'}
-    t = matrix2latex(m, None, columnLabels=cl, rowLabels=rl)
-    assertEqual(t, 'labels2')
+    % only difference from above test is 'names', note how above function
+    % handles having too few rowLabels
+    cl = {'a', 'b'};
+    rl = {'names', 'c', 'd', 'e'};
+    t = matrix2latex(m, '', 'headerRow', rl, 'headerColumn', cl);
+    assertEqual(t, 'labels2');
+end
+test_labels2()
 
-function test_labels3()
-    # pass in environment as dictionary
-    e = dict()
-    e['columnLabels'] = ['a', 'b']
-    e['rowLabels'] = ['names', 'c', 'd', 'e']
-    t = matrix2latex(m, None, **e)
-    assertEqual(t, 'labels3')
+% Not possible in matlab
+%function test_labels3()
+%    % pass in environment as dictionary
+%    e = dict()
+%    e['columnLabels'] = ['a', 'b']
+%    e['rowLabels'] = ['names', 'c', 'd', 'e']
+%    t = matrix2latex(m, None, **e)
+%    assertEqual(t, 'labels3')
+%test_labels3()
 
 function test_labels4()
-    t = matrix2latex(m, None, caption='Hello', label='la')
-    assertEqual(t, 'labels4')
-    
+    t = matrix2latex(m, '', 'caption', 'Hello', 'label', 'la');
+    assertEqual(t, 'labels4');
+end
+test_labels4()
+%{    
 function test_alignment1()
     t = matrix2latex(m, alignment='r')
     t = t.split('\n')[2].strip()
@@ -142,12 +147,12 @@ function test_alignment3()
 
 function test_alignment4()
     t = matrix2latex(m, alignment='rcl', columnLabels={'a', 'b'})
-    t = t.split('\n')[2].strip()        # pick out only third line
+    t = t.split('\n')[2].strip()        % pick out only third line
     assert t == r'\begin{tabular}{rrcl}', t
 
 function test_alignment5()
     t = matrix2latex(m, alignment='r|c|l', columnLabels={'a', 'b'})
-    t = t.split('\n')[2].strip()        # pick out only third line
+    t = t.split('\n')[2].strip()        % pick out only third line
     assert t == r'\begin{tabular}{rr|c|l}', t
 
 function test_alignment_withoutTable()
@@ -160,8 +165,8 @@ function test_numpy()
         for a in (np.matrix, np.array):
             t = matrix2latex(a(m), None, 'align*', 'pmatrix')
             assertEqual(t, 'numpy')
-    # Systems without numpy raises import error,
-    # pypy raises attribute since matrix is not implemented, this is ok.
+    % Systems without numpy raises import error,
+    % pypy raises attribute since matrix is not implemented, this is ok.
     except (ImportError, AttributeError):
         pass
 
@@ -191,7 +196,7 @@ function test_infty1()
         pass
 
 function test_infty2()
-    # same as above but without numpy
+    % same as above but without numpy
     inf = float('inf')
     m = [[1,inf,float('inf')], [2,2,float('-inf')], [-inf,1,2]]
     t = matrix2latex(m)

@@ -199,14 +199,21 @@ function table = matrix2latex(matrix, filename, varargin)
         
         if(~isempty(headerRow))
             table = [table, sprintf('\t\t\t')];
-            if(~isempty(headerColumn))
+            if ~isempty(headerColumn) && ~isempty(headerRow) && ...
+                    length(headerRow) == width
                 table = [table, sprintf('& ')];
             end
-            for w=1:width-1
+            for w=1:length(headerRow)-1
                 table = [table, sprintf('%s & ', headerRow{w})];
                 %\textbf{%s}&', headerRow{w})];
             end
-            table = [table, sprintf('%s\\\\\n', headerRow{width})];
+            if width ~= length(headerRow)
+                table = [table, sprintf('%s\\\\\n', ...
+                                        headerRow{width+1})];
+            else
+                table = [table, sprintf('%s\\\\\n', ...
+                                        headerRow{width})];
+            end
             table = [table, sprintf('\t\t\t\\midrule\n')];
         end
         
@@ -225,8 +232,8 @@ function table = matrix2latex(matrix, filename, varargin)
             e = environment{ix};
             table = [table, sprintf(repmat('\t',1,ix-1))];
             if strcmpi(e, 'tabular')
-                table = [table, sprintf(repmat('\t',1,ix-1))];
                 table = [table, sprintf('\\bottomrule\n')];
+                table = [table, sprintf(repmat('\t',1,ix-1))];
             end
             table = [table, sprintf('\\end{%s}\n', e)];
         end
