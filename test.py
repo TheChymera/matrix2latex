@@ -18,7 +18,7 @@ along with matrix2latex. If not, see <http://www.gnu.org/licenses/>.
 from matrix2latex import matrix2latex
 m = [[1, 2, 3], [4, 5, 6]]
 
-f = open('../common/test.tex')
+f = open('test.tex')
 answers = dict()
 for line in f:
     if line.startswith('%%%'):
