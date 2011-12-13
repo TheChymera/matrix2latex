@@ -91,16 +91,12 @@ function table = matrix2latex(matrix, filename, varargin)
                 headerRow = cellstr(num2str(headerRow(:)));
             end
         elseif strcmpi(pname, 'alignment')
-            okAlignment = {'l', 'c', 'r'};
-            if ~isempty(strmatch(pval, okAlignment, 'exact'))
-                if length(pval) == 1
-                    alignment = repmat(pval, 1, width);
-                else
-                    alignment = pval;
-                end
+            %okAlignment = {'l', 'c', 'r'};
+            %if ~isempty(strmatch(pval, okAlignment, 'exact'))
+            if length(pval) == 1
+                alignment = repmat(pval, 1, width);
             else
-                alignment = repmat('c', 1, width);
-                warning('%s: Unkown alignment %s. Using c', mfilename, pval);
+                alignment = pval;
             end
         elseif strcmpi(pname, 'format')
             format = lower(pval);
