@@ -26,6 +26,7 @@ def assertKeyAlignment(value, n):
         else:
             counter[v] = 1
     length = counter['c'] + counter['l'] + counter['r']
+    return length
 #    assert length == n,\
 #           "Error: %g of %g alignments given '%s'\n" % (length, n, value)
 
