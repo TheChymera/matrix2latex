@@ -90,16 +90,16 @@ Example
 \end{lstlisting}
 
 **keywords
-rowLabels
+headerRow
     A row at the top used to label the columns.
     Must be a list of strings.
 
 Using the same example from above we can add row labels
 
 rl = ['$x$', '$x^2$']
-t = matrix2latex(m, rowLabels=rl)
+t = matrix2latex(m, headerRow=rl)
 
-columnLabels
+headerColumn
     A column used to label the rows.
     Must be a list of strings
 
@@ -107,16 +107,16 @@ transpose
 Flips the table around in case you messed up. Equivalent to
 matrix2latex(m.H, ...)
 if m is a numpy matrix.
-Note the use of columnLabels in the example.
+Note the use of headerColumn in the example.
 cl = ['$x$', '$x^2$']
-t = matrix2latex(m, columnLabels=cl, transpose=True)
+t = matrix2latex(m, headerColumn=cl, transpose=True)
 
 caption
     Use to define a caption for your table.
     Inserts \verb!\caption! after \verb!\end{tabular}!.
 Always use informative captions!
 
-t = matrix2latex(m, rowLabels=rl, 
+t = matrix2latex(m, headerRow=rl, 
                  caption='Nice table!')
 
 label
@@ -126,7 +126,7 @@ Default is filename without extension.
 We can use label='niceTable' but if we save it to file
 the default label is the filename, so:
 
-matrix2latex(m, 'niceTable', rowLabels=rl, 
+matrix2latex(m, 'niceTable', headerRow=rl, 
                  caption='Nice table!')
 
 can be referenced by \verb!\ref{tab:niceTable}!. Table \ref{tab:niceTable}
@@ -138,7 +138,7 @@ Printf syntax format, e.g. $%.2f$. Default is $%g$.
 
 m = [[1, 2, 3], [1, 1/2, 1/3]]
 rl = ['$x$', '$1/x$']
-t = matrix2latex(m, rowLabels=rl,
+t = matrix2latex(m, headerRow=rl,
                  format='%.2f')
 
 formatColumn
@@ -148,7 +148,7 @@ Format i is then used for column i.
 This is useful if some of your data should be printed with more significant figures
 than other parts
 
-t = matrix2latex(m, rowLabels=rl,
+t = matrix2latex(m, headerRow=rl,
                  formatColumn=['%g', '%.2f'])
 
 alignment
@@ -201,8 +201,8 @@ of some advanced table techniques.
     formatColumn = None
     alignment = "c"*n               # cccc
 
-    rowLabels = None
-    columnLabels = None
+    headerRow = None
+    headerColumn = None
     caption = None
     label = None
 
@@ -231,13 +231,12 @@ of some advanced table techniques.
             else:
                 alignment = value
             assertKeyAlignment(alignment, n)
-        elif key == "rowLabels":
-            assertListString(value, "rowLabels")
-            rowLabels = list(value)
-        elif key == "columnLabels":
-            assertListString(value, "columnLabels")
-            columnLabels = list(value)
-            alignment = "r" + alignment
+        elif key == "headerRow":
+            assertListString(value, "headerRow")
+            headerRow = list(value)
+        elif key == "headerColumn":
+            assertListString(value, "headerColumn")
+            headerColumn = list(value)
         elif key == "caption":
             assertStr(value, "caption")
             caption = value
@@ -261,6 +260,9 @@ of some advanced table techniques.
         else:
             sys.stderr.write("Error: key not recognized '%s'\n" % key)
             sys.exit(2)
+            
+    if "headerColumn" in keywords:
+        alignment = "r" + alignment
 
     # Environments
     if len(environments) == 0:          # no environment give, assume table
@@ -271,8 +273,8 @@ of some advanced table techniques.
         for j in range(0, n):
             formatColumn.append(formatNumber)
 
-    if columnLabels != None and rowLabels != None and len(rowLabels) == n:
-        rowLabels.insert(0, "")
+    if headerColumn != None and headerRow != None and len(headerRow) == n:
+        headerRow.insert(0, "")
 
     # 
     # Set outputFile
@@ -316,11 +318,11 @@ of some advanced table techniques.
     # 
 
     # Row labels
-    if rowLabels != None:
+    if headerRow != None:
         f.write("\t"*tabs)
-        for j in range(0, len(rowLabels)):
-            f.write(r"%s" % rowLabels[j])
-            if j != len(rowLabels)-1:
+        for j in range(0, len(headerRow)):
+            f.write(r"%s" % headerRow[j])
+            if j != len(headerRow)-1:
                 f.write(" & ")
             else:
                 f.write(r"\\"+ "\n")
@@ -333,8 +335,8 @@ of some advanced table techniques.
         for j in range(0, n):
 
             if j == 0:                  # first row
-                if columnLabels != None:
-                    f.write("%s & " % columnLabels[i])
+                if headerColumn != None:
+                    f.write("%s & " % headerColumn[i])
                     
             if '%s' not in formatColumn[j]:
                 try:
@@ -393,9 +395,9 @@ if __name__ == '__main__':
     cl = ["a", "b", "c"]
     rl = ['d', 'e', 'f', 'g']
     print(matrix2latex(m, None, format="$%.2g$", alignment='lcr',
-                 columnLabels=cl,caption="test", label="2", rowLabels=rl))
+                 headerColumn=cl,caption="test", label="2", headerRow=rl))
     print(matrix2latex(m, None, "align*", "pmatrix", format="%g", alignment='c'))
-    print(matrix2latex(m, None, columnLabels=cl, caption="Hello", label="la"))
+    print(matrix2latex(m, None, headerColumn=cl, caption="Hello", label="la"))
     print(matrix2latex([['a', 'b', '1'], ['1', '2', '3']], format='%s'))
 
     m = [[1,None,None], [2,2,1], [2,1,2]]

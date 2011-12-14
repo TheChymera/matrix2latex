@@ -48,6 +48,6 @@ if call("pypy-c" + " -c 'pass'", shell=True, stderr=file(os.devnull, "w")) == 0:
 
 c = "Does 'python test.py' return 0?"
 compatibleTable = matrix2latex(table, 'doc/compatibleTable',
-                               columnLabels=cl, rowLabels=['Compatible'],
+                               headerColumn=cl, headerRow=['Compatible'],
                                caption=c)
 print compatibleTable

@@ -61,7 +61,7 @@ def test_transpose1():
 
 def test_transpose2():
     cl = ["a", "b"]
-    t = matrix2latex(m, transpose=True, rowLabels=cl)
+    t = matrix2latex(m, transpose=True, headerRow=cl)
     assertEqual(t, "transpose2")
 
 def test_file():
@@ -82,22 +82,22 @@ def test_environment2():
 def test_labels1():
     cl = ["a", "b"]
     rl = ["c", "d", "e"]
-    t = matrix2latex(m, None, columnLabels=cl, rowLabels=rl)
+    t = matrix2latex(m, None, headerColumn=cl, headerRow=rl)
     assertEqual(t, "labels1")
 
 def test_labels2():
     # only difference from above test is names, note how above function
-    # handles having too few rowLabels
+    # handles having too few headerRow
     cl = ["a", "b"]
     rl = ["names", "c", "d", "e"]
-    t = matrix2latex(m, None, columnLabels=cl, rowLabels=rl)
+    t = matrix2latex(m, None, headerColumn=cl, headerRow=rl)
     assertEqual(t, "labels2")
 
 def test_labels3():
     # pass in environment as dictionary
     e = dict()
-    e['columnLabels'] = ["a", "b"]
-    e['rowLabels'] = ["names", "c", "d", "e"]
+    e['headerColumn'] = ["a", "b"]
+    e['headerRow'] = ["names", "c", "d", "e"]
     t = matrix2latex(m, None, **e)
     assertEqual(t, "labels3")
 
@@ -113,14 +113,14 @@ def test_alignment1():
 def test_alignment2():
     cl = ["a", "b"]
     rl = ["names", "c", "d", "e"]
-    t = matrix2latex(m, alignment='r', columnLabels=cl, rowLabels = rl)
+    t = matrix2latex(m, alignment='r', headerColumn=cl, headerRow = rl)
     t = t.split('\n')[2].strip()
     assert t == r"\begin{tabular}{rrrr}", t
 
 def test_alignment2b():
     rl = ["a", "b"]
     cl = ["names", "c", "d", "e"]
-    t = matrix2latex(m, alignment='r', columnLabels=cl, rowLabels = rl, transpose=True)
+    t = matrix2latex(m, alignment='r', headerColumn=cl, headerRow = rl, transpose=True)
     t = t.split('\n')[2].strip()
     assert t == r"\begin{tabular}{rrr}", t
 
@@ -130,12 +130,12 @@ def test_alignment3():
     assert t == r"\begin{tabular}{rcl}", t
 
 def test_alignment4():
-    t = matrix2latex(m, alignment='rcl', columnLabels=["a", "b"])
+    t = matrix2latex(m, alignment='rcl', headerColumn=["a", "b"])
     t = t.split('\n')[2].strip()        # pick out only third line
     assert t == r"\begin{tabular}{rrcl}", t
 
 def test_alignment5():
-    t = matrix2latex(m, alignment='r|c|l', columnLabels=["a", "b"])
+    t = matrix2latex(m, alignment='r|c|l', headerColumn=["a", "b"])
     t = t.split('\n')[2].strip()        # pick out only third line
     assert t == r"\begin{tabular}{rr|c|l}", t
 
