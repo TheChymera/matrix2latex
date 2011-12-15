@@ -72,10 +72,28 @@ Your current working directory is always on your \verb!MATLABPATH!.
 
 See the following article from mathworks
 \url{http://www.mathworks.se/help/techdoc/ref/path.html}.
-\section{Arguments}
-The following is for the time being only written for python users. The matlab version should be identical
+\section{Usage}
+The python version should be called like this
+\begin{sagesilent}
+from matrix2latex import *
+matrix=[]
+filename=None
+environment = list()
+keywords = dict()
+\end{sagesilent}
+\begin{sageblock}
+matrix2latex(matrix, filename, *environment, **keywords)
+\end{sageblock}
+
+As matlab does not support keywords, something similar to the environment must be used
+\begin{lstlisting}[language=matlab, basicstyle=\small\rmfamily, stringstyle=\mdseries]
+matrix2latex(matrix, filename, varargin)
+\end{lstlisting}
+Note the difference in font used to separate the two languages.
+
+Most of the examples bellow are given in python code only. The matlab version should be identical
 in behavior but has slightly different syntax. Examples:
-\begin{lstlisting}[language=matlab]
+\begin{lstlisting}[language=matlab, basicstyle=\small\rmfamily]
 % filename == '' will not write to file. 
 % Filename must always be given
 m = [1, 1; 2, 4; 3, 9];
@@ -93,10 +111,12 @@ t = matrix2latex(m, '', 'format', '%s');
 \subsection{matrix}
   Python: A numpy matrix or a (nested) list. TODO: how abstract input can this thing actually handle?
 
+Matlab: Matrix or cell array.
+
 \subsection{Filename}
   File to place output, extension .tex is added automatically. File can be included in a LaTeX
   document by \verb!\input{filename}!. Output will always be returned in a string. If filename is None
-  or not a string it is ignored.
+  not a string or empty string it is ignored.
   
 \subsection{*environments}
   Use 
@@ -113,6 +133,14 @@ t = matrix2latex(m, '', 'format', '%s');
   Table is default so given no arguments: table, center and tabular will be used.
   The above command is then equivalent to \\
 \lstinline{matrix2latex(m, "test", ...)}
+
+The above commands looks a bit differently in matlab, since we must specify
+that we want to change the environment.
+\begin{lstlisting}[language=matlab, basicstyle=\small\rmfamily, stringstyle=\mdseries]
+matrix2latex(m, None, 'environment', {'align*', 'pmatrix'}, ...)
+matrix2latex(m, 'test', 'environment', {'table', 'center', 'tabular'} ...)
+matrix2latex(m, 'test', ...)
+\end{lstlisting}
 
 \subsubsection{Example}
 \begin{sageblock}
@@ -137,13 +165,20 @@ t = matrix2latex(m, '', 'format', '%s');
 
 \subsection{**keywords}
 \subsubsection{headerRow}
-    A row at the top used to label the columns.
-    Must be a list of strings.
+A row at the top used to label the columns.
+Must be a list of strings.
 Using the same example from above we can add row labels
 \begin{sageblock}
-rl = ['$x$', '$x^2$']
-t = matrix2latex(m, headerRow=rl)
+hr = ['$x$', '$x^2$']
+t = matrix2latex(m, headerRow=hr)
 \end{sageblock}
+
+Which in matlab looks like this (note that cell array must be used for
+declaring the header row)
+\begin{lstlisting}
+hr = {'$x$', '$x^2$'};
+t = matrix2latex(m, 'headerRow', hr);
+\end{lstlisting}
 \sage{t}
 
 \subsubsection{headerColumn}
@@ -153,10 +188,9 @@ t = matrix2latex(m, headerRow=rl)
 Flips the table around in case you messed up. Equivalent to
 matrix2latex(m.H, ...)
 if m is a numpy matrix.
-Note that \lstinline{headerRow} is used in the example.
+Note that \lstinline{headerColumn} is used in the example.
 \begin{sageblock}
 t = matrix2latex(m, headerColumn=rl, transpose=True)
-print t
 \end{sageblock}
 \sage{t}
 
@@ -229,7 +263,7 @@ t = matrix2latex(m2, 'table_ohm', headerRow=rl,
 \input{table_ohm}
 
 This is however not the recommend way to give units, since they should
-be given in the rowLabel
+be given in the header
 \begin{sageblock}
 rl = ['$V$ [V]', '$I=V/R$ [A]']
 t = matrix2latex(m2, 'table_ohm2', headerRow=rl,
