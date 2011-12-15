@@ -31,7 +31,7 @@ a similar package for matlab
 
 This software is published under the GNU GPL, by the free software
 foundation. For further reading see: 
-\url{http://www.gnu.org/licenses/licenses.html#GPL}
+http://www.gnu.org/licenses/licenses.html#GPL
 
 The following packages and definitions are recommended in the latex preamble 
 % scientific notation, 1\e{9} will print as 1x10^9
@@ -190,7 +190,10 @@ of some advanced table techniques.
         matr = newMatr
         m = len(matr)
         n = len(matr[0])
-    assert m > 0 and n > 0, "Expected positive matrix dimensions, got %g by %g matrix" % (m, n)
+    except IndexError:
+        m = 0
+        n = 0
+    #assert m > 0 and n > 0, "Expected positive matrix dimensions, got %g by %g matrix" % (m, n)
     
     #
     # Default values
@@ -199,7 +202,10 @@ of some advanced table techniques.
     # Keywords
     formatNumber = "$%g$"
     formatColumn = None
-    alignment = "c"*n               # cccc
+    if n != 0:
+        alignment = "c"*n               # cccc
+    else:
+        alignment = "c"
 
     headerRow = None
     headerColumn = None
@@ -280,7 +286,7 @@ of some advanced table techniques.
     # Set outputFile
     # 
     f = None
-    if isinstance(filename, str):
+    if isinstance(filename, str) and filename != '':
         if not filename.endswith('.tex'): # assure propper file extension
             filename += '.tex'
         f = open(filename, 'w')
