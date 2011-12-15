@@ -1,3 +1,4 @@
+function table = matrix2latex(matrix, filename, varargin)
 %This file is part of matrix2latex.
 %
 %matrix2latex is free software: you can redistribute it and/or modify
@@ -12,52 +13,151 @@
 %
 %You should have received a copy of the GNU General Public License
 %along with matrix2latex. If not, see <http://www.gnu.org/licenses/>.
-
-function table = matrix2latex(matrix, filename, varargin)
-% This is a modified version of M. Koehler's matrix2latex
-% Options for formatColumns, caption and label have been added. Code has been cleaned.
 %
-% function: matrix2latexTable(...)
-% Author:   M. Koehler, oystebjo
-% Contact:  koehler@in.tum.de, oystebjo@student.matnat.uio.no
+% A pdf version of this documentation is available as doc<date>.pdf
+%Takes a python matrix or nested list and converts to a LaTeX table or matrix.
+%Author: ob@cakebox.net, inspired by the work of koehler@in.tum.de who has written
+%a similar package for matlab
+%\url{http://www.mathworks.com/matlabcentral/fileexchange/4894-matrix2latex}
 %
-% This software is published under the GNU GPL, by the free software
-% foundation. For further reading see: http://www.gnu.org/licenses/licenses.html#GPL
+%This software is published under the GNU GPL, by the free software
+%foundation. For further reading see: 
+%http://www.gnu.org/licenses/licenses.html#GPL
 %
-% Usage:
-% matrix2late(matrix, filename, varargs)
-% where
-%   - matrix is a 2 dimensional numerical or cell array
-%   - filename is a valid filename, without extension, in which the resulting latex code will
-%   be stored. If filename == '' tex code will be printed to screen
-%   - varargs is one ore more of the following (denominator, value) combinations
-%      + 'headerColumn', array -> Can be used to label the rows of the
-%      resulting latex table
-%      + 'headerRow', array -> Can be used to label the columns of the
-%      resulting latex table
-%      + 'alignment', 'value' -> Can be used to specify the alginment of
-%      the table within the latex document. Valid arguments are: 'l', 'c',
-%      and 'r' for left, center, and right, respectively
-%      + 'format', 'value' -> Can be used to format the input data. 'value'
-%      has to be a valid format string, similar to the ones used in
-%      fprintf('format', value);
-%      + 'formatColumns', 'values' -> values must be a vector with same 
-%      length as nr of columns, se format above.
-%      + 'size', 'value' -> One of latex' recognized font-sizes, e.g. tiny,
-%      HUGE, Large, large, LARGE, etc.
-%      + 'caption', 'value' -> if excluded no caption will be set.
-%      + 'label', 'value' -> defaults to filename.
+%The following packages and definitions are recommended in the latex preamble 
+%% scientific notation, 1\e{9} will print as 1x10^9
+%\providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}
+%\usepackage{amsmath} % needed for pmatrix
+%\usepackage{booktabs} % Fancy tables
+%...
+%\begin{document}
+%...
+% \input{table}
+% ...
+%\end{document}
 %
-% Example input:
-%   matrix = [1.5 1.764; 3.523 0.2];
-%   headerColumn = {'row 1', 'row 2'};
-%   headerRow = {'col 1', 'col 2'};
-%   matrix2latexTable(matrix, 'out', 'headerColumn', headerColumn, 'headerRow', headerRow, 'alignment', 'c', 'format', '%-6.2f', 'size', 'tiny');
+%Arguments:
+%  
+%matrix
+%  A matrix or a cell array
 %
-% The resulting latex file can be included into any latex document by:
-% /input{out.tex}
+%Filename
+%  File to place output, extension .tex is added automatically. File can be included in a LaTeX
+%  document by \input{filename}. Output will always be returned in a string. If filename is None,
+%  empty string or not a string it is ignored.
+%  
+%*environments
+%  Use 
+%matrix2latex(m, '', 'environmnet' {"align*", "pmatrix"}, ...) for matrix.
+%  This will give
+%  \begin{align*}
+%    \begin{pmatrix}
+%      1 & 2 \\
+%      3 & 4
+%    \end{pmatrix}
+%  \end{align*}
+%  Use 
+%matrix2latex(m, 'test', 'environemnt', {"table", "center", "tabular"} ...) for table.
+%  Table is default so given no arguments: table, center and tabular will be used.
+%  The above command is then equivalent to \\
+%matrix2latex(m, 'test', ...)
 %
-% Enjoy life!!!
+%Example
+%
+%  m = [1, 2, 3; 1, 4, 9] % matrix
+%  t = matrix2latex(m, '')
+%
+%  \begin{table}[ht]
+%    \begin{center}
+%      \begin{tabular}{cc}
+%        \toprule
+%        $1$ & $1$\\
+%        $2$ & $4$\\
+%        $3$ & $9$\\
+%        \bottomrule
+%      \end{tabular}
+%    \end{center}
+%  \end{table}
+%
+%**keywords
+%headerRow
+%    A row at the top used to label the columns.
+%    Must be a list of strings.
+%
+%Using the same example from above we can add header row
+%
+%hr = {'$x$', '$x^2$'}
+%t = matrix2latex(m, 'headerRow', hr)
+%
+%headerColumn
+%    A column used to label the rows.
+%    Must be a list of strings
+%
+%transpose
+%Flips the table around in case you messed up. Equivalent to
+%matrix2latex(m', ...)
+%if m is a matrix.
+%Note the use of headerColumn in the example.
+%cl = {'$x$', '$x^2$'}
+%t = matrix2latex(m, 'headerColumn', cl, 'transpose', True)
+%
+%caption
+%    Use to define a caption for your table.
+%    Inserts \caption after \end{tabular}.
+%Always use informative captions!
+%
+%t = matrix2latex(m, 'headerRow', rl, 
+%                 'caption', 'Nice table!')
+%
+%label
+%Used to insert \verb!\label{tab:...}! after \verb!\end{tabular}!
+%Default is filename without extension.
+%
+%We can use 'label', 'niceTable' but if we save it to file
+%the default label is the filename, so:
+%
+%matrix2latex(m, 'niceTable', 'headerRow', rl, 
+%                 'caption', 'Nice table!')
+%
+%can be referenced by \ref{tab:niceTable}. Table \ref{tab:niceTable}
+%was included in latex by \input{niceTable}.
+%
+%format
+%Printf syntax format, e.g. $%.2f$. Default is $%g$.
+%  This format is then used for all the elements in the table.
+%
+%m = [1, 2, 3; 1, 1/2, 1/3]
+%rl = {'$x$', '$1/x$'}
+%t = matrix2latex(m, '', 'headerRow', rl,
+%                 'format', '%.2f')
+%
+%formatColumn
+%A list of printf-syntax formats, e.g. {$%.2f$, $%g$}
+%Must be of same length as the number of columns.
+%Format i is then used for column i.
+%This is useful if some of your data should be printed with more significant figures
+%than other parts
+%
+%t = matrix2latex(m, 'headerRow', rl,
+%                 'formatColumn', {'%g', '%.2f'})
+%
+%alignment
+%Used as an option when tabular is given as enviroment.
+%\begin{tabular}{alignment}
+%A latex alignment like c, l or r.
+%Can be given either as one per column e.g. "ccc".
+%Or if only a single character is given e.g. "c",
+%it will produce the correct amount depending on the number of columns.
+%Default is "r".
+%
+%Note that many of these options only has an effect when typesetting a table,
+%if the correct environment is not given the arguments are simply ignored.
+%
+%The options presented by this program represents what I need when creating a table,
+%if you need a more sophisticated table you must either change the python code
+%(feel free to submit a patch) or manually adjust the output afterwards.
+%\url{http://en.wikibooks.org/wiki/LaTeX/Tables} gives an excellent overview
+%of some advanced table techniques.
 
     if (rem(nargin,2) == 1 || nargin < 2)
         error('%s: Incorrect number of arguments', mfilename);
