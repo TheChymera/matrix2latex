@@ -238,7 +238,9 @@ of some advanced table techniques.
                 alignment = value
             assertKeyAlignment(alignment, n)
         elif key == "headerRow":
-            assertListString(value, "headerRow")
+            if not(type(value[0]) == list):
+                value = [value]         # just one header
+            #assertListString(value, "headerRow") # todo: update
             headerRow = list(value)
         elif key == "headerColumn":
             assertListString(value, "headerColumn")
@@ -279,8 +281,9 @@ of some advanced table techniques.
         for j in range(0, n):
             formatColumn.append(formatNumber)
 
-    if headerColumn != None and headerRow != None and len(headerRow) == n:
-        headerRow.insert(0, "")
+    if headerColumn != None and headerRow != None and len(headerRow[0]) == n:
+        for i in range(len(headerRow)):
+            headerRow[i].insert(0, "")
 
     # 
     # Set outputFile
@@ -325,16 +328,35 @@ of some advanced table techniques.
 
     # Row labels
     if headerRow != None:
-        f.write("\t"*tabs)
-        for j in range(0, len(headerRow)):
-            f.write(r"%s" % headerRow[j])
-            if j != len(headerRow)-1:
-                f.write(" & ")
-            else:
-                f.write(r"\\"+ "\n")
-                f.write("\t"*tabs)
-                f.write(r"\midrule" + "\n")
-                
+        for row in range(len(headerRow)): # for each header
+            i = 0
+            start, end = list(), list() # of cmidrule
+            f.write("\t"*tabs)    
+            while i < len(headerRow[row]): # for each element (skipping repeating ones)
+                j = 1
+                # check for legal index then check if current element is equal to next (repeating)
+                repeating = i+j < len(headerRow[row]) and headerRow[row][i] == headerRow[row][i + j]
+                if repeating:
+                    while repeating:        # figure out how long it repeats (j)
+                        j += 1
+                        repeating = i+j < n and headerRow[row][i] == headerRow[row][i + j]
+                    f.write(r'\multicolumn{%d}{c}{%s}' % (j, headerRow[row][i])) # multicol heading
+                    start.append(i);end.append(j+i)
+                    i += j                  # skip ahed
+                else:
+                    f.write('%s' % headerRow[row][i]) # normal heading
+                    i += 1
+                if i < len(headerRow[row]): # if not last element
+                    f.write(' & ')
+                    
+            f.write(r'\\')
+            for s, e in zip(start, end):
+                f.write(r'\cmidrule(r){%d-%d}' % (s+1, e))
+            f.write('\n')
+        if len(start) == 0:             # do not use if cmidrule is used on last header
+            f.write('\t'*tabs)
+            f.write('\\midrule\n')
+                            
     # Values
     for i in range(0, m):
         f.write("\t"*tabs)
@@ -343,17 +365,20 @@ of some advanced table techniques.
             if j == 0:                  # first row
                 if headerColumn != None:
                     f.write("%s & " % headerColumn[i])
-                    
+
+            try:
+                e = matr[i][j]
+            except IndexError:
+                e = ''
             if '%s' not in formatColumn[j]:
                 try:
-                    e = float(matr[i][j])            # current element
+                    e = float(e)            # current element
                 except ValueError: # can't convert to float, use string
-                    e = matr[i][j]
                     formatColumn[j] = '%s'
                 except TypeError:       # raised for None
                     e = None
             else:
-                e = matr[i][j]
+                pass
 
             if e == None or e == float('NaN'):
                 f.write("-")
