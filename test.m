@@ -217,10 +217,9 @@ test_none()
 %        pass
 
 function test_infty2()
-    % same as above but without numpy
     m = [1,inf, inf;, 2,2, -inf; -inf,1,2];
     t = matrix2latex(m, '');
-    assertEqual(t, 'infty2');
+    assertEqual(t, 'infty1');
 end
 test_infty2()
 end

@@ -184,7 +184,7 @@ def test_infty2():
     inf = float('inf')
     m = [[1,inf,float('inf')], [2,2,float('-inf')], [-inf,1,2]]
     t = matrix2latex(m)
-    assertEqual(t, "infty2")
+    assertEqual(t, "infty1")
     
 if __name__ == '__main__':
     import test
