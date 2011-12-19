@@ -339,10 +339,10 @@ of some advanced table techniques.
                 if repeating:
                     while repeating:        # figure out how long it repeats (j)
                         j += 1
-                        repeating = i+j < n and headerRow[row][i] == headerRow[row][i + j]
+                        repeating = i+j < len(headerRow[row]) and headerRow[row][i] == headerRow[row][i + j]
                     f.write(r'\multicolumn{%d}{c}{%s}' % (j, headerRow[row][i])) # multicol heading
                     start.append(i);end.append(j+i)
-                    i += j                  # skip ahed
+                    i += j                 # skip ahed
                 else:
                     f.write('%s' % headerRow[row][i]) # normal heading
                     i += 1

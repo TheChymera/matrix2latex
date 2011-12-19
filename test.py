@@ -185,6 +185,13 @@ def test_infty2():
     m = [[1,inf,float('inf')], [2,2,float('-inf')], [-inf,1,2]]
     t = matrix2latex(m)
     assertEqual(t, "infty1")
+
+def test_multicolumn():
+    hr = [['Item', 'Item', 'Item', 'Item', 'Price', 'Price', 'test', '', 'Money', 'Money', 'Money'],
+          ['Animal', 'Description', '(\$)']]
+    t = matrix2latex(m, headerRow=hr)
+    t = t.split('\n')[4].strip()        # pick out only third line
+    assert t == r"\multicolumn{4}{c}{Item} & \multicolumn{2}{c}{Price} & test &  & \multicolumn{3}{c}{Money}\\\cmidrule(r){1-4}\cmidrule(r){5-6}\cmidrule(r){9-11}", t
     
 if __name__ == '__main__':
     import test
