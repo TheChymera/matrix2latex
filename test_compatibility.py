@@ -24,16 +24,16 @@ from subprocess import call
 from matrix2latex import matrix2latex
 
 table = list()
-cl = list()
+pythonVersions = list()
 
-def test(python, table, cl):
+def test(python, table, pythonVersions):
     ret = call(python + " test.py", shell=True, stdout=file(os.devnull, "w"))
 
     print(python)            
     print(ret)
     if ret == 0: table.append(["True"])
     else: table.append(["False"])
-    cl.append(python)
+    pythonVersions.append(python)
 
 
 for major in range(2, 3+1):
@@ -41,13 +41,13 @@ for major in range(2, 3+1):
         python = 'python%d.%d' % (major, minor)
         
         if call(python + " -c ''", shell=True, stderr=file(os.devnull, "w")) == 0:
-            test(python, table, cl)
+            test(python, table, pythonVersions)
 
 if call("pypy-c" + " -c 'pass'", shell=True, stderr=file(os.devnull, "w")) == 0:
-    test("pypy-c", table, cl)
+    test("pypy-c", table, pythonVersions)
 
 c = "Does 'python test.py' return 0?"
 compatibleTable = matrix2latex(table, 'doc/compatibleTable',
-                               headerColumn=cl, headerRow=['Compatible'],
+                               headerColumn=pythonVersions, headerRow=['Compatible'],
                                caption=c)
 print compatibleTable

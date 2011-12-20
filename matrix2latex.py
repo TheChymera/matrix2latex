@@ -299,27 +299,24 @@ if the correct environment is not given the arguments are simply ignored.
             f.write('\\midrule\n')
                             
     # Values
-    for i in range(0, m):
+    for i in range(0, len(matr)):
         f.write("\t"*tabs)
-        for j in range(0, n):
+        for j in range(0, len(matr[i])):
 
             if j == 0:                  # first row
                 if headerColumn != None:
                     f.write("%s & " % headerColumn[i])
 
-            try:
-                e = matr[i][j]
-            except IndexError:
-                e = ''
             if '%s' not in formatColumn[j]:
                 try:
-                    e = float(e)            # current element
+                    e = float(matr[i][j]) # current element
                 except ValueError: # can't convert to float, use string
                     formatColumn[j] = '%s'
+                    e = matr[i][j]
                 except TypeError:       # raised for None
                     e = None
             else:
-                pass
+                e = matr[i][j]
 
             if e == None or e == float('NaN'):
                 f.write("-")
