@@ -23,15 +23,11 @@ from IOString import IOString
     
 def matrix2latex(matr, filename=None, *environments, **keywords):
     r'''
-A pdf version of this documentation is available as doc<date>.pdf
+A detailed pdf version of this documentation is available as doc<date>.pdf
 Takes a python matrix or nested list and converts to a LaTeX table or matrix.
 Author: ob@cakebox.net, inspired by the work of koehler@in.tum.de who has written
 a similar package for matlab
 \url{http://www.mathworks.com/matlabcentral/fileexchange/4894-matrix2latex}
-
-This software is published under the GNU GPL, by the free software
-foundation. For further reading see: 
-http://www.gnu.org/licenses/licenses.html#GPL
 
 The following packages and definitions are recommended in the latex preamble 
 % scientific notation, 1\e{9} will print as 1x10^9
@@ -53,6 +49,7 @@ Filename
   or not a string it is ignored.
   
 *environments
+A list specifing the begin and end block.
   Use 
 matrix2latex(m, None, "align*", "pmatrix", ...) for matrix.
   This will give
@@ -68,106 +65,50 @@ matrix2latex(m, "test", "table", "center", "tabular" ...) for table.
   The above command is then equivalent to \\
 matrix2latex(m, "test", ...)
 
-Example
-
-  from matrix2latex import matrix2latex
-  m = [[1, 2, 3], [1, 4, 9]] # python nested list
-  t = matrix2latex(m)
-  print t
-
-\begin{lstlisting}
-  \begin{table}[ht]
-    \begin{center}
-      \begin{tabular}{cc}
-        \toprule
-        $1$ & $1$\\
-        $2$ & $4$\\
-        $3$ & $9$\\
-        \bottomrule
-      \end{tabular}
-    \end{center}
-  \end{table}
-\end{lstlisting}
-
 **keywords
 headerRow
     A row at the top used to label the columns.
-    Must be a list of strings.
-
-Using the same example from above we can add row labels
-
-rl = ['$x$', '$x^2$']
-t = matrix2latex(m, headerRow=rl)
+    Must be a list of strings. Can be a nested list for multiple headings.
 
 headerColumn
     A column used to label the rows.
     Must be a list of strings
 
 transpose
-Flips the table around in case you messed up. Equivalent to
-matrix2latex(m.H, ...)
-if m is a numpy matrix.
-Note the use of headerColumn in the example.
-cl = ['$x$', '$x^2$']
-t = matrix2latex(m, headerColumn=cl, transpose=True)
+    Flips the table around in case you messed up. Equivalent to
+    matrix2latex(m.H, ...)
+    if m is a numpy matrix.
 
 caption
     Use to define a caption for your table.
     Inserts \verb!\caption! after \verb!\end{tabular}!.
-Always use informative captions!
-
-t = matrix2latex(m, headerRow=rl, 
-                 caption='Nice table!')
 
 label
-Used to insert \verb!\label{tab:...}! after \verb!\end{tabular}!
-Default is filename without extension.
-
-We can use label='niceTable' but if we save it to file
-the default label is the filename, so:
-
-matrix2latex(m, 'niceTable', headerRow=rl, 
-                 caption='Nice table!')
-
-can be referenced by \verb!\ref{tab:niceTable}!. Table \ref{tab:niceTable}
-was included in latex by \verb!\input{niceTable}!.
+    Used to insert \verb!\label{tab:...}! after \verb!\end{tabular}!
+    Default is filename without extension.
 
 format
-Printf syntax format, e.g. $%.2f$. Default is $%g$.
-  This format is then used for all the elements in the table.
-
-m = [[1, 2, 3], [1, 1/2, 1/3]]
-rl = ['$x$', '$1/x$']
-t = matrix2latex(m, headerRow=rl,
-                 format='%.2f')
+    Printf syntax format, e.g. $%.2f$. Default is $%g$.
+    This format is then used for all the elements in the table.
 
 formatColumn
-A list of printf-syntax formats, e.g. [$%.2f$, $%g$]
-Must be of same length as the number of columns.
-Format i is then used for column i.
-This is useful if some of your data should be printed with more significant figures
-than other parts
-
-t = matrix2latex(m, headerRow=rl,
-                 formatColumn=['%g', '%.2f'])
+    A list of printf-syntax formats, e.g. [$%.2f$, $%g$]
+    Must be of same length as the number of columns.
+    Format i is then used for column i.
+    This is useful if some of your data should be printed with more significant figures
+    than other parts
 
 alignment
-Used as an option when tabular is given as enviroment.
-\verb!\begin{tabular}{alignment}!
-A latex alignment like c, l or r.
-Can be given either as one per column e.g. "ccc".
-Or if only a single character is given e.g. "c",
-it will produce the correct amount depending on the number of columns.
-Default is "r".
+    Used as an option when tabular is given as enviroment.
+    \verb!\begin{tabular}{alignment}!
+    A latex alignment like c, l or r.
+    Can be given either as one per column e.g. "ccc".
+    Or if only a single character is given e.g. "c",
+    it will produce the correct amount depending on the number of columns.
+    Default is "r".
 
 Note that many of these options only has an effect when typesetting a table,
 if the correct environment is not given the arguments are simply ignored.
-
-The options presented by this program represents what I need when creating a table,
-if you need a more sophisticated table you must either change the python code
-(feel free to submit a patch) or manually adjust the output afterwards.
-\url{http://en.wikibooks.org/wiki/LaTeX/Tables} gives an excellent overview
-of some advanced table techniques.
     '''
     #
     # Convert to list

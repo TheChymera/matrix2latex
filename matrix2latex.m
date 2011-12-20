@@ -14,15 +14,11 @@ function table = matrix2latex(matrix, filename, varargin)
 %You should have received a copy of the GNU General Public License
 %along with matrix2latex. If not, see <http://www.gnu.org/licenses/>.
 %
-% A pdf version of this documentation is available as doc<date>.pdf
+% A detailed pdf version of this documentation is available as doc<date>.pdf
 %Takes a python matrix or nested list and converts to a LaTeX table or matrix.
 %Author: ob@cakebox.net, inspired by the work of koehler@in.tum.de who has written
 %a similar package for matlab
 %\url{http://www.mathworks.com/matlabcentral/fileexchange/4894-matrix2latex}
-%
-%This software is published under the GNU GPL, by the free software
-%foundation. For further reading see: 
-%http://www.gnu.org/licenses/licenses.html#GPL
 %
 %The following packages and definitions are recommended in the latex preamble 
 %% scientific notation, 1\e{9} will print as 1x10^9
@@ -46,7 +42,9 @@ function table = matrix2latex(matrix, filename, varargin)
 %  document by \input{filename}. Output will always be returned in a string. If filename is None,
 %  empty string or not a string it is ignored.
 %  
-%*environments
+%
+%**keywords
+%%environments
 %  Use 
 %matrix2latex(m, '', 'environmnet' {"align*", "pmatrix"}, ...) for matrix.
 %  This will give
@@ -62,86 +60,40 @@ function table = matrix2latex(matrix, filename, varargin)
 %  The above command is then equivalent to \\
 %matrix2latex(m, 'test', ...)
 %
-%Example
-%
-%  m = [1, 2, 3; 1, 4, 9] % matrix
-%  t = matrix2latex(m, '')
-%
-%  \begin{table}[ht]
-%    \begin{center}
-%      \begin{tabular}{cc}
-%        \toprule
-%        $1$ & $1$\\
-%        $2$ & $4$\\
-%        $3$ & $9$\\
-%        \bottomrule
-%      \end{tabular}
-%    \end{center}
-%  \end{table}
-%
-%**keywords
-%headerRow
+%%headerRow
 %    A row at the top used to label the columns.
 %    Must be a list of strings.
 %
-%Using the same example from above we can add header row
-%
-%hr = {'$x$', '$x^2$'}
-%t = matrix2latex(m, 'headerRow', hr)
-%
-%headerColumn
+%%headerColumn
 %    A column used to label the rows.
 %    Must be a list of strings
 %
-%transpose
+%%transpose
 %Flips the table around in case you messed up. Equivalent to
 %matrix2latex(m', ...)
 %if m is a matrix.
-%Note the use of headerColumn in the example.
-%cl = {'$x$', '$x^2$'}
-%t = matrix2latex(m, 'headerColumn', cl, 'transpose', True)
 %
 %caption
 %    Use to define a caption for your table.
 %    Inserts \caption after \end{tabular}.
-%Always use informative captions!
-%
-%t = matrix2latex(m, 'headerRow', rl, 
-%                 'caption', 'Nice table!')
 %
 %label
 %Used to insert \verb!\label{tab:...}! after \verb!\end{tabular}!
 %Default is filename without extension.
 %
-%We can use 'label', 'niceTable' but if we save it to file
-%the default label is the filename, so:
 %
-%matrix2latex(m, 'niceTable', 'headerRow', rl, 
-%                 'caption', 'Nice table!')
-%
-%can be referenced by \ref{tab:niceTable}. Table \ref{tab:niceTable}
-%was included in latex by \input{niceTable}.
-%
-%format
+%%format
 %Printf syntax format, e.g. $%.2f$. Default is $%g$.
 %  This format is then used for all the elements in the table.
 %
-%m = [1, 2, 3; 1, 1/2, 1/3]
-%rl = {'$x$', '$1/x$'}
-%t = matrix2latex(m, '', 'headerRow', rl,
-%                 'format', '%.2f')
-%
-%formatColumn
+%%formatColumn
 %A list of printf-syntax formats, e.g. {$%.2f$, $%g$}
 %Must be of same length as the number of columns.
 %Format i is then used for column i.
 %This is useful if some of your data should be printed with more significant figures
 %than other parts
 %
-%t = matrix2latex(m, 'headerRow', rl,
-%                 'formatColumn', {'%g', '%.2f'})
-%
-%alignment
+%%alignment
 %Used as an option when tabular is given as enviroment.
 %\begin{tabular}{alignment}
 %A latex alignment like c, l or r.
@@ -153,12 +105,6 @@ function table = matrix2latex(matrix, filename, varargin)
 %Note that many of these options only has an effect when typesetting a table,
 %if the correct environment is not given the arguments are simply ignored.
 %
-%The options presented by this program represents what I need when creating a table,
-%if you need a more sophisticated table you must either change the python code
-%(feel free to submit a patch) or manually adjust the output afterwards.
-%\url{http://en.wikibooks.org/wiki/LaTeX/Tables} gives an excellent overview
-%of some advanced table techniques.
-
     if (rem(nargin,2) == 1 || nargin < 2)
         error('%s: Incorrect number of arguments', mfilename);
     end
