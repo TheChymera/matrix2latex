@@ -37,6 +37,7 @@ foundation. For further reading see:
 \end{itemize}
 
 \section{Compatibility}
+\input{../features}
 \subsection{Python}
 Table \ref{tab:compatibleTable} reflects the python versions currently installed
 on my system\footnote{Mac OS X 10.6, python installed trough macport.}
@@ -175,7 +176,7 @@ t = matrix2latex(m, headerRow=hr)
 
 Which in matlab looks like this (note that cell array must be used for
 declaring the header row)
-\begin{lstlisting}
+\begin{lstlisting}[language=matlab, basicstyle=\small\rmfamily, stringstyle=\mdseries]
 hr = {'$x$', '$x^2$'};
 t = matrix2latex(m, 'headerRow', hr);
 \end{lstlisting}
