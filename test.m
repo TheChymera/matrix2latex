@@ -222,4 +222,13 @@ function test_infty2()
     assertEqual(t, 'infty1');
 end
 test_infty2()
+
+function test_multicolumn()
+    hr = {{'Item', 'Item', 'Item', 'Item', 'Price', 'Price', 'test', '', 'Money', 'Money', 'Money'},
+          {'Animal', 'Description', '(\$)'}}
+    t = matrix2latex(m, '', 'headerRow', hr)
+    assertLine(t, '\multicolumn{4}{c}{Item} & \multicolumn{2}{c}{Price} & test &  & \multicolumn{3}{c}{Money}\\\cmidrule(r){1-4}\cmidrule(r){5-6}\cmidrule(r){9-11}', 5)
+end
+test_multicolumn()
+
 end
