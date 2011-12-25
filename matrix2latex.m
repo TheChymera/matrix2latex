@@ -115,7 +115,12 @@ function table = matrix2latex(matrix, filename, varargin)
 
     headerColumn = [];
     headerRow = [];
-    alignment = repmat('c', 1, width);
+    if width ~= 0
+        alignment = repmat('c', 1, width);
+    else
+        alignment = 'c';
+    end
+
     format = '$%g$';
     textsize = [];
     caption = [];

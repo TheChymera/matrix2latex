@@ -229,6 +229,11 @@ function test_multicolumn()
     t = matrix2latex(m, '', 'headerRow', hr)
     assertLine(t, '\multicolumn{4}{c}{Item} & \multicolumn{2}{c}{Price} & test &  & \multicolumn{3}{c}{Money}\\\cmidrule(r){1-4}\cmidrule(r){5-6}\cmidrule(r){9-11}', 5)
 end
-test_multicolumn()
+%test_multicolumn()
 
+function test_empty()
+    t = matrix2latex([], '');
+    assertEqual(t, 'empty');
+end
+test_empty()
 end
