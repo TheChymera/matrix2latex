@@ -15,6 +15,12 @@ along with matrix2latex. If not, see <http://www.gnu.org/licenses/>.
 """
 import sys
 import os.path
+import math
+def isnan(e):
+    try:
+        return math.isnan(e)
+    except (TypeError, AttributeError):
+        return e == float("nan")
 
 # my stuff:
 import fixEngineeringNotation
@@ -30,8 +36,7 @@ a similar package for matlab
 \url{http://www.mathworks.com/matlabcentral/fileexchange/4894-matrix2latex}
 
 The following packages and definitions are recommended in the latex preamble 
-% scientific notation, 1\e{9} will print as 1x10^9
-\providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}
+\providecommand{\e}[1]{\ensuremath{\times 10^{#1}}} % scientific notation, 1\e{9} will print as 1x10^9
 \usepackage{amsmath} % needed for pmatrix
 \usepackage{booktabs} % Fancy tables
 ...
@@ -123,7 +128,9 @@ if the correct environment is not given the arguments are simply ignored.
     # 
     m = len(matr)
     try:
-        n = len(matr[0])
+        n = len(matr[0]) # may raise TypeError
+        for row in matr:
+            n = max(n, len(row)) # keep max length
     except TypeError: # no length in this dimension (vector...)
         # convert [1, 2] to [[1], [2]]
         newMatr = list()
@@ -135,6 +142,16 @@ if the correct environment is not given the arguments are simply ignored.
         m = 0
         n = 0
     #assert m > 0 and n > 0, "Expected positive matrix dimensions, got %g by %g matrix" % (m, n)
+#   Bug with transpose:
+#     # If header and/or column labels are longer use those lengths
+#     try:
+#         m = max(m, len(keywords['headerColumn'])) # keep max length
+#     except KeyError:
+#         pass
+#     try:
+#         n = max(n, len(keywords['headerRow'])) # keep max length
+#     except KeyError:
+#         pass
     
     #
     # Default values
@@ -299,26 +316,32 @@ if the correct environment is not given the arguments are simply ignored.
             f.write('\\midrule\n')
                             
     # Values
-    for i in range(0, len(matr)):
+    for i in range(0, m):
         f.write("\t"*tabs)
-        for j in range(0, len(matr[i])):
+        for j in range(0, n):
 
             if j == 0:                  # first row
                 if headerColumn != None:
-                    f.write("%s & " % headerColumn[i])
+                    try:
+                        f.write("%s & " % headerColumn[i])
+                    except IndexError:
+                        f.write('&')
 
-            if '%s' not in formatColumn[j]:
-                try:
-                    e = float(matr[i][j]) # current element
-                except ValueError: # can't convert to float, use string
-                    formatColumn[j] = '%s'
+            try: # get current element
+                if '%s' not in formatColumn[j]:
+                    try:
+                        e = float(matr[i][j]) # current element
+                    except ValueError: # can't convert to float, use string
+                        formatColumn[j] = '%s'
+                        e = matr[i][j]
+                    except TypeError:       # raised for None
+                        e = None
+                else:
                     e = matr[i][j]
-                except TypeError:       # raised for None
-                    e = None
-            else:
-                e = matr[i][j]
-
-            if e == None or e == float('NaN'):
+            except IndexError:
+                e = None
+                
+            if e == None or isnan(e):#e == float('NaN'):
                 f.write("-")
             elif e == float('inf'):
                 f.write(r"$\infty$")
