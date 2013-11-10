@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Tries to run testsuit with python version
 # python<major>.<minor>
 # where major and minor varies between 2-3 and 0-10.
@@ -18,6 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with matrix2latex. If not, see <http://www.gnu.org/licenses/>.
 """
+import sys
+sys.path.insert(0, '../src_python')
 
 import os
 from subprocess import call
@@ -27,7 +30,7 @@ table = list()
 pythonVersions = list()
 
 def test(python, table, pythonVersions):
-    ret = call(python + " test.py", shell=True, stdout=file(os.devnull, "w"))
+    ret = call([python, "test.py"], stdout=file(os.devnull, "w"))
 
     print(python)            
     print(ret)
@@ -47,7 +50,7 @@ if call("pypy-c" + " -c 'pass'", shell=True, stderr=file(os.devnull, "w")) == 0:
     test("pypy-c", table, pythonVersions)
 
 c = "Does 'python test.py' return 0?"
-compatibleTable = matrix2latex(table, 'doc/compatibleTable',
+compatibleTable = matrix2latex(table, '../doc/compatibleTable',
                                headerColumn=pythonVersions, headerRow=['Compatible'],
                                caption=c)
 print compatibleTable

@@ -1,0 +1,52 @@
+Takes a python or matlab matrix or nested list and converts to a LaTeX table or matrix.
+Author: ob@cakebox.net, inspired by the work of koehler@in.tum.de who has written
+a similar package only for matlab
+\url{http://www.mathworks.com/matlabcentral/fileexchange/4894-matrix2latex}
+
+This software is published under the GNU GPL, by the free software
+foundation. See:
+\url{http://www.gnu.org/licenses/licenses.html#GPL}
+
+\section{TODO}
+\begin{itemize}
+\item Provide installation.
+\item Complete test suite.
+\item Improve error handling
+\item Clean the preamble for this documentation.
+\end{itemize}
+
+\section{Compatibility}
+Table \ref{tab:features} reflect the current features and whether it is available
+in the matlab or python version.
+\input{features}
+These features are discussed in more detail in chapter \ref{sec:python}.
+
+\subsection{Python}
+The code is written without any dependencies and should be compatible with most python versions.
+Table \ref{tab:compatibleTable} reflects the python versions currently installed
+on my system\footnote{Mac OS X 10.6, python installed trough macport.}
+and if the testsuit for matrix2latex passes. If you find a python version where
+it doesn't work let me know.
+\input{compatibleTable}
+\subsection{Matlab}
+For the moment it is only tested with matlab R2009b.
+
+\section{Installation}
+The following packages and definitions are recommended in the latex preamble 
+\begin{verbatim}
+% scientific notation, 1\e{9} will print as 1x10^9
+\providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}
+\usepackage{amsmath} % needed for pmatrix
+\usepackage{booktabs} % Fancy tables
+...
+\begin{document}
+...
+\end{verbatim}
+\subsection{Python}
+To use the code place the folder matrix2latex/ in our \verb!PYTHONPATH!.
+Your current working directory is always on your \verb!PYTHONPATH!.
+
+Hint: on unix systems do: \\
+\verb!echo $PYTHONPATH! \\
+to see a list of locations. Other users: ask google about \verb!PYTHONPATH!
+for your operation system.

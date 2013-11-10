@@ -25,17 +25,14 @@ def fix(s, table=False):
     """
     i = re.search('e[-+]\d\d', s)
     while i != None:
-        before = s[:i.start()]
+        before = s[0:i.start()]
         number = s[i.start()+1:i.start()+4]
         after = s[i.end():]
-#       print 'before', before
-# 	print 'number', number
-# 	print 'after', after
         if table:
             num = "%(#)+03d" % {'#': int(number)}
         else:
             num = "%(#)3d" % {'#': int(number)}
-            
+
         s = '%s\\e{%s}%s' % (before, num, after)
         i = re.search('e[-+]\d\d', s)
     return s

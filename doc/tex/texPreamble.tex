@@ -13,7 +13,7 @@
 % You should have received a copy of the GNU General Public License
 % along with matrix2latex. If not, see <http://www.gnu.org/licenses/>.
 
-\documentclass[12pt, a4paper, reqno]{amsart}
+\documentclass[12pt, a4paper, reqno]{report}
 %\documentclass[a4paper, english]{IEEEtran}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
@@ -24,75 +24,18 @@
 \usepackage{amsfonts, amssymb, amsthm}
 \allowdisplaybreaks[1] % displaybreak in math is allowed but avoided
 
-\usepackage[disable]{epstopdf}  %interferes with latexmk epstopdf option.
-%\epstopdfsetup{suffix={}}
-
-\usepackage{sagetex} % allows the use of sage/python code to be executed
-
 \usepackage{graphicx}           % include figures
 \usepackage{hyperref}           % links
 \usepackage[amssymb]{SIunits}   % provides SI suffixes
 \usepackage{units}              % provides \unit[1]{\centi\meter}
 \usepackage{booktabs}           % Fancy tables
-\usepackage{color}              % Color, must be on if inkscape figures are used
 
-%\usepackage{beramono}
-\usepackage{listings}           % include code
-\lstset{language = python,
-  basicstyle= \small\bfseries,
-  stringstyle=\ttfamily,
-  commentstyle=\textit,
-  tabsize=2,
-  showspaces = false,
-  showtabs = false,
-  showstringspaces = false,
-  mathescape = false}
+\usepackage{pythontex}
 
 % Useful macros
 \providecommand{\fixme}[1]{\textbf{{\textsc{FIXME:} #1 }}}
 
-% Math, recognized by evaluateLaTeX.py and/or python
-\DeclareMathOperator{\exptext}{exp}
-\renewcommand{\exp}[1]{\ensuremath{e^{#1}}}
-\providecommand{\abs}[1]{\ensuremath{\left|#1\right|}}
-\providecommand{\eqdef}{\ensuremath{\equiv}}
+% Math
 \providecommand{\e}[1]{\ensuremath{\times 10^{#1}}} % scientific notation
-\renewcommand{\*}{\ensuremath{\cdot}}
-\renewcommand{\t}[1]{\ensuremath{{\text{#1}}}} %shorthand for \text
-% parenthesis
-\providecommand{\paran}[1]{\ensuremath{\left( #1 \right)}}
-\providecommand{\paranb}[1]{\ensuremath{\left[ #1 \right]}}
-
-% Enumerate:
-% \renewcommand{\labelenumi}{\arabic{enumi}}
-% \renewcommand{\labelenumii}{\alph{enumii})}
-% \renewcommand{\labelenumiii}{\roman{enumiii}}
-
-% Typesett Roman numerals
-\makeatletter
-\newcommand{\rmnum}[1]{\romannumeral #1}
-\newcommand{\Rmnum}[1]{\expandafter\@slowromancap\romannumeral #1@}
-\makeatother
-
-% Math stuff
-\newcommand{\field}[1]{\mathbb{#1}}
-\newcommand{\R}{\field{R}}
-\newcommand{\C}{\field{C}}
-\renewcommand{\P}{\field{P}}
-\newcommand{\inv}[1]{#1^{-1}}
-
-% Physics stuff
-\newcommand{\emf}{\mathcal{E}}
-\renewcommand{\epsilon}{\varepsilon}
-
-% Figure width for one or two columns
-\makeatletter
-\newlength \figwidth
-\if@twocolumn
-  \setlength \figwidth {\columnwidth}
-\else
-  \setlength \figwidth {\textwidth}
-\fi
-\makeatother
 
 \author{Øystein Bjørndal}
