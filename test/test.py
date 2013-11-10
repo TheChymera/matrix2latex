@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """This file is part of matrix2latex.
 
 matrix2latex is free software: you can redistribute it and/or modify
@@ -15,6 +16,8 @@ along with matrix2latex. If not, see <http://www.gnu.org/licenses/>.
 """
 
 # tests for matrix2latex.py
+import sys
+sys.path.insert(0, '../src_python')
 from matrix2latex import matrix2latex
 m = [[1, 2, 3], [4, 5, 6]]
 

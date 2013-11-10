@@ -1,0 +1,30 @@
+\section{Installation}
+Place the matlab files in our \verb!MATLABPATH!.
+Your current working directory is always on your \verb!MATLABPATH!.
+
+See the following article from mathworks
+\url{http://www.mathworks.se/help/techdoc/ref/path.html}.
+
+\section{Usage}
+As matlab does not support keywords, something similar to the environment must be used.
+Most of the examples in this document are given in python code only. The matlab version should be identical
+in behavior but has slightly different syntax.
+
+\begin{pygments}{matlab}
+matrix2latex(matrix, filename, varargin)  
+\end{pygments}
+
+\begin{pygments}{matlab}
+% Filename must be suppiled but filename == '' will not write to file. 
+% filename = 'foo.tex' and filename = 'foo' will write to 'foo.tex'
+m = [1, 1; 2, 4; 3, 9];
+t = matrix2latex(m, '');
+% keyword arguments are given like this
+% instead of transpose = True
+t = matrix2latex(m, '', 'transpose', true);
+% environment is a keyword argument
+t = matrix2latex(m, '', 'environment', {'align*', 'pmatrix'});
+% if you want to pass in strings you must use cell array
+m = {'a', 'b', '1'; '1', '2', '3'}
+t = matrix2latex(m, '', 'format', '%s');
+\end{pygments}

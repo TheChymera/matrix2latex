@@ -16,6 +16,7 @@ along with matrix2latex. If not, see <http://www.gnu.org/licenses/>.
 import sys
 import os.path
 import math
+import re
 def isnan(e):
     try:
         return math.isnan(e)
@@ -26,6 +27,7 @@ def isnan(e):
 import fixEngineeringNotation
 from error import *                     # error handling
 from IOString import IOString
+import niceFloat 
     
 def matrix2latex(matr, filename=None, *environments, **keywords):
     r'''
@@ -213,12 +215,12 @@ if the correct environment is not given the arguments are simply ignored.
             else:
                 label = value
         elif key == "transpose":
-            newMatr = list()
-            for j in range(0, n):
-                row = list()
-                for i in range(0, m):
-                    row.append(matr[i][j])
-                newMatr.append(row)
+            newMatr = list(zip(*matr))
+#             for j in range(0, n):
+#                 row = list()
+#                 for i in range(0, m):
+#                     row.append(matr[i][j])
+#                 newMatr.append(row)
             copyKeywords = dict(keywords) # can't del original since we are inside for loop.
             del copyKeywords['transpose']
             # Recursion!
@@ -264,7 +266,7 @@ if the correct environment is not given the arguments are simply ignored.
         f.write(r"\begin{%s}" % environments[ixEnv])
         # special environments:
         if environments[ixEnv] == "table":
-            f.write("[ht]")
+            f.write("[htp]")
         elif environments[ixEnv] == "center":
             if caption != None:
                 f.write("\n"+"\t"*ixEnv)
@@ -272,7 +274,7 @@ if the correct environment is not given the arguments are simply ignored.
             if label != None:
                 f.write("\n"+"\t"*ixEnv)
                 f.write(r"\label{tab:%s}" % label)
-        elif environments[ixEnv] == "tabular":
+        elif environments[ixEnv] in ("tabular", "longtable"):
             f.write("{" + alignment + "}\n")
             f.write("\t"*ixEnv)
             f.write(r"\toprule")
@@ -302,7 +304,7 @@ if the correct environment is not given the arguments are simply ignored.
                     start.append(i);end.append(j+i)
                     i += j                 # skip ahed
                 else:
-                    f.write('%s' % headerRow[row][i]) # normal heading
+                    f.write('{%s}' % headerRow[row][i]) # normal heading
                     i += 1
                 if i < len(headerRow[row]): # if not last element
                     f.write(' & ')
@@ -323,7 +325,7 @@ if the correct environment is not given the arguments are simply ignored.
             if j == 0:                  # first row
                 if headerColumn != None:
                     try:
-                        f.write("%s & " % headerColumn[i])
+                        f.write("{%s} & " % headerColumn[i])
                     except IndexError:
                         f.write('&')
 
@@ -342,16 +344,23 @@ if the correct environment is not given the arguments are simply ignored.
                 e = None
                 
             if e == None or isnan(e):#e == float('NaN'):
-                f.write("-")
+                f.write("{-}")
             elif e == float('inf'):
                 f.write(r"$\infty$")
             elif e == float('-inf'):
                 f.write(r"$-\infty$")                
             else:
                 fcj = formatColumn[j]
+
+                reg = re.match('%.(\d)g', fcj) # Change the %.3g pattern to nicefloat instead
+                try:
+                    e = niceFloat.nice(e, int(reg.group(1)))
+                    fcj = '%s'
+                except Exception as err: pass #sys.stderr.write('%s %s %s\n' %(e, reg, err))
+                
                 formated = fcj % e
                 formated = fixEngineeringNotation.fix(formated, table=True) # fix 1e+2
-                f.write(formated)
+                f.write('%s' % formated)
             if j != n-1:                # not last row
                 f.write(" & ")
             else:                       # last row
