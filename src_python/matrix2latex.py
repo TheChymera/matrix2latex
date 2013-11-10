@@ -114,6 +114,11 @@ alignment
     it will produce the correct amount depending on the number of columns.
     Default is "r".
 
+position
+    Used for the table environment to specify the optional parameter "position specifier"
+    Default is '[' + 'htp' + ']'
+    If you want to place your table manually, do not use the table environment.
+
 Note that many of these options only has an effect when typesetting a table,
 if the correct environment is not given the arguments are simply ignored.
     '''
@@ -171,6 +176,7 @@ if the correct environment is not given the arguments are simply ignored.
     headerColumn = None
     caption = None
     label = None
+    position = "htp"            # position specifier for floating table environment
 
     # 
     # Conflicts
@@ -217,6 +223,9 @@ if the correct environment is not given the arguments are simply ignored.
         elif key == "filename":
 	    assertStr(value, "filename")
 	    filename = value
+	elif key == "position":
+	    assertStr(value, "position")
+	    position = value
         elif key == "transpose":
             newMatr = list(zip(*matr))
 #             for j in range(0, n):
@@ -269,7 +278,7 @@ if the correct environment is not given the arguments are simply ignored.
         f.write(r"\begin{%s}" % environments[ixEnv])
         # special environments:
         if environments[ixEnv] == "table":
-            f.write("[htp]")
+            f.write("[" + position + "]")
         elif environments[ixEnv] == "center":
             if caption != None:
                 f.write("\n"+"\t"*ixEnv)

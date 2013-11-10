@@ -202,6 +202,12 @@ t = matrix2latex(m, alignment='|r||c|')
 There is some error checking on the alignment but not much, it simply counts the number
 of c, l and r in the alignment. All other characters are ignored.
 
+\subsubsection{position}
+Used for the table environment to specify the optional parameter ``position specifier''
+Default is \lstinline{'[' + 'htp' + ']'}
+
+If you want to place your table manually, do not use the table environment.
+
 \subsubsection{General considerations}
 Note that many of these options only has an effect when typesetting a table,
 if the correct environment is not given the arguments are simply ignored.
