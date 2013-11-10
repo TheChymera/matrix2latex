@@ -214,6 +214,9 @@ if the correct environment is not given the arguments are simply ignored.
                 label = value[len('tab:'):] # this will be added later in the code, avoids 'tab:tab:' as label
             else:
                 label = value
+        elif key == "filename":
+	    assertStr(value, "filename")
+	    filename = value
         elif key == "transpose":
             newMatr = list(zip(*matr))
 #             for j in range(0, n):
