@@ -28,6 +28,11 @@ import fixEngineeringNotation
 from error import *                     # error handling
 from IOString import IOString
 import niceFloat 
+# Definitions
+# Matrix environments where alignment can be utilized. CHECK: Note alignment[0] used!
+matrix_alignment = ["pmatrix*","bmatrix*","Bmatrix*","vmatrix*","Vmatrix*"] # Needs mathtools package
+# Table environments where alignment can be utilized
+table_alignment = ["tabular", "longtable"]
     
 def matrix2latex(matr, filename=None, *environments, **keywords):
     r'''
@@ -286,10 +291,12 @@ if the correct environment is not given the arguments are simply ignored.
             if label != None:
                 f.write("\n"+"\t"*ixEnv)
                 f.write(r"\label{tab:%s}" % label)
-        elif environments[ixEnv] in ("tabular", "longtable"):
+        elif environments[ixEnv] in table_alignment:
             f.write("{" + alignment + "}\n")
             f.write("\t"*ixEnv)
             f.write(r"\toprule")
+        elif environments[ixEnv] in matrix_alignment:
+            f.write("[" + alignment[0] + "]\n") #These environment you can add
         # newline
         f.write("\n")
     tabs = len(environments)            # number of \t to use
