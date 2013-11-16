@@ -204,7 +204,7 @@ function table = matrix2latex(matrix, filename, varargin)
             for h=1:height
                 for w=1:width
                     if isnan(matrix{h, w})
-                        matrix{h, w} = '-';
+                        matrix{h, w} = '{-}';
                     elseif matrix{h, w} == inf
                         matrix{h, w} = '$\infty$';
                     elseif matrix{h, w} == -inf
@@ -230,7 +230,7 @@ function table = matrix2latex(matrix, filename, varargin)
             e = environment{ix};
             table = [table, sprintf(repmat('\t',1,ix-1))];
             if strcmpi(e, 'table')
-                table = [table, sprintf('\\begin{%s}[ht]\n', e)];
+                table = [table, sprintf('\\begin{%s}[htp]\n', e)];
             elseif strcmpi(e, 'tabular')
                 table = [table, sprintf('\\begin{%s}{', e)];
                 table = [table, sprintf('%s}\n', alignment)];
@@ -254,17 +254,17 @@ function table = matrix2latex(matrix, filename, varargin)
             table = [table, sprintf('\t\t\t')];
             if ~isempty(headerColumn) && ~isempty(headerRow) && ...
                     length(headerRow) == width
-                table = [table, sprintf('& ')];
+                table = [table, sprintf('{} & ')];
             end
             for w=1:length(headerRow)-1
-                table = [table, sprintf('%s & ', headerRow{w})];
+                table = [table, sprintf('{%s} & ', headerRow{w})];
                 %\textbf{%s}&', headerRow{w})];
             end
             if width ~= length(headerRow)
-                table = [table, sprintf('%s\\\\\n', ...
+                table = [table, sprintf('{%s}\\\\\n', ...
                                         headerRow{width+1})];
             else
-                table = [table, sprintf('%s\\\\\n', ...
+                table = [table, sprintf('{%s}\\\\\n', ...
                                         headerRow{width})];
             end
             table = [table, sprintf('\t\t\t\\midrule\n')];
@@ -273,7 +273,7 @@ function table = matrix2latex(matrix, filename, varargin)
         for h=1:height
             table = [table, sprintf(repmat('\t',1,height))];
             if(~isempty(headerColumn))
-                table = [table, sprintf('%s & ', headerColumn{h})];
+                table = [table, sprintf('{%s} & ', headerColumn{h})];
             end
             for w=1:width-1
                 table = [table, sprintf('%s & ', matrix{h, w})];
