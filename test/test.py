@@ -194,7 +194,7 @@ def test_multicolumn():
           ['Animal', 'Description', '(\$)']]
     t = matrix2latex(m, headerRow=hr)
     t = t.split('\n')[4].strip()        # pick out only third line
-    assert t == r"\multicolumn{4}{c}{Item} & \multicolumn{2}{c}{Price} & test &  & \multicolumn{3}{c}{Money}\\\cmidrule(r){1-4}\cmidrule(r){5-6}\cmidrule(r){9-11}", t
+    assert t == r"\multicolumn{4}{c}{Item} & \multicolumn{2}{c}{Price} & {test} & {} & \multicolumn{3}{c}{Money}\\\cmidrule(r){1-4}\cmidrule(r){5-6}\cmidrule(r){9-11}", t
 
 def test_empty():
     t = matrix2latex([])
