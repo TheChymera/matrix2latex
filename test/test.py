@@ -207,10 +207,10 @@ def test_pandas():
         m = [[1, 1], [2, 4], [3, 9]] # python nested list
         m = pd.DataFrame(m)
         #m = pd.DataFrame.from_csv('http://chymera.eu/data/test/r_data.csv', parse_dates=False, index_col=False)
-        print 'PANDAS\n', m
-        print 'PANDAS\n', m.to_records()
+        # print 'PANDAS\n', m
+        # print 'PANDAS\n', m.to_records()
         t = matrix2latex(m)
-        print t
+        assertEqual(t, "pandas")
     except ImportError:
         pass
 

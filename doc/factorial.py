@@ -33,15 +33,13 @@ if __name__ == '__main__':
             row.append(res)# append result to row
         table.append(row)  # append row to table
 
-    # convert to string for labeling
-    cl = ["${n}$".format(n=n) for n in N]
     # row labels
     rl = ['$n$', 'Built-in', 'Recursive', 'Sequential']
     caption = '''Vertifying that the different factorial
     implementations gives the same results'''
     matrix2latex(table, 'facV', caption=caption,
-                 columnLabels=cl, rowLabels=rl,
-                 alignment='r')
+                 headerColumn=N, headerRow=rl,
+                 alignment='r', transpose=True)
 
     import timeit
     table = list()
@@ -58,12 +56,10 @@ if __name__ == '__main__':
             row.append(min(res)) # append result
         table.append(row) # append row to table
 
-    # convert to string for labeling
-    cl = ["${n}$".format(n=n) for n in N]
     rl = ['$n$', 'Built-in [$s$]',
           'Recursive [$s$]', 'Sequential [$s$]']
     caption = '''Comparing execution time for
     the different factorial implementations'''
     matrix2latex(table, 'facT', caption=caption,
-                 columnLabels=cl, rowLabels=rl,
-                 format='$%.3f$')
+                 headerColumn=N, headerRow=rl,
+                 transpose=True, format='$%.3f$')
