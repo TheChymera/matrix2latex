@@ -1,22 +1,23 @@
 \section{Usage}
 The python version should be called like this
-\begin{sagesilent}
+\begin{pycode}
 from matrix2latex import *
 matrix=[]
 filename=None
 environment = list()
 keywords = dict()
-\end{sagesilent}
-\begin{pygments}
+\end{pycode}
+\begin{pygments}{python}
 matrix2latex(matrix, filename, *environment, **keywords)
 \end{pygments}
 
   
 \subsection{matrix}
-  Python: A numpy matrix or a (nested) list. TODO: how abstract input can this thing actually handle?
-
-Matlab: Matrix or cell array.
-
+\begin{itemize}
+\item[Python:] A numpy matrix, a pandas dataframe or a (nested) list. 
+  Note: these are all converted to a nested list internally for compatibility.
+\item[Matlab:] Matrix or cell array.
+\end{itemize}
 \subsection{Filename}
   File to place output, extension .tex is added automatically. File can be included in a LaTeX
   document by \verb!\input{filename}!. Output will always be returned in a string. If filename is None
@@ -24,7 +25,7 @@ Matlab: Matrix or cell array.
   
 \subsection{*environments}
   Use 
-\lstinline{matrix2latex(m, None, "align*", "pmatrix", ...)} for matrix.
+\pygment{python}{matrix2latex(m, None, "align*", "pmatrix", ...)} for matrix.
   This will give
   \begin{align*}
     \begin{pmatrix}
@@ -33,27 +34,27 @@ Matlab: Matrix or cell array.
     \end{pmatrix}
   \end{align*}
   Use 
-\lstinline{matrix2latex(m, "test", "table", "center", "tabular" ...)} for table.
+\pygment{python}{matrix2latex(m, "test", "table", "center", "tabular" ...)} for table.
   Table is default so given no arguments: table, center and tabular will be used.
   The above command is then equivalent to \\
-\lstinline{matrix2latex(m, "test", ...)}
+\pygment{python}{matrix2latex(m, "test", ...)}
 
 The above commands looks a bit differently in matlab, since we must specify
 that we want to change the environment.
-\begin{lstlisting}[language=matlab, basicstyle=\small\rmfamily, stringstyle=\mdseries]
+\begin{pygments}{matlab}
 matrix2latex(m, None, 'environment', {'align*', 'pmatrix'}, ...)
 matrix2latex(m, 'test', 'environment', {'table', 'center', 'tabular'} ...)
 matrix2latex(m, 'test', ...)
-\end{lstlisting}
+\end{pygments}
 
 \subsubsection{Example}
-\begin{pygments}
-  from matrix2latex import matrix2latex
-  m = [[1, 1], [2, 4], [3, 9]] # python nested list
-  t = matrix2latex(m)
-  print t
-\end{pygments}
-\begin{pygments}[tex]
+\begin{pyblock}
+from matrix2latex import matrix2latex
+m = [[1, 1], [2, 4], [3, 9]] # python nested list
+t = matrix2latex(m)
+print(t)
+\end{pyblock}
+\begin{pygments}{tex}
 \begin{center}
   \begin{tabular}{cc}
     \toprule
@@ -65,25 +66,25 @@ matrix2latex(m, 'test', ...)
 \end{center}
 \end{table}
 \end{pygments}
-\sage{t}
+\py{t}
 
 \subsection{**keywords}
 \subsubsection{headerRow}
 A row at the top used to label the columns.
 Must be a list of strings.
 Using the same example from above we can add row labels
-\begin{pygments}
+\begin{pyblock}
 hr = ['$x$', '$x^2$']
 t = matrix2latex(m, headerRow=hr)
-\end{pygments}
+\end{pyblock}
 
 Which in matlab looks like this (note that cell array must be used for
 declaring the header row)
-\begin{lstlisting}[language=matlab, basicstyle=\small\rmfamily, stringstyle=\mdseries]
+\begin{pygments}{matlab}
 hr = {'$x$', '$x^2$'};
 t = matrix2latex(m, 'headerRow', hr);
-\end{lstlisting}
-\sage{t}
+\end{pygments}
+\py{t}
 
 \subsubsection{headerColumn}
     A column used to label the rows.
@@ -92,68 +93,68 @@ t = matrix2latex(m, 'headerRow', hr);
 Flips the table around in case you messed up. Equivalent to
 matrix2latex(m.H, ...)
 if m is a numpy matrix.
-Note that \lstinline{headerColumn} is used in the example.
-\begin{pygments}
-t = matrix2latex(m, headerColumn=rl, transpose=True)
-\end{pygments}
-\sage{t}
+Note that \pygment{python}{headerColumn} is used in the example.
+\begin{pyblock}
+t = matrix2latex(m, headerColumn=hr, transpose=True)
+\end{pyblock}
+\py{t}
 
 \subsubsection{caption}
     Use to define a caption for your table.
     Inserts \verb!\caption! after \verb!\end{tabular}!.
 Always use informative captions!
-\begin{pygments}
-t = matrix2latex(m, headerRow=rl,
+\begin{pyblock}
+t = matrix2latex(m, headerRow=hr,
                  caption='Nice table!')
-\end{pygments}
-\sage{t}
+\end{pyblock}
+\py{t}
 
 \subsubsection{label}
 Used to insert \verb!\label{tab:...}! after \verb!\end{tabular}!
 Default is filename without extension.
 
-We can use \lstinline{label='niceTable'} but if we save it to file
+We can use \pygment{python}{label='niceTable'} but if we save it to file
 the default label is the filename, so:
-\begin{pygments}
-matrix2latex(m, 'niceTable', headerRow=rl, 
+\begin{pyblock}
+matrix2latex(m, 'niceTable', headerRow=hr, 
                  caption='Nice table!')
-\end{pygments}
+\end{pyblock}
 can be referenced by \verb!\ref{tab:niceTable}!. Table \ref{tab:niceTable}
 was included in latex by \verb!\input{niceTable}!.
 \input{niceTable}
 
 \subsubsection{format}
-Printf syntax format, e.g. \lstinline{$%.2f$}. Default is \lstinline{$%g$}.
+Printf syntax format, e.g. \pygment{python}{$%.2f$}. Default is \pygment{python}{$%g$}.
   This format is then used for all the elements in the table.
 Using numpy creating tables for common mathematical expressions are easy:
-\begin{pygments}
+\begin{pyblock}
 import numpy as np
 m = np.zeros((3, 2))
 m[:, 0] = np.arange(1, 3+1)
 m[:, 1] = 1./m[:, 0]
 
 rl = ['$x$', '$1/x$']
-t = matrix2latex(m, headerRow=rl,
+t = matrix2latex(m, headerRow=hr,
                  format='%.2f')
-\end{pygments}
-\sage{t}
+\end{pyblock}
+\py{t}
 
 \subsubsection{formatColumn}
-A list of printf-syntax formats, e.g. \lstinline{['$%.2f$', '$%g$']}
+A list of printf-syntax formats, e.g. \pygment{python}{['$%.2f$', '$%g$']}
 Must be of same length as the number of columns.
 Format i is then used for column i.
 This is useful if some of your data should be printed with more significant figures
 than other parts, for instance in the example above $x$ are integers and using
 $d$ is more appropriate.
-\begin{pygments}
+\begin{pyblock}
 fc = ['$%d$', '$%.2f$']
-t = matrix2latex(m, headerRow=rl, formatColumn=fc)
-\end{pygments}
-\sage{t}
+t = matrix2latex(m, headerRow=hr, formatColumn=fc)
+\end{pyblock}
+\py{t}
 
 You could use the format option to add units to you numbers, so for instance
 visualizing ohms law
-\begin{pygments}
+\begin{pyblock}
 m2 = np.zeros((3, 2))
 R = 50. # ohm
 m2[:, 0] = np.arange(1, 3+1)
@@ -163,17 +164,17 @@ rl = ['$V$', '$I=V/R$']
 t = matrix2latex(m2, 'table_ohm', headerRow=rl,
                  formatColumn=['$%d V$', '$%.2f A$'],
                  caption=c)
-\end{pygments}
+\end{pyblock}
 \input{table_ohm}
 
 This is however not the recommend way to give units, since they should
 be given in the header
-\begin{pygments}
+\begin{pyblock}
 rl = ['$V$ [V]', '$I=V/R$ [A]']
 t = matrix2latex(m2, 'table_ohm2', headerRow=rl,
                  formatColumn=['$%d$', '$%.2f$'],
                  caption=c)
-\end{pygments}
+\end{pyblock}
 \input{table_ohm2}
 
 \subsubsection{alignment}
@@ -183,28 +184,28 @@ A latex alignment like c, l or r.
 Can be given either as one per column e.g. ``ccc''.
 Or if only a single character is given e.g. ``c'',
 it will produce the correct amount depending on the number of columns.
-Default is ``c'', if you use \lstinline{headerColumn} it will always use
+Default is ``c'', if you use \pygment{python}{headerColumn} it will always use
 ``r'' as the alignment for that column.
-\begin{pygments}
+\begin{pyblock}
 t = matrix2latex(m, alignment='rl')
-\end{pygments}
-\sage{t}
+\end{pyblock}
+\py{t}
 
 But what if I want vertical rules in my table? Well, this package is built
 on top of booktabs for publication ready tables and the booktabs documentation clearly
 states ``Never, ever use vertical rule''. But as long as you are not publishing your table,
 you could simply use
-\begin{pygments}
+\begin{pyblock}
 t = matrix2latex(m, alignment='|r||c|')
-\end{pygments}
-\sage{t}
+\end{pyblock}
+\py{t}
 
 There is some error checking on the alignment but not much, it simply counts the number
 of c, l and r in the alignment. All other characters are ignored.
 
 \subsubsection{position}
 Used for the table environment to specify the optional parameter ``position specifier''
-Default is \lstinline{'[' + 'htp' + ']'}
+Default is \pygment{python}{'[' + 'htp' + ']'}
 
 If you want to place your table manually, do not use the table environment.
 
@@ -212,7 +213,7 @@ If you want to place your table manually, do not use the table environment.
 Note that many of these options only has an effect when typesetting a table,
 if the correct environment is not given the arguments are simply ignored.
 To give an example of a very useless function call
-\begin{pygments}
+\begin{pyblock}
 t1 = matrix2latex(m, None, "align*", "pmatrix",
                  alignment='rc',
                  caption='hello world',
@@ -220,9 +221,9 @@ t1 = matrix2latex(m, None, "align*", "pmatrix",
 # produces the exact same thing as
 t2 = matrix2latex(m, None, "align*", "pmatrix")
 assert t1 == t2
-\end{pygments}
-\sage{t1}
-The scary thing is that \lstinline{headerColumn} actually works when creating a matrix,
+\end{pyblock}
+\py{t1}
+The scary thing is that \pygment{python}{headerColumn} actually works when creating a matrix,
 it just looks a bit wierd.
 
 The options presented by this program represents what I need when creating a table,
@@ -235,11 +236,11 @@ of some advanced table techniques.
 The booktabs.pdf documentation is an excellent guide to proper table creation,
 matrix2latex does not incorporate all the features of this package (yet).
 %Both caption and label will do nothing if tabular environment is not used.
-% \begin{sagesilent}
+% \begin{pycode}
 % import sys
 % sys.path.append('../')
-% \end{sagesilent}
-% \begin{pygments}
+% \end{pycode}
+% \begin{pyblock}
 % from matrix2latex import matrix2latex
 % from numpy import matrix
 % m = matrix("1 2 4;3 4 6") # numpy matrix or
@@ -248,8 +249,8 @@ matrix2latex does not incorporate all the features of this package (yet).
 % # or since table, center and tabular is default:
 % t = matrix2latex(m, format="$%.2f$", alignment="lcr")
 % # produces:
-% \end{pygments}
-% \sage{t}
+% \end{pyblock}
+% \py{t}
 
 \section{Usage examples}
 The usefulness of a programming interface to create \LaTeX{}
@@ -260,18 +261,82 @@ or because the table content is somehow created by python.
 One day you decide to compare different implementations of the
 factorial functions, you start by writing the following file
 as \verb!factorial.py!
-\lstinputlisting[lastline=20]{factorial.py}
+\begin{pyblock}[factorial]
+# built in factorial
+from math import factorial as factorialMath
+
+# recursive
+def factorialRecursive(n):
+    if n == 0:
+        return 1
+    elif n == 1:
+        return n
+    else:
+        return n*factorialRecursive(n-1)
+
+# sequential
+def factorialSequential(n):
+    if n == 0:
+        return 1
+    res = 1
+    for k in xrange(2, n+1):
+        res *= k
+    return res  
+\end{pyblock}
 
 The first thing to do is to verify that the three implementations actually give
 the same results, for this we simply loop over the different functions and try for
 different values of $n$. The result is shown in table \ref{tab:facV}.
-\lstinputlisting[firstline=22, lastline=44]{factorial.py}
+\begin{pyblock}[factorial]
+from matrix2latex import matrix2latex
+N = range(0, 10)
+table = list()
+for func in (factorialMath,
+             factorialRecursive,
+             factorialSequential):
+    row = list()
+    for n in N:
+        res = func(n)  # call func
+        row.append(res)# append result to row
+    table.append(row)  # append row to table
+
+# row labels
+rl = ['$n$', 'Built-in', 'Recursive', 'Sequential']
+caption = '''Vertifying that the different factorial
+implementations gives the same results'''
+matrix2latex(table, 'facV', caption=caption,
+             headerColumn=N, headerRow=rl,
+             alignment='r', transpose=True)  
+\end{pyblock}
 \input{facV}
 
 What we really wanted to do was to
 compare the speed of the different implementations. To do this
-we use the python package timeit, the rest of the code is mostly unchanged.
-\lstinputlisting[firstline=46]{factorial.py}
+we use the python package timeit, shown bellow. The speed comparision is given in table \ref{tab:facT}.
+\begin{pyblock}[factorial]
+import timeit
+table = list()
+for func in ('factorialMath',
+             'factorialRecursive',
+             'factorialSequential'):
+    row = list()
+    for n in N:
+        statement = 'factorial.{func}({n})'.format(func=func,
+                                                   n=n)
+        setup = 'import factorial'
+        # measure time
+        res = timeit.repeat(statement, setup)
+        row.append(min(res)) # append result
+    table.append(row) # append row to table
+
+rl = ['$n$', 'Built-in [$s$]',
+      'Recursive [$s$]', 'Sequential [$s$]']
+caption = '''Comparing execution time for
+the different factorial implementations'''
+matrix2latex(table, 'facT', caption=caption,
+             headerColumn=N, headerRow=rl,
+             transpose=True, format='$%.3f$')  
+\end{pyblock}
 \input{facT}
 
 As an additional example, see \verb!test_compatibility.py! to see how table \ref{tab:compatibleTable}

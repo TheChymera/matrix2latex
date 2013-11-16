@@ -233,11 +233,11 @@ if the correct environment is not given the arguments are simply ignored.
             else:
                 label = value
         elif key == "filename":
-	    assertStr(value, "filename")
-	    filename = value
-	elif key == "position":
-	    assertStr(value, "position")
-	    position = value
+            assertStr(value, "filename")
+            filename = value
+        elif key == "position":
+            assertStr(value, "position")
+            position = value
         elif key == "transpose":
             newMatr = list(zip(*matr))
 #             for j in range(0, n):
@@ -382,7 +382,7 @@ if the correct environment is not given the arguments are simply ignored.
                 try:
                     e = niceFloat.nice(e, int(reg.group(1)))
                     fcj = '%s'
-                except Exception as err: pass #sys.stderr.write('%s %s %s\n' %(e, reg, err))
+                except Exception: pass #sys.stderr.write('%s %s %s\n' %(e, reg, err))
                 
                 formated = fcj % e
                 formated = fixEngineeringNotation.fix(formated, table=True) # fix 1e+2
