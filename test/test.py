@@ -199,7 +199,21 @@ def test_multicolumn():
 def test_empty():
     t = matrix2latex([])
     assertEqual(t, 'empty')
-    
+
+def test_pandas():
+    try:
+        import pandas as pd
+        import numpy as np
+        m = [[1, 1], [2, 4], [3, 9]] # python nested list
+        m = pd.DataFrame(m)
+        #m = pd.DataFrame.from_csv('http://chymera.eu/data/test/r_data.csv', parse_dates=False, index_col=False)
+        print 'PANDAS\n', m
+        print 'PANDAS\n', m.to_records()
+        t = matrix2latex(m)
+        print t
+    except ImportError:
+        pass
+
 if __name__ == '__main__':
     import test
     for d in test.__dict__:
