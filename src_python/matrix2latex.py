@@ -130,10 +130,17 @@ if the correct environment is not given the arguments are simply ignored.
     #
     # Convert to list
     #
+    # If numpy:
     try:
         matr = matr.tolist()
     except AttributeError:
         pass # lets hope it looks like a list
+    # If pandas
+    try:
+        matr = matr.to_records()
+    except AttributeError:
+        pass # lets hope it looks like a list
+
 
     #
     # Define matrix-size
@@ -272,7 +279,7 @@ if the correct environment is not given the arguments are simply ignored.
         f = open(filename, 'w')
         if label == None:
             label = os.path.basename(filename) # get basename
-            label = label.replace(".tex", "")  # remove extension. TODO: bug with filename=foo.texFoo.tex
+            label = label[:-len(".tex")]  # remove extension
 
     f = IOString(f)
     #
