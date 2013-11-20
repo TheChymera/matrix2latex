@@ -32,15 +32,16 @@ For the moment it is only tested with matlab R2009b.
 
 \section{Installation}
 The following packages and definitions are recommended in the latex preamble 
-\begin{verbatim}
+\begin{pygments}{latex}
 % scientific notation, 1\e{9} will print as 1x10^9
 \providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}
 \usepackage{amsmath} % needed for pmatrix
 \usepackage{booktabs} % Fancy tables
+\usepackage{caption} % Fixes spacing between caption and table
 ...
 \begin{document}
 ...
-\end{verbatim}
+\end{pygments}
 \subsection{Python}
 To use the code place the folder matrix2latex/ in our \verb!PYTHONPATH!.
 Your current working directory is always on your \verb!PYTHONPATH!.
