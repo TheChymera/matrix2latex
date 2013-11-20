@@ -86,6 +86,27 @@ t = matrix2latex(m, 'headerRow', hr);
 \end{pygments}
 \py{t}
 
+The python version currently supports header rows spanning multiple columns (using \pygment{latex}{\multicolumn}), this
+is done by repeating the header info. It also supports multiple rows 
+by using a nested list.
+\begin{pycode}[multi]
+from matrix2latex import matrix2latex
+\end{pycode}
+\begin{pyblock}[multi]
+hr = [['Item', 'Item', ''],
+      ['Animal', 'Description', 'Price (\$)']]
+t = [['Gnat', 'per gram', 13.65],
+     ['', 'each',  0.01],
+     ['Gnu', 'stuffed', 92.50],
+     ['Emu', 'stuffed', 33.33],
+     ['Armadillo', 'frozen', 8.99]]
+t = matrix2latex(t, headerRow = hr, alignment='@{}llr@{}')
+\end{pyblock}
+\py[multi]{t}
+To avoid this behavior ensure each consecutive item is unique, for instance:
+\pygment{python}{['Item', 'Item ', '']}
+(note the space after the second item).
+
 \subsubsection{headerColumn}
     A column used to label the rows.
     Must be a list of strings

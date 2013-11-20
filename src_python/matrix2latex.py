@@ -81,6 +81,12 @@ matrix2latex(m, "test", ...)
 headerRow
     A row at the top used to label the columns.
     Must be a list of strings. Can be a nested list for multiple headings.
+    If two or more items are repeated, a multicolumn is inserted, so:
+    headerRow=['a', 'a']
+    will produces "\multicolumn{2}{c}{Item}" with an appropriate cmidrule beneath.
+    To avoid this behavior ensure each consecutive item is unique, for instance:
+    headerRow=['a', 'a ']
+    will produces the expected "a & a".
 
 headerColumn
     A column used to label the rows.
