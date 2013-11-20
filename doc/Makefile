@@ -19,4 +19,5 @@ compile:
 
 clean:
 	latexmk -c doc.tex
+	rm -r pythontex-files-doc/
 	rm -f *.aux *.log *~ *.out *.bbl
