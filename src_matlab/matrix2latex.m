@@ -75,7 +75,8 @@ function table = matrix2latex(matrix, filename, varargin)
 %
 %caption
 %    Use to define a caption for your table.
-%    Inserts \caption after \end{tabular}.
+%    Inserts \caption after \begin{center},
+%    note that without the center environment the caption is currently ignored.
 %
 %label
 %Used to insert \verb!\label{tab:...}! after \verb!\end{tabular}!
