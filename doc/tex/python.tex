@@ -100,8 +100,9 @@ t = matrix2latex(m, headerColumn=hr, transpose=True)
 \py{t}
 
 \subsubsection{caption}
-    Use to define a caption for your table.
-    Inserts \verb!\caption! after \verb!\end{tabular}!.
+Use to define a caption for your table.
+Inserts \pygment{python}{\caption} after \pygment{python}{\begin{center}},
+note that without the center environment the caption is currently ignored.
 Always use informative captions!
 \begin{pyblock}
 t = matrix2latex(m, headerRow=hr,
