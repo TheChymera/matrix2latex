@@ -200,7 +200,7 @@ def test_empty():
     t = matrix2latex([])
     assertEqual(t, 'empty')
 
-def test_pandas():
+def test_pandas_dataframe():
     try:
         import pandas as pd
         import numpy as np
@@ -210,12 +210,41 @@ def test_pandas():
         # print 'PANDAS\n', m
         # print 'PANDAS\n', m.to_records()
         t = matrix2latex(m)
-        assertEqual(t, "pandas")
+        assertEqual(t, "pandas_dataframe")
+    except ImportError:
+        pass
+
+def test_pandas_series():
+    try:
+        import pandas as pd
+        import numpy as np
+        s = pd.Series([2, 4, 2, 42, 5], index=['a', 'b', 'c', 'd', 'e'])
+        # print 'PANDAS\n', m
+        # print 'PANDAS\n', m.to_records()
+        t = matrix2latex(s)
+        print 'pandas Series', t
+        t = matrix2latex(pd.DataFrame(s))
+        print 'pandas DataFrame', t
+        assertEqual(t, "pandas_series")
+    except ImportError:
+        pass
+
+def test_pandas_columns():
+    try:
+        import pandas as pd
+        import numpy as np
+        d = {'one' : pd.Series([1., 2., 3.], index=['a', 'b', 'c']),
+             'two' : pd.Series([1., 2., 3., 4.], index=['a', 'b', 'c', 'd'])}
+        df = pd.DataFrame(d)
+        t = matrix2latex(df)
+        print 'pandas', t, df.to_records()
+        assertEqual(t, "pandas_columns")
     except ImportError:
         pass
 
 if __name__ == '__main__':
     import test
-    for d in test.__dict__:
+    for d in sorted(test.__dict__):
         if 'test_' in d:
+            print 'RUNNING', d
             eval(d+'()')

@@ -134,6 +134,9 @@ position
 Note that many of these options only has an effect when typesetting a table,
 if the correct environment is not given the arguments are simply ignored.
     '''
+    headerRow = None
+    headerColumn = None
+
     #
     # Convert to list
     #
@@ -143,10 +146,14 @@ if the correct environment is not given the arguments are simply ignored.
     except AttributeError:
         pass # lets hope it looks like a list
     # If pandas
-    try:
-        matr = matr.to_records()
-    except AttributeError:
-        pass # lets hope it looks like a list
+    if hasattr(matr, 'to_frame') or hasattr(matr, 'to_records'):
+        try:                    # series objects is first converted to DataFrame
+            matr = matr.to_frame()
+        except AttributeError:
+            pass
+        headerColumn = matr.index
+        headerRow = [list(matr.columns)]
+        matr = matr.to_records(index=False)
 
 
     #
@@ -191,8 +198,6 @@ if the correct environment is not given the arguments are simply ignored.
     else:
         alignment = "c"
 
-    headerRow = None
-    headerColumn = None
     caption = None
     label = None
     position = "htp"            # position specifier for floating table environment
@@ -260,7 +265,7 @@ if the correct environment is not given the arguments are simply ignored.
             sys.stderr.write("Error: key not recognized '%s'\n" % key)
             sys.exit(2)
             
-    if "headerColumn" in keywords:
+    if headerColumn != None:
         alignment = "r" + alignment
 
     # Environments
