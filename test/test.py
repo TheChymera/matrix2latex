@@ -239,6 +239,9 @@ def test_pandas_columns():
         t = matrix2latex(df)
         print 'pandas', t, df.to_records()
         assertEqual(t, "pandas_columns")
+
+        t = matrix2latex(df, headerRow=None, headerColumn=None)
+        assertEqual(t, "pandas_columns_noHeaders")
     except ImportError:
         pass
 
