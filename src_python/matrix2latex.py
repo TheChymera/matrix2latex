@@ -228,13 +228,19 @@ if the correct environment is not given the arguments are simply ignored.
                 alignment = value
             assertKeyAlignment(alignment, n)
         elif key == "headerRow":
-            if not(type(value[0]) == list):
-                value = [value]         # just one header
-            #assertListString(value, "headerRow") # todo: update
-            headerRow = list(value)
+            if value == None:
+                headerRow = None
+            else:
+                if not(type(value[0]) == list):
+                    value = [value]         # just one header
+                #assertListString(value, "headerRow") # todo: update
+                headerRow = list(value)
         elif key == "headerColumn":
-            assertListString(value, "headerColumn")
-            headerColumn = list(value)
+            if value == None:
+                headerColumn = None
+            else:
+                assertListString(value, "headerColumn")
+                headerColumn = list(value)
         elif key == "caption":
             assertStr(value, "caption")
             caption = value
