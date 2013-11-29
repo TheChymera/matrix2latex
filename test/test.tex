@@ -175,14 +175,47 @@
     \end{tabular}
   \end{center}
 \end{table}
-%%%pandas
+%%%pandas_dataframe
 \begin{table}[htp]
 	\begin{center}
-		\begin{tabular}{ccc}
+		\begin{tabular}{rcc}
 		\toprule
-			$0$ & $1$ & $1$\\
-			$1$ & $2$ & $4$\\
-			$2$ & $3$ & $9$\\
+                {} & {0} & {1}\\
+                \midrule
+                {0} & $1$ & $1$\\
+                {1} & $2$ & $4$\\
+                {2} & $3$ & $9$\\
+		\bottomrule
+		\end{tabular}
+	\end{center}
+\end{table}
+%%%pandas_columns
+\begin{table}[htp]
+	\begin{center}
+		\begin{tabular}{rcc}
+		\toprule
+			{} & {one} & {two}\\
+			\midrule
+			{a} & $1$ & $1$\\
+			{b} & $2$ & $2$\\
+			{c} & $3$ & $3$\\
+			{d} & {-} & $4$\\
+		\bottomrule
+		\end{tabular}
+	\end{center}
+\end{table}
+%%%pandas_series
+\begin{table}[htp]
+	\begin{center}
+		\begin{tabular}{rc}
+		\toprule
+			{} & {0}\\
+			\midrule
+			{a} & $2$\\
+			{b} & $4$\\
+			{c} & $2$\\
+			{d} & $42$\\
+			{e} & $5$\\
 		\bottomrule
 		\end{tabular}
 	\end{center}
