@@ -140,21 +140,24 @@ if the correct environment is not given the arguments are simply ignored.
     #
     # Convert to list
     #
-    # If numpy:
+    # If pandas
+    try:
+        headerColumn = list(matr.index)
+    except (AttributeError, TypeError):
+        pass
+    try:
+        headerRow = [list(matr.columns)]
+    except (AttributeError, TypeError):
+        pass
+    try:
+        matr = matr.to_records(index=False)
+    except AttributeError:
+        pass
+    # If numpy (vops: must be placed below pandas check)
     try:
         matr = matr.tolist()
     except AttributeError:
         pass # lets hope it looks like a list
-    # If pandas
-    if hasattr(matr, 'to_frame') or hasattr(matr, 'to_records'):
-        try:                    # series objects is first converted to DataFrame
-            matr = matr.to_frame()
-        except AttributeError:
-            pass
-        headerColumn = matr.index
-        headerRow = [list(matr.columns)]
-        matr = matr.to_records(index=False)
-
 
     #
     # Define matrix-size
@@ -270,7 +273,7 @@ if the correct environment is not given the arguments are simply ignored.
         else:
             sys.stderr.write("Error: key not recognized '%s'\n" % key)
             sys.exit(2)
-            
+
     if headerColumn != None:
         alignment = "r" + alignment
 
@@ -360,7 +363,7 @@ if the correct environment is not given the arguments are simply ignored.
         if len(start) == 0:             # do not use if cmidrule is used on last header
             f.write('\t'*tabs)
             f.write('\\midrule\n')
-                            
+
     # Values
     for i in range(0, m):
         f.write("\t"*tabs)
