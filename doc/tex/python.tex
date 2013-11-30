@@ -260,16 +260,31 @@ matrix2latex does not incorporate all the features of this package (yet).
 
 \subsection{Pandas support}
 Some preliminary support for Pandas\footnote{\url{http://pandas.pydata.org/}}
-is available, some examples:
+is available, pandas series is shown in table \ref{tab:pd_series}, while
+a pandas DataFrame is displayed in table \ref{tab:pd_data_frame}.
 \begin{pycode}[pandas]
 from matrix2latex import matrix2latex
 \end{pycode}
 \begin{pyblock}[pandas]
 import pandas as pd
-s = pd.Series([2, 4, 2, 42, 5], index=['a', 'b', 'c', 'd', 'e'])
-t = matrix2latex(s)
+s = pd.Series([2, 4, 2, 42, 5], 
+              index=['a', 'b', 'c', 'd', 'e'])
+t = matrix2latex(s, caption='Pandas Series', 
+                 label='pd_series')
+
+m = pd.DataFrame([[1, 1], [2, 4], [3, 9]], 
+                 index=['item1', 'item2', 'item3'],
+                 columns=['a', 'b'])
+t += matrix2latex(m, caption='Pandas Dataframe',
+                  label='pd_data_frame')
 \end{pyblock}
 \py[pandas]{t}
+
+Matrix2latex automatically detects and uses the \pygment{python}{index}
+and \pygment{python}{columns} attributes for 
+\pygment{python}{headerColumn} and
+\pygment{python}{headerRow} respectively. You can override this behavior by passing
+\pygment{python}{headerColumn=None, headerRow=None}.
 %Both caption and label will do nothing if tabular environment is not used.
 % \begin{pycode}
 % import sys
