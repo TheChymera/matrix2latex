@@ -14,7 +14,7 @@ matrix2latex(matrix, filename, *environment, **keywords)
   
 \subsection{matrix}
 \begin{itemize}
-\item[Python:] A numpy matrix, a pandas dataframe or a (nested) list. 
+\item[Python:] A numpy matrix, a pandas DataFrame/Series or a (nested) list. 
   Note: these are all converted to a nested list internally for compatibility.
 \item[Matlab:] Matrix or cell array.
 \end{itemize}
@@ -257,6 +257,19 @@ of some advanced table techniques.
 
 The booktabs.pdf documentation is an excellent guide to proper table creation,
 matrix2latex does not incorporate all the features of this package (yet).
+
+\subsection{Pandas support}
+Some preliminary support for Pandas\footnote{\url{http://pandas.pydata.org/}}
+is available, some examples:
+\begin{pycode}[pandas]
+from matrix2latex import matrix2latex
+\end{pycode}
+\begin{pyblock}[pandas]
+import pandas as pd
+s = pd.Series([2, 4, 2, 42, 5], index=['a', 'b', 'c', 'd', 'e'])
+t = matrix2latex(s)
+\end{pyblock}
+\py[pandas]{t}
 %Both caption and label will do nothing if tabular environment is not used.
 % \begin{pycode}
 % import sys

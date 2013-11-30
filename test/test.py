@@ -219,13 +219,14 @@ def test_pandas_series():
         import pandas as pd
         import numpy as np
         s = pd.Series([2, 4, 2, 42, 5], index=['a', 'b', 'c', 'd', 'e'])
-        # print 'PANDAS\n', m
-        # print 'PANDAS\n', m.to_records()
+        print 'PANDAS\n', s
+        print 'PANDAS\n', s.to_dict(), s.tolist(), hasattr(s, 'to_dict')
         t = matrix2latex(s)
         print 'pandas Series', t
-        t = matrix2latex(pd.DataFrame(s))
-        print 'pandas DataFrame', t
+        t2 = matrix2latex(pd.DataFrame(s))
+        print 'pandas DataFrame', t2
         assertEqual(t, "pandas_series")
+        assertEqual(t2, "pandas_series_dataFrame")
     except ImportError:
         pass
 
