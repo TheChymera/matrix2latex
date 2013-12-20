@@ -9,9 +9,9 @@ foundation. See:
 
 \section{TODO}
 \begin{itemize}
-\item Provide installation.
-\item Complete test suite.
-\item Improve error handling
+\item Improve test suite.
+\item Improve error handling.
+\item Update matlab code
 \end{itemize}
 
 \section{Compatibility}
@@ -43,10 +43,14 @@ The following packages and definitions are recommended in the latex preamble
 ...
 \end{pygments}
 \subsection{Python}
-To use the code place the folder matrix2latex/ in our \verb!PYTHONPATH!.
-Your current working directory is always on your \verb!PYTHONPATH!.
+To use the code place the folder matrix2latex/ in our \verb!PYTHONPATH!, 
+this can be done with the usual
+\begin{verbatim}
+sudo python setup.py install
+\end{verbatim}
+Alternativly, your current working directory is always on your \verb!PYTHONPATH!.
 
-Hint: on unix systems do: \\
-\verb!echo $PYTHONPATH! \\
-to see a list of locations. Other users: ask google about \verb!PYTHONPATH!
-for your operation system.
+% Hint: on unix systems do: \\
+% \verb!echo $PYTHONPATH! \\
+% to see a list of locations. Other users: ask google about \verb!PYTHONPATH!
+% for your operation system.
