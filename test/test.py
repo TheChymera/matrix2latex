@@ -246,6 +246,21 @@ def test_pandas_columns():
     except ImportError:
         pass
 
+def test_pandas_Panel():
+    try:
+        import pandas as pd
+        import numpy as np
+        panel = pd.Panel(np.random.randn(3, 5, 4), items=['one', 'two', 'three'],
+                         major_axis=pd.date_range('1/1/2000', periods=5),
+                         minor_axis=['a', 'b', 'c', 'd'])
+        frame = panel.to_frame()
+        # TODO: Needs support for multiple headerColumns
+        #t = matrix2latex(frame) 
+        #print t
+        #assert False
+    except ImportError:
+        pass
+
 if __name__ == '__main__':
     import test
     for d in sorted(test.__dict__):
