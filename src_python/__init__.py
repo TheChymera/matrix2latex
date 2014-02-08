@@ -16,4 +16,14 @@ along with matrix2latex. If not, see <http://www.gnu.org/licenses/>.
 
 __all__ = ['matrix2latex']
 
-from matrix2latex import matrix2latex
+try:
+    from matrix2latex import matrix2latex
+except ImportError:
+    # Really ugly hack to please python3 import mechanisms
+    import sys, os
+    SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.expanduser(__file__)))
+
+    sys.path.insert(0, SCRIPT_DIR)
+    from matrix2latex import matrix2latex
+    matrix2latex = matrix2latex.matrix2latex
+    del sys.path[0]             # NOTE: ensure that matrix2latex does not change sys.path

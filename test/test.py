@@ -17,7 +17,7 @@ along with matrix2latex. If not, see <http://www.gnu.org/licenses/>.
 
 # tests for matrix2latex.py
 import sys
-sys.path.insert(0, '../src_python')
+sys.path.insert(0, '../')
 from matrix2latex import matrix2latex
 m = [[1, 2, 3], [4, 5, 6]]
 
