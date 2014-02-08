@@ -23,11 +23,10 @@ def isnan(e):
     except (TypeError, AttributeError):
         return e == float("nan")
 
-# my stuff:
-import fixEngineeringNotation
+from fixEngineeringNotation import fix
 from error import *                     # error handling
 from IOString import IOString
-import niceFloat 
+from niceFloat import nice
 # Definitions
 # Matrix environments where alignment can be utilized. CHECK: Note alignment[0] used!
 matrix_alignment = ["pmatrix*","bmatrix*","Bmatrix*","vmatrix*","Vmatrix*"] # Needs mathtools package
@@ -315,7 +314,7 @@ if the correct environment is not given the arguments are simply ignored.
         elif environments[ixEnv] == "center":
             if caption != None:
                 f.write("\n"+"\t"*ixEnv)
-                f.write(r"\caption{%s}" % fixEngineeringNotation.fix(caption))
+                f.write(r"\caption{%s}" % fix(caption))
             if label != None:
                 f.write("\n"+"\t"*ixEnv)
                 f.write(r"\label{tab:%s}" % label)
@@ -401,12 +400,12 @@ if the correct environment is not given the arguments are simply ignored.
 
                 reg = re.match('%.(\d)g', fcj) # Change the %.3g pattern to nicefloat instead
                 try:
-                    e = niceFloat.nice(e, int(reg.group(1)))
+                    e = nice(e, int(reg.group(1)))
                     fcj = '%s'
                 except Exception: pass #sys.stderr.write('%s %s %s\n' %(e, reg, err))
                 
                 formated = fcj % e
-                formated = fixEngineeringNotation.fix(formated, table=True) # fix 1e+2
+                formated = fix(formated, table=True) # fix 1e+2
                 f.write('%s' % formated)
             if j != n-1:                # not last row
                 f.write(" & ")
