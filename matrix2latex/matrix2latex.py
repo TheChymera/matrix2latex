@@ -273,8 +273,7 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
             # Recursion!
             return matrix2latex(newMatr, filename, *environments, **copyKeywords)
         else:
-            sys.stderr.write("Error: key not recognized '%s'\n" % key)
-            sys.exit(2)
+            raise ValueError("Error: key not recognized '%s'" % key)
 
     if headerColumn != None:
         alignment = "r" + alignment
