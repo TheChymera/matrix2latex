@@ -279,7 +279,9 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
         alignment = "r" + alignment
 
     # Environments
-    if len(environments) == 0:          # no environment give, assume table
+    if environments is None:    # environments=None passed, do not add any environments.
+        environments = []
+    elif len(environments) == 0: # no environment give, assume table
         environments = ("table", "center", "tabular")
 
     if formatColumn == None:

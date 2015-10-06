@@ -50,10 +50,9 @@ clean_latex
 	if not Filename:
 		Filename = "_temp"
 
-	tex = matrix2latex(matrix, headerRow=headerRow, headerColumn=headerColumn).replace("\\begin{table}[htp]\n", "")
-	tex = tex.replace("	\\begin{center}\n", "")
-	tex = tex.replace("\n	\\end{center}\n", "")
-	tex = tex.replace("\\end{table}", "")
+	tex = matrix2latex(matrix, headerRow=headerRow,
+                           headerColumn=headerColumn,
+                           environments=None)
 
 	#add header elements (with the prepend operator "+"y in reverse order)
 	tex = "\\sbox\mt{%\n" + tex
