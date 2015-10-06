@@ -21,13 +21,13 @@ callSystem('cd doc;latexmk -pdf doc.tex')
 
 include_common = ' doc README.md '
 
-python_name = 'matrix2latexPython'
+python_name = 'archive/matrix2latexPython'
 include_files = 'matrix2latex setup.py' + include_common
 callSystem('git archive --format=tar --prefix={name}{v}/ HEAD {include} | gzip > {name}-{v}.tar.gz'.format(name=python_name,
                                                                                                            v=version,
                                                                                                            include=include_files))
 
-matlab_name = 'matrix2latexMatlab'
+matlab_name = 'archive/matrix2latexMatlab'
 include_files = 'src_matlab' + include_common
 callSystem('git archive --format=tar --prefix={name}{v}/ HEAD {include} | gzip > {name}-{v}.tar.gz'.format(name=matlab_name,
                                                                                                            v=version,
