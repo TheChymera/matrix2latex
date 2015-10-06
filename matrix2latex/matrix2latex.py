@@ -35,103 +35,104 @@ table_alignment = ["tabular", "longtable"]
     
 def matrix2latex(matr, filename=None, *environments, **keywords):
     r'''
-A detailed pdf version of this documentation is available as doc<date>.pdf
-Takes a python matrix or nested list and converts to a LaTeX table or matrix.
-Author: ob@cakebox.net, inspired by the work of koehler@in.tum.de who has written
-a similar package for matlab
-\url{http://www.mathworks.com/matlabcentral/fileexchange/4894-matrix2latex}
+    Takes a python matrix or nested list and converts to a LaTeX table or matrix.
+    Author: ob@cakebox.net, inspired by the work of koehler@in.tum.de who has written
+    a `similar package for 
+    matlab <http://www.mathworks.com/matlabcentral/fileexchange/4894-matrix2latex>`_
 
-The following packages and definitions are recommended in the latex preamble 
-\providecommand{\e}[1]{\ensuremath{\times 10^{#1}}} % scientific notation, 1\e{9} will print as 1x10^9
-\usepackage{amsmath} % needed for pmatrix
-\usepackage{booktabs} % Fancy tables
-...
-\begin{document}
-...
+    The following packages and definitions are recommended in the latex preamble
 
-Arguments:
-  
-matrix
-  A numpy matrix or a nested list
+    .. code-block:: latex
 
-Filename
-  File to place output, extension .tex is added automatically. File can be included in a LaTeX
-  document by \input{filename}. Output will always be returned in a string. If filename is None
-  or not a string it is ignored.
-  
-*environments
-A list specifing the begin and end block.
-  Use 
-matrix2latex(m, None, "align*", "pmatrix", ...) for matrix.
-  This will give
-  \begin{align*}
-    \begin{pmatrix}
-      1 & 2 \\
-      3 & 4
-    \end{pmatrix}
-  \end{align*}
-  Use 
-matrix2latex(m, "test", "table", "center", "tabular" ...) for table.
-  Table is default so given no arguments: table, center and tabular will be used.
-  The above command is then equivalent to \\
-matrix2latex(m, "test", ...)
+      \providecommand{\e}[1]{\ensuremath{\times 10^{#1}}} % scientific notation, 1\e{9} will print as 1x10^9
+      \usepackage{amsmath} % needed for pmatrix
+      \usepackage{booktabs} % Fancy tables
+      ...
+      \begin{document}
+      ...
 
-**keywords
-headerRow
-    A row at the top used to label the columns.
-    Must be a list of strings. Can be a nested list for multiple headings.
-    If two or more items are repeated, a multicolumn is inserted, so:
-    headerRow=['a', 'a']
-    will produces "\multicolumn{2}{c}{Item}" with an appropriate cmidrule beneath.
-    To avoid this behavior ensure each consecutive item is unique, for instance:
-    headerRow=['a', 'a ']
-    will produces the expected "a & a".
+    :param list matr: The numpy matrix/array or a nested list to convert.
 
-headerColumn
-    A column used to label the rows.
-    Must be a list of strings
+    :param str filename: File to place output, extension .tex is added automatically. File can be included in a LaTeX
+      document by ``\input{filename}``. If filename is None
+      or not a string it is ignored.
 
-transpose
-    Flips the table around in case you messed up. Equivalent to
-    matrix2latex(m.H, ...)
-    if m is a numpy matrix.
+    :arg environments: A list specifing the begin and end block.
+        Example: ``matrix2latex(m, None, "align*", "pmatrix")`` gives the matrix
 
-caption
-    Use to define a caption for your table.
-    Inserts \caption after \begin{center},
-    note that without the center environment the caption is currently ignored.
+        .. code-block:: latex
+
+            \begin{align*}
+                \begin{pmatrix}
+                   1 & 2 \\
+                   3 & 4
+                \end{pmatrix}
+            \end{align*}
+
+        The default is generating a table using the ``table``, ``center`` and ``tabular``
+        environment, hence
+        ``matrix2latex(m, "test", "table", "center", "tabular" ...)``
+        can be written as
+        ``matrix2latex(m, "test", ...)``
+
+    :key headerRow:
+        A row at the top used to label the columns.
+        Must be a list of strings. Can be a nested list for multiple headings.
+        If two or more items are repeated, a multicolumn is inserted, so:
+        ``headerRow=['a', 'a']``
+        will produces ``\multicolumn{2}{c}{Item}`` with an appropriate cmidrule beneath.
+        To avoid this behavior ensure each consecutive item is unique, for instance:
+        ``headerRow=['a', 'a ']``
+        will produces the expected ``a & a`` (note the space after the second ``a``).
+
+    :key headerColumn:
+        A column used to label the rows. 
+        Must be a list of strings
+
+    :key transpose:
+        Flips the table around in case you messed up. Equivalent to
+        ``matrix2latex(m.H, ...)``
+        if m is a numpy matrix.
+
+    :key caption:
+        Use to define a caption for your table.
+        Inserts ``\caption`` after ``\begin{center}``,
+        note that without the center environment the caption is currently ignored.
+
+    :key label:
+        Used to insert ``\label{tab:...}`` after ``\end{tabular}``
+        Default is filename without extension.
+
+    :key format:
+        Printf syntax format, e.g. ``$%.2f$``. Default is ``$%g$``.
+        This format is then used for all the elements in the table.
+
+    :key formatColumn:
+        A list of printf-syntax formats, e.g. ``[$%.2f$, $%g$]``
+        Must be of same length as the number of columns.
+        Format i is then used for column i.
+        This is useful if some of your data should be printed with more significant figures
+        than other parts.
+
+    :key alignment:
+        Used as an option when tabular is given as enviroment.
+        ``\begin{tabular}{alignment}``
+        A latex alignment like ``c``, ``l`` or ``r``.
+        Can be given either as one per column e.g. ``"ccc"``.
+        Or if only a single character is given e.g. ``"c"``,
+        it will produce the correct amount depending on the number of columns.
+        Default is ``"r"``.
+
+    :key position:
+        Used for the table environment to specify the optional parameter "position specifier"
+        Default is ``'[' + 'htp' + ']'``
+        If you want to place your table manually, do not use the table environment.
+
+    Note that many of these options only has an effect when typesetting a table,
+    if the correct environment is not given the arguments are simply ignored.
     
-label
-    Used to insert \verb!\label{tab:...}! after \verb!\end{tabular}!
-    Default is filename without extension.
-
-format
-    Printf syntax format, e.g. $%.2f$. Default is $%g$.
-    This format is then used for all the elements in the table.
-
-formatColumn
-    A list of printf-syntax formats, e.g. [$%.2f$, $%g$]
-    Must be of same length as the number of columns.
-    Format i is then used for column i.
-    This is useful if some of your data should be printed with more significant figures
-    than other parts
-
-alignment
-    Used as an option when tabular is given as enviroment.
-    \verb!\begin{tabular}{alignment}!
-    A latex alignment like c, l or r.
-    Can be given either as one per column e.g. "ccc".
-    Or if only a single character is given e.g. "c",
-    it will produce the correct amount depending on the number of columns.
-    Default is "r".
-
-position
-    Used for the table environment to specify the optional parameter "position specifier"
-    Default is '[' + 'htp' + ']'
-    If you want to place your table manually, do not use the table environment.
-
-Note that many of these options only has an effect when typesetting a table,
-if the correct environment is not given the arguments are simply ignored.
+    :return str table:
+      Returns the latex formated output as a string.
     '''
     headerRow = None
     headerColumn = None
@@ -258,6 +259,8 @@ if the correct environment is not given the arguments are simply ignored.
         elif key == "position":
             assertStr(value, "position")
             position = value
+        elif key == "environments":
+            environments = value
         elif key == "transpose":
             newMatr = list(zip(*matr))
 #             for j in range(0, n):
