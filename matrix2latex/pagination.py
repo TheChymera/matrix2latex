@@ -15,8 +15,9 @@ import os
 from matrix2latex import matrix2latex
 from subprocess import call
 
-def simple(matrix, headerRow=None, headerColumn=None, Filename=None, clean_latex=True):
-    """A simple pagination function, that creates a minimal LaTeX document code for an input matrix, compiles it, and removes the LaTeX traces.
+def simple(matrix, headerRow=None, headerColumn=None, Filename=None, cfont_size=None, lean_latex=True):
+	"""A simple pagination function, that creates a minimal LaTeX document code for an input matrix,
+compiles it, and removes the LaTeX traces.
 
 Arguments:
 
@@ -42,58 +43,82 @@ headerColumn
 	A column used to label the rows.
 	Must be a list of strings
 
+font_size
+	Specify the global (document and table) font size.
+	Accepted values are integers from 1 to 10 - these are mapped on the available LaTeX font sizes https://en.wikibooks.org/wiki/LaTeX/Fonts
+
 clean_latex
 	Used to optionally turn off the delete phase for LaTeX traces
 	Must be bool
 """
 
-    if not Filename:
-            Filename = "_temp"
+	latex_font_sizes = {
+	1: "\\tiny"
+	2: "\\scriptsize"
+	3: "\\footnotesize"
+	4: "\\small"
+	5: "\\normalsize"
+	6: "\\large"
+	7: "\\Large"
+	8: "\\LARGE"
+	9: "\\huge"
+	10: "\\Huge"
+	}
 
-    table = matrix2latex(matrix, headerRow=headerRow,
-                         headerColumn=headerColumn,
-                         environments=['tabular'])
+	if not Filename:
+			Filename = "_temp"
 
-    #add header elements (with the prepend operator "+"y in reverse order)
-    tex = "\\sbox\mt{%\n" + table
-    tex = "\\begin{document}\n" + tex
-    tex = "\\pagenumbering{gobble}\n" + tex
-    tex = "\\newsavebox\mt\n" + tex
-    tex = "\\usepackage{booktabs}\n" + tex
-    tex = "\\usepackage{geometry}\n\\geometry{a4paper,total={210mm,297mm},left=15mm,right=15mm,top=15mm,bottom=15mm}\n" + tex
-    tex = "\\documentclass{article}\n" + tex
+	table = matrix2latex(matrix, headerRow=headerRow,
+						 headerColumn=headerColumn,
+						 environments=['tabular'])
 
-    #add footer elements
-    tex = tex + "%\n}\n"
-    tex = tex + "\\makeatletter\n" + \
-            "\\ifdim\\wd\\mt>\\textwidth\n" + \
-            "\\setlength\\@tempdima   {\\paperheight}%\n" + \
-            "\\setlength\\paperheight {\\paperwidth}%\n" + \
-            "\\setlength\\paperwidth  {\\@tempdima}%\n" + \
-            "\\setlength\\pdfpageheight{\\paperheight}%\n" + \
-            "\\setlength\\pdfpagewidth{\\paperwidth}%\n" + \
-            "\\setlength{\\textwidth}{\\paperwidth}%\n" + \
-            "\\addtolength{\\textwidth}{-3cm}%\n" + \
-            "\\setlength{\\hsize}{\\textwidth}%\n" + \
-            "\\fi\n" + \
-            "\\makeatother\n" + \
-            "\\begin{table}[htp]\\setlength{\\hsize}{\\textwidth}%\n" + \
-            "\\centering\n" + \
-            "\\usebox\\mt\n" + \
-            "\\end{table}\n" + \
-            "\\end{document}\n"
+	#determine document font size
+	if font_size:
+		document_fontsize = latex_font_sizes[font_size]
+	else:
+		document_fontsize = ""
 
-    file_ = open(Filename+".tex", 'w')
-    file_.write(tex)
-    file_.close()
-    call(["pdflatex", Filename+".tex"])
+	#add header elements (with the prepend operator "+"y in reverse order)
+	tex = "\\sbox\mt{%\n" + table
+	tex = document_fontsize + table
+	tex = "\\begin{document}\n" + tex
+	tex = "\\pagenumbering{gobble}\n" + tex
+	tex = "\\newsavebox\mt\n" + tex
+	tex = "\\usepackage{booktabs}\n" + tex
+	tex = "\\usepackage{geometry}\n\\geometry{a4paper,total={210mm,297mm},left=15mm,right=15mm,top=15mm,bottom=15mm}\n" + tex
+	tex = "\\documentclass{article}\n" + tex
 
-    if clean_latex:
-        all_files = os.listdir(".")
-        latex_files = [one_file for one_file in all_files if Filename in one_file]
-        non_pdf_latex_files = [latex_file for latex_file in latex_files if ".pdf" not in latex_file]
-        for  non_pdf_latex_file in non_pdf_latex_files:
-                os.remove(non_pdf_latex_file)
+	#add footer elements
+	tex = tex + "%\n}\n"
+	tex = tex + "\\makeatletter\n" + \
+			"\\ifdim\\wd\\mt>\\textwidth\n" + \
+			"\\setlength\\@tempdima   {\\paperheight}%\n" + \
+			"\\setlength\\paperheight {\\paperwidth}%\n" + \
+			"\\setlength\\paperwidth  {\\@tempdima}%\n" + \
+			"\\setlength\\pdfpageheight{\\paperheight}%\n" + \
+			"\\setlength\\pdfpagewidth{\\paperwidth}%\n" + \
+			"\\setlength{\\textwidth}{\\paperwidth}%\n" + \
+			"\\addtolength{\\textwidth}{-3cm}%\n" + \
+			"\\setlength{\\hsize}{\\textwidth}%\n" + \
+			"\\fi\n" + \
+			"\\makeatother\n" + \
+			"\\begin{table}[htp]\\setlength{\\hsize}{\\textwidth}%\n" + \
+			"\\centering\n" + \
+			"\\usebox\\mt\n" + \
+			"\\end{table}\n" + \
+			"\\end{document}\n"
+
+	file_ = open(Filename+".tex", 'w')
+	file_.write(tex)
+	file_.close()
+	call(["pdflatex", Filename+".tex"])
+
+	if clean_latex:
+		all_files = os.listdir(".")
+		latex_files = [one_file for one_file in all_files if Filename in one_file]
+		non_pdf_latex_files = [latex_file for latex_file in latex_files if ".pdf" not in latex_file]
+		for  non_pdf_latex_file in non_pdf_latex_files:
+				os.remove(non_pdf_latex_file)
 
 if __name__ == '__main__':
-    simple([[1,2], [4,5]], Filename='temp')
+	simple([[1,2], [4,5]], Filename='temp')
