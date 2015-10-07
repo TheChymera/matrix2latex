@@ -53,16 +53,16 @@ clean_latex
 """
 
 	latex_font_sizes = {
-	1: "\\tiny"
-	2: "\\scriptsize"
-	3: "\\footnotesize"
-	4: "\\small"
-	5: "\\normalsize"
-	6: "\\large"
-	7: "\\Large"
-	8: "\\LARGE"
-	9: "\\huge"
-	10: "\\Huge"
+	1: "\\tiny",
+	2: "\\scriptsize",
+	3: "\\footnotesize",
+	4: "\\small",
+	5: "\\normalsize",
+	6: "\\large",
+	7: "\\Large",
+	8: "\\LARGE",
+	9: "\\huge",
+	10: "\\Huge",
 	}
 
 	if not Filename:
