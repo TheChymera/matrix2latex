@@ -78,7 +78,7 @@ clean_latex
 
 	#add header elements (with the prepend operator "+"y in reverse order)
 	tex = "\\sbox\mt{%\n" + table
-	tex = document_fontsize + table
+	tex = document_fontsize + tex
 	tex = "\\begin{document}\n" + tex
 	tex = "\\pagenumbering{gobble}\n" + tex
 	tex = "\\newsavebox\mt\n" + tex
