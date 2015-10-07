@@ -62,19 +62,17 @@ clean_latex
 	7: "\\Large",
 	8: "\\LARGE",
 	9: "\\huge",
-	10: "\\Huge",
+	10: "\\Huge"
 	}
 
 	if not Filename:
-			Filename = "_temp"
+		Filename = "_temp"
 
-	table = matrix2latex(matrix, headerRow=headerRow,
-						 headerColumn=headerColumn,
-						 environments=['tabular'])
+	table = matrix2latex(matrix, headerRow=headerRow, headerColumn=headerColumn, environments=['tabular'])
 
 	#determine document font size
 	if font_size:
-		document_fontsize = latex_font_sizes[font_size]
+		document_fontsize = latex_font_sizes[font_size]+"\n"
 	else:
 		document_fontsize = ""
 
@@ -90,23 +88,24 @@ clean_latex
 
 	#add footer elements
 	tex = tex + "%\n}\n"
-	tex = tex + "\\makeatletter\n" + \
-			"\\ifdim\\wd\\mt>\\textwidth\n" + \
-			"\\setlength\\@tempdima   {\\paperheight}%\n" + \
-			"\\setlength\\paperheight {\\paperwidth}%\n" + \
-			"\\setlength\\paperwidth  {\\@tempdima}%\n" + \
-			"\\setlength\\pdfpageheight{\\paperheight}%\n" + \
-			"\\setlength\\pdfpagewidth{\\paperwidth}%\n" + \
-			"\\setlength{\\textwidth}{\\paperwidth}%\n" + \
-			"\\addtolength{\\textwidth}{-3cm}%\n" + \
-			"\\setlength{\\hsize}{\\textwidth}%\n" + \
-			"\\fi\n" + \
-			"\\makeatother\n" + \
-			"\\begin{table}[htp]\\setlength{\\hsize}{\\textwidth}%\n" + \
-			"\\centering\n" + \
-			"\\usebox\\mt\n" + \
-			"\\end{table}\n" + \
-			"\\end{document}\n"
+	tex = tex + \
+"\\makeatletter\n" + \
+"\\ifdim\\wd\\mt>\\textwidth\n" + \
+"\\setlength\\@tempdima   {\\paperheight}%\n" + \
+"\\setlength\\paperheight {\\paperwidth}%\n" + \
+"\\setlength\\paperwidth  {\\@tempdima}%\n" + \
+"\\setlength\\pdfpageheight{\\paperheight}%\n" + \
+"\\setlength\\pdfpagewidth{\\paperwidth}%\n" + \
+"\\setlength{\\textwidth}{\\paperwidth}%\n" + \
+"\\addtolength{\\textwidth}{-3cm}%\n" + \
+"\\setlength{\\hsize}{\\textwidth}%\n" + \
+"\\fi\n" + \
+"\\makeatother\n" + \
+"\\begin{table}[htp]\\setlength{\\hsize}{\\textwidth}%\n" + \
+"\\centering\n" + \
+"\\usebox\\mt\n" + \
+"\\end{table}\n" + \
+"\\end{document}\n"
 
 	file_ = open(Filename+".tex", 'w')
 	file_.write(tex)
@@ -118,7 +117,4 @@ clean_latex
 		latex_files = [one_file for one_file in all_files if Filename in one_file]
 		non_pdf_latex_files = [latex_file for latex_file in latex_files if ".pdf" not in latex_file]
 		for  non_pdf_latex_file in non_pdf_latex_files:
-				os.remove(non_pdf_latex_file)
-
-if __name__ == '__main__':
-	simple([[1,2], [4,5]], Filename='temp')
+			os.remove(non_pdf_latex_file)
