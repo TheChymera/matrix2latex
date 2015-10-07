@@ -15,7 +15,7 @@ import os
 from matrix2latex import matrix2latex
 from subprocess import call
 
-def simple(matrix, headerRow=None, headerColumn=None, Filename=None, font_size=None, lean_latex=True):
+def simple(matrix, headerRow=None, headerColumn=None, Filename=None, font_size=None, clean_latex=True):
 	"""A simple pagination function, that creates a minimal LaTeX document code for an input matrix,
 compiles it, and removes the LaTeX traces.
 
