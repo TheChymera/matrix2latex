@@ -109,9 +109,13 @@ def matrix2image(matr, filename=None, *args, **kwargs):
         return working_dir
         
 if __name__ == '__main__':
-    m = [[1, 2, 3], [3, 4, 5]]
-    cl = ["a", "b", "c"]
-    rl = ['d', 'e', 'f', 'g']
+    # m = [[1, 2, 3], [3, 4, 5]]
+    # cl = ["a", "b", "c"]
+    # rl = ['d', 'e', 'f', 'g']
 
-    matrix2image(m, 'rendered', 'tabular', format="$%.2g$", alignment='lcr',
-                 headerColumn=cl, caption="test", label="2", headerRow=rl)
+    # matrix2image(m, 'rendered', 'tabular', format="$%.2g$", alignment='lcr',
+    #              headerColumn=cl, caption="test", label="2", headerRow=rl)
+
+    m = [[1, 1], [2, 4], [3, 9]]
+    matrix2image(m, 'simpleExample', 'tabular')
+    
