@@ -15,6 +15,7 @@ along with matrix2latex. If not, see <http://www.gnu.org/licenses/>.
 """
 import os
 import shutil
+import tempfile
 import subprocess
 from matrix2latex import matrix2latex
 
@@ -30,17 +31,17 @@ _latex_template = r"""
 def matrix2image(matr, filename=None, *args, **kwargs):
     r'''
     A wrapper around ``matrix2latex(*args, **kwargs)`` that creates a minimal LaTeX document code,
-    compiles it, an optionally removes the LaTeX traces.
+    compiles it, an removes the LaTeX traces.
 
     :param list matr: 
         The numpy matrix/array or a nested list to convert.
     :param str filename:
         Base-filename for the output image, defaults to 'rendered'
     :key clean_latex=True:
-        Remove traces of the latex compilation. Use clean_latex=False to debug.
-    :key working_dir=matrix2image_tmp:
+        Remove traces of the latex compilation. Use clean_latex=False and working_dir='tmp' to debug.
+    :key working_dir=None:
         A temporary directory where the document is compiled, WARNING: will be removed as long as
-        clean_latex is True, do not specify an existing directory.
+        clean_latex is True, do not specify an existing directory. Defaults to tempfile.mkdtemp().
     :key latex_template:
         The latex wrapper code, defaults to ``render._latex_template``
     :key tex='pdflatex':
@@ -65,20 +66,21 @@ def matrix2image(matr, filename=None, *args, **kwargs):
         filename = filename[:-4]
 
     clean_latex = kwargs.pop('clean_latex', True)
-    working_dir = kwargs.pop('working_dir', 'matrix2image_tmp')
+    working_dir = kwargs.pop('working_dir', None)
+    if working_dir is None:
+        working_dir = tempfile.mkdtemp(prefix='matrix2image')
+    elif not os.path.exists(working_dir):
+        os.makedirs(working_dir)
+    else:
+        if clean_latex:
+            print('Warning: the working directory already exists, if this is from a previous call to matrix2image with clean_latex=False, you can safely ignore this warning. If not, you are in deep shit as it will soon be deleted.')
 
     latex_template = kwargs.pop('latex_template', _latex_template)
     tex = kwargs.pop('tex', 'pdflatex')
     tex_options = kwargs.pop('tex_options', ['-interaction=nonstopmode', '-shell-escape'])
     output_format = kwargs.pop('output_format', '.pdf')
 
-    # working dir, filenames
-    if not os.path.exists(working_dir):
-        os.makedirs(working_dir)
-    else:
-        if clean_latex:
-            print('Warning: the working directory already exists, if this is from a previous call to matrix2image with clean_latex=False, you can safely ignore this warning. If not, you are in deep shit as it will soon be deleted.')
-
+    # filenames
     tex_filename = os.path.basename(filename) + '.tex'
     tex_filename_full = os.path.join(working_dir, tex_filename)
     output_filename_final = filename + output_format
@@ -103,6 +105,8 @@ def matrix2image(matr, filename=None, *args, **kwargs):
     if clean_latex:
         # fixme: only remove related files, then check if empty, then remove
         shutil.rmtree(working_dir)
+    else:
+        return working_dir
         
 if __name__ == '__main__':
     m = [[1, 2, 3], [3, 4, 5]]
