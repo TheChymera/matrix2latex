@@ -20,7 +20,7 @@ import subprocess
 from matrix2latex import matrix2latex
 
 _latex_template = r"""
-\documentclass[varwidth=true, border=10pt, convert={size=640x}]{standalone}
+\documentclass[varwidth=true, border=2pt, convert={size=640x}]{standalone}
 \providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}
 \usepackage{amsmath}
 \usepackage{booktabs}
