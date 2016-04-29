@@ -60,6 +60,7 @@ def matrix2image(matr, filename=None, *args, **kwargs):
         The latex wrapper code, defaults to ``render._latex_template``, use at your own risk.
     :key tex='pdflatex':
         The tex renderer. Assumed to produce a '.pdf', if not, remember to also specify an appropriate output_format.
+        If empty string or None, the document is not compiled.
     :key tex_options=['-interaction=nonstopmode', '-shell-escape']:
         Options passed to tex renderer
     :key output_format='.pdf':
@@ -104,22 +105,26 @@ def matrix2image(matr, filename=None, *args, **kwargs):
     output_filename_final = filename + output_format
     output_filename_tmp = os.path.join(working_dir, os.path.basename(filename) + output_format)
     
-    # call
+    # call, do not write to file.
     table = matrix2latex(matr, None, *args, **kwargs)
+    
     # latex wrapper
     latex = latex_template % (latex_documentclass, latex_preamble, table)
     with open(tex_filename_full, 'w') as f:
         f.write(latex)
+    
     # compile document
-    cmd = [tex]
-    cmd.extend(tex_options)
-    cmd.append(tex_filename)
-    subprocess.check_call(cmd, cwd=working_dir)
-    # we should now have a output_filename in the working directory
-    if not(os.path.exists(output_filename_tmp)):
-        raise IOError('Expected %s to exist after calling %s' % (output_filename_tmp, cmd))
+    if tex is not None and tex != '': # I am sure there is a sexy way to write this test
+        cmd = [tex]
+        cmd.extend(tex_options)
+        cmd.append(tex_filename)
+        subprocess.check_call(cmd, cwd=working_dir)
+    
+        # we should now have a output_filename in the working directory
+        if not(os.path.exists(output_filename_tmp)):
+            raise IOError('Expected %s to exist after calling %s' % (output_filename_tmp, cmd))
 
-    shutil.copyfile(output_filename_tmp, output_filename_final)
+        shutil.copyfile(output_filename_tmp, output_filename_final)
 
     if clean_latex:
         # fixme: only remove related files, then check if empty, then remove
