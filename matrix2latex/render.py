@@ -19,12 +19,15 @@ import tempfile
 import subprocess
 from matrix2latex import matrix2latex
 
-_latex_template = r"""
-\documentclass[varwidth=true, border=2pt, convert={size=640x}]{standalone}
-\providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}
+_latex_documentclass = r'\documentclass[varwidth=true, border=2pt, convert=true]{standalone}'
+_latex_preamble = r"""\providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}
 \usepackage{amsmath}
 \usepackage{booktabs}
+"""
+_latex_template = r"""%s
+%s
 \begin{document}
+\pagenumbering{gobble}
 %s
 \end{document}
 """
@@ -32,6 +35,11 @@ def matrix2image(matr, filename=None, *args, **kwargs):
     r'''
     A wrapper around ``matrix2latex(*args, **kwargs)`` that creates a minimal LaTeX document code,
     compiles it, an removes the LaTeX traces.
+
+    A number of options are available to support non-standard latex compilers (``pdflatex``, ``tex_options`` and ``output_format``),
+    temporary file handling (``clean_latex`` and ``working_dir``) and
+    customizing the latex template code (``latex_preamble``, ``latex_documentclass`` and ``latex_template``),
+    These all have (hopefully) sensible default values, if you find something particularly lacking, open an issue!
 
     :param list matr: 
         The numpy matrix/array or a nested list to convert.
@@ -42,8 +50,14 @@ def matrix2image(matr, filename=None, *args, **kwargs):
     :key working_dir=None:
         A temporary directory where the document is compiled, WARNING: will be removed as long as
         clean_latex is True, do not specify an existing directory. Defaults to tempfile.mkdtemp().
+    :key latex_preamble:
+        Defaults to ``render._latex_preamble``. To include additional preamble commands, use 
+    
+        ``latex_preamble = render._latex_preamble + r'\usepackage{my_package}'``
+    :key latex_documentclass:
+        Defaults to ``render._latex_documentclass``, for a4 page, call with ``latex_documentclass='\documentclass[a4paper]{article}'``.
     :key latex_template:
-        The latex wrapper code, defaults to ``render._latex_template``
+        The latex wrapper code, defaults to ``render._latex_template``, use at your own risk.
     :key tex='pdflatex':
         The tex renderer. Assumed to produce a '.pdf', if not, remember to also specify an appropriate output_format.
     :key tex_options=['-interaction=nonstopmode', '-shell-escape']:
@@ -51,8 +65,10 @@ def matrix2image(matr, filename=None, *args, **kwargs):
     :key output_format='.pdf':
         By default it is assumed ``tex='pdflatex'`` produces a '.pdf' and a '.png', 
         by default the '.pdf' is used, but you may also want to use ``output_format='.png'`` for the png image.
-
-    Additional arguments are sent to `matrix2latex`. 
+    :\*args:
+        Additional arguments are passed to matrix2latex
+    :\**kwargs:
+        Additional keyword-arguments are passed to matrix2latex
 
     :raises IOError: if the expected output file was not created.
     
@@ -76,6 +92,8 @@ def matrix2image(matr, filename=None, *args, **kwargs):
             print('Warning: the working directory already exists, if this is from a previous call to matrix2image with clean_latex=False, you can safely ignore this warning. If not, you are in deep shit as it will soon be deleted.')
 
     latex_template = kwargs.pop('latex_template', _latex_template)
+    latex_preamble = kwargs.pop('latex_preamble', _latex_preamble)
+    latex_documentclass = kwargs.pop('latex_documentclass', _latex_documentclass)
     tex = kwargs.pop('tex', 'pdflatex')
     tex_options = kwargs.pop('tex_options', ['-interaction=nonstopmode', '-shell-escape'])
     output_format = kwargs.pop('output_format', '.pdf')
@@ -88,7 +106,8 @@ def matrix2image(matr, filename=None, *args, **kwargs):
     
     # call
     table = matrix2latex(matr, None, *args, **kwargs)
-    latex = _latex_template % table
+    # latex wrapper
+    latex = latex_template % (latex_documentclass, latex_preamble, table)
     with open(tex_filename_full, 'w') as f:
         f.write(latex)
     # compile document
@@ -117,5 +136,9 @@ if __name__ == '__main__':
     #              headerColumn=cl, caption="test", label="2", headerRow=rl)
 
     m = [[1, 1], [2, 4], [3, 9]]
-    matrix2image(m, 'simpleExample', 'tabular')
+    matrix2image(m, 'simpleExample', environments=['table', 'huge', 'center', 'tabular'], caption='hello',
+                 clean_latex=False, working_dir='tmp')
     
+    matrix2image(m, 'simpleExample_a4', environments=['table', 'huge', 'center', 'tabular'], caption='hello',
+                 clean_latex=False, working_dir='tmp', latex_documentclass='\documentclass[a4paper]{article}'
+    )
