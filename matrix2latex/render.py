@@ -71,6 +71,9 @@ def matrix2image(matr, filename=None, *args, **kwargs):
         Additional arguments are passed to matrix2latex
     :\**kwargs:
         Additional keyword-arguments are passed to matrix2latex
+    :returns working_dir, latex:
+        A tuple of the working_dir and the latex document as a string. 
+        The working_dir is None if the directory has been succesfully cleaned/removed.
 
     :raises IOError: if the expected output file was not created.
     :raises IOError: if removing files/directories in working_dir fails, this _will_ happend if working_dir suddenly contains folders.
@@ -150,11 +153,12 @@ def matrix2image(matr, filename=None, *args, **kwargs):
         # if empty:
         if len(os.listdir(working_dir)) == 0:
             shutil.rmtree(working_dir)
+            working_dir = None # do not return path to non-existing directory
         else:
             warnings.warn('working_dir not empty, not cleaning %s' % working_dir)
-    else:
-        return working_dir
-        
+    
+    return working_dir, latex
+
 if __name__ == '__main__':
     # m = [[1, 2, 3], [3, 4, 5]]
     # cl = ["a", "b", "c"]
