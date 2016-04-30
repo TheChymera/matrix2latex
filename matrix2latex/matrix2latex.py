@@ -402,12 +402,6 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
             else:
                 fcj = formatColumn[j]
 
-                reg = re.match('%.(\d)g', fcj) # Change the %.3g pattern to nicefloat instead
-                try:
-                    e = nice(e, int(reg.group(1)))
-                    fcj = '%s'
-                except Exception: pass #sys.stderr.write('%s %s %s\n' %(e, reg, err))
-                
                 formated = fcj % e
                 formated = fix(formated, table=True) # fix 1e+2
                 f.write('%s' % formated)

@@ -15,7 +15,7 @@
 
 % tests for matrix2latex.m
 function test()
-
+path(path, '../src_matlab')
 m = [1, 2, 3; 4, 5, 6];
 
 function assertLine(output, b, lineNr)
@@ -236,4 +236,18 @@ function test_empty()
     assertEqual(t, 'empty');
 end
 test_empty()
+
+function test_nicefloat()
+    t = matrix2latex([123456e-10; 1e-15;12345e5], '');
+    assertEqual(t, 'nicefloat');
+end
+test_nicefloat
+
+function test_nicefloat_4g()
+    t = matrix2latex([123456e-10; 1e-15; 12345e5], '', 'format', '$%.4g$');
+    assertEqual(t, 'nicefloat_4g')
+end
+test_nicefloat_4g()
+
+% end of file:
 end

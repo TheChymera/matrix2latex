@@ -200,6 +200,14 @@ def test_empty():
     t = matrix2latex([])
     assertEqual(t, 'empty')
 
+def test_nicefloat():
+    t = matrix2latex([123456e-10, 1e-15, 12345e5])
+    assertEqual(t, 'nicefloat')
+
+def test_nicefloat_4g():
+    t = matrix2latex([123456e-10, 1e-15, 12345e5], format='$%.4g$')
+    assertEqual(t, 'nicefloat_4g')
+    
 def test_pandas_dataframe():
     try:
         import pandas as pd
