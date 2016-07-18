@@ -16,48 +16,21 @@ along with matrix2latex. If not, see <http://www.gnu.org/licenses/>.
 """
 
 # tests for matrix2latex.py
-from __future__ import with_statement
 import os
 import sys
-import warnings
+
 sys.path.insert(0, '../')
 from matrix2latex import matrix2latex
+
+try:
+    from test_syntaxError import *
+except SyntaxError:
+    pass
+
+from test_util import *
+
 m = [[1, 2, 3], [4, 5, 6]]
 
-SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.expanduser(__file__)))
-
-f = open(os.path.join(SCRIPT_DIR, 'test.tex'))
-answers = dict()
-for line in f:
-    if line.startswith('%%%'):
-        name = line[3:-1]               # ignore %%% and \n
-        answers[name] = ''
-    else:
-        answers[name] += line
-
-def loopTwoLists(x, y):
-    for ix in range(max([len(x), len(y)])):
-        try: a = x[ix].strip()
-        except: a = ''
-        try: b = y[ix].strip()
-        except: b = ''
-        yield a, b
-
-def assertEqual(x, name):
-    # assert each line is equal, ignoring leading and trailing spaces
-    print(x)
-    y = answers[name]
-    x = x.split('\n')
-    y = y.split('\n')
-    correct = True
-    for a, b in loopTwoLists(x, y):
-        if a != b:
-            correct = False # found 1 or more error
-            
-    if not(correct):
-        for a, b in loopTwoLists(x, y):
-            print(a,b)
-        raise AssertionError
 
 def test_simple():
     t = matrix2latex(m)
@@ -220,18 +193,6 @@ def test_non_rectangular():
                       [5]])
     assertEqual(t, 'non_rectangular')
     
-# def test_format_formatColumn_Warning():
-#     # Test for warning: http://stackoverflow.com/a/3892301/1942837
-#     if hasattr(warnings, 'catch_warnings'): # New in version 2.6.
-        
-#         with warnings.catch_warnings(record=True) as w:
-#             warnings.simplefilter("always") # Cause all warnings to always be triggered.
-#             # specify both format and formatColumn
-#             t = matrix2latex([[123456e10, 123456e10]],
-#                              format='%g', formatColumn=['%.1g', '%g'])
-#         assert len(w) == 1
-#         assert issubclass(w[-1].category, Warning)
-#         assertEqual(t, 'format_formatColumn_Warning')            
         
 def test_pandas_dataframe():
     try:
