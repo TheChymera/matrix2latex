@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/TheChymera/matrix2latex.svg?branch=master)](https://travis-ci.org/TheChymera/matrix2latex)
 Matrix2LaTeX
 ============
 Takes a Python or MATLAB matrix and outputs a LaTeX table, a number of options are available. 
