@@ -1,9 +1,9 @@
 [![Build Status](https://travis-ci.org/TheChymera/matrix2latex.svg?branch=master)](https://travis-ci.org/TheChymera/matrix2latex)
 Matrix2LaTeX
 ============
-Takes a Python or MATLAB matrix and outputs a LaTeX table, a number of options are available. 
-You can even use the module to output a LaTeX matrix instead! 
-The default table output is geared towards the standard recommended by IEEE, and uses the latex package booktabs. 
+Takes a Python or MATLAB matrix and outputs a LaTeX table, a LaTeX matrix, or a complete LaTeX document (and optionally calls `latex` for compilation).
+A number of configuration options are available. 
+The default table output is geared towards the standard recommended by IEEE, and uses the latex package booktabs.
 Check out the [documentation](https://github.com/TheChymera/matrix2latex/raw/master/doc/doc.pdf "doc.pdf") for more example output and usage.
 
 Example
