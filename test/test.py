@@ -16,13 +16,16 @@ along with matrix2latex. If not, see <http://www.gnu.org/licenses/>.
 """
 
 # tests for matrix2latex.py
+import os
 import sys
 import warnings
 sys.path.insert(0, '../')
 from matrix2latex import matrix2latex
 m = [[1, 2, 3], [4, 5, 6]]
 
-f = open('test.tex')
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.expanduser(__file__)))
+
+f = open(os.path.join(SCRIPT_DIR, 'test.tex'))
 answers = dict()
 for line in f:
     if line.startswith('%%%'):
