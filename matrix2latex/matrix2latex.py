@@ -27,7 +27,6 @@ def isnan(e):
 from fixEngineeringNotation import fix
 from error import *                     # error handling
 from IOString import IOString
-from niceFloat import nice
 # Definitions
 # Matrix environments where alignment can be utilized. CHECK: Note alignment[0] used!
 matrix_alignment = ["pmatrix*","bmatrix*","Bmatrix*","vmatrix*","Vmatrix*"] # Needs mathtools package
