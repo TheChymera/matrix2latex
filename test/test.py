@@ -17,6 +17,7 @@ along with matrix2latex. If not, see <http://www.gnu.org/licenses/>.
 
 # tests for matrix2latex.py
 import sys
+import warnings
 sys.path.insert(0, '../')
 from matrix2latex import matrix2latex
 m = [[1, 2, 3], [4, 5, 6]]
@@ -207,7 +208,25 @@ def test_nicefloat():
 def test_nicefloat_4g():
     t = matrix2latex([123456e-10, 1e-15, 12345e5], format='$%.4g$')
     assertEqual(t, 'nicefloat_4g')
+
+def test_non_rectangular():
+    """Test a nested list with 'missing' elements"""
+    t = matrix2latex([[1,2],
+                      [1, 2, 3],
+                      [5]])
+    assertEqual(t, 'non_rectangular')
     
+def test_format_formatColumn_Warning():
+    # Test for warning: http://stackoverflow.com/a/3892301/1942837
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always") # Cause all warnings to always be triggered.
+        # specify both format and formatColumn
+        t = matrix2latex([[123456e10, 123456e10]],
+                         format='%s', formatColumn=['%.1g', '%s'])
+        assert len(w) == 1
+        assert issubclass(w[-1].category, Warning)
+    assertEqual(t, 'format_formatColumn_Warning')
+        
 def test_pandas_dataframe():
     try:
         import pandas as pd

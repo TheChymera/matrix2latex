@@ -241,13 +241,22 @@ function test_nicefloat()
     t = matrix2latex([123456e-10; 1e-15;12345e5], '');
     assertEqual(t, 'nicefloat');
 end
-test_nicefloat
+test_nicefloat();
 
 function test_nicefloat_4g()
     t = matrix2latex([123456e-10; 1e-15; 12345e5], '', 'format', '$%.4g$');
-    assertEqual(t, 'nicefloat_4g')
+    assertEqual(t, 'nicefloat_4g');
 end
-test_nicefloat_4g()
+test_nicefloat_4g();
+
+function test_non_rectangular()
+    t = matrix2latex([1, 2;
+                      1, 2, 3;
+                      5]);              % not legal matlab, no need
+                                        % to test/support.
+    assertEqual(t, 'nicefloat_4g');
+end
+%test_non_rectangular();
 
 % end of file:
 end

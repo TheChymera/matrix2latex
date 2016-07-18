@@ -15,6 +15,7 @@ along with matrix2latex. If not, see <http://www.gnu.org/licenses/>.
 """
 import sys
 import os.path
+import warnings
 import math
 import re
 def isnan(e):
@@ -209,7 +210,7 @@ def matrix2latex(matr, filename=None, *environments, **keywords):
     # Conflicts
     #
     if "format" in keywords and "formatColumn" in keywords:
-        print('Using both format and formatColumn is not supported, using formatColumn')
+        warnings.warn('Specifying both format and formatColumn is not supported, using formatColumn')
         del keywords["format"]
         
     #
