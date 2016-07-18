@@ -1,7 +1,7 @@
 Matrix2LaTeX
 ============
-Takes a python or matlab matrix and outputs a latex table, a number of options are available. 
-You can even use the module to output a latex matrix instead! 
+Takes a Python or MATLAB matrix and outputs a LaTeX table, a number of options are available. 
+You can even use the module to output a LaTeX matrix instead! 
 The default table output is geared towards the standard recommended by IEEE, and uses the latex package booktabs. 
 Check out the [documentation](https://github.com/TheChymera/matrix2latex/raw/master/doc/doc.pdf "doc.pdf") for more example output and usage.
 
