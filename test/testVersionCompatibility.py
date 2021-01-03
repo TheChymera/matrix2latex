@@ -20,7 +20,7 @@ You should have received a copy of the GNU General Public License
 along with matrix2latex. If not, see <http://www.gnu.org/licenses/>.
 """
 import sys
-sys.path.insert(0, '../src_python')
+sys.path.insert(0, '../')
 
 import os
 from subprocess import call
@@ -30,7 +30,7 @@ table = list()
 pythonVersions = list()
 
 def test(python, table, pythonVersions):
-    ret = call([python, "test.py"], stdout=file(os.devnull, "w"))
+    ret = call([python, "test.py"], stdout=open(os.devnull, "w"))
 
     print(python)            
     print(ret)
@@ -43,10 +43,10 @@ for major in range(2, 3+1):
     for minor in range(0, 10):
         python = 'python%d.%d' % (major, minor)
         
-        if call(python + " -c ''", shell=True, stderr=file(os.devnull, "w")) == 0:
+        if call(python + " -c ''", shell=True, stderr=open(os.devnull, "w")) == 0:
             test(python, table, pythonVersions)
 
-if call("pypy-c" + " -c 'pass'", shell=True, stderr=file(os.devnull, "w")) == 0:
+if call("pypy-c" + " -c 'pass'", shell=True, stderr=open(os.devnull, "w")) == 0:
     test("pypy-c", table, pythonVersions)
 
 c = "Does 'python test.py' return 0?"
