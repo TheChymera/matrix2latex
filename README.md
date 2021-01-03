@@ -13,7 +13,7 @@ The following python code:
 from matrix2latex import matrix2latex
 m = [[1, 1], [2, 4], [3, 9]] # python nested list
 t = matrix2latex(m)
-print t
+print(t)
 ```
 or equivalent matlab code:
 ```matlab

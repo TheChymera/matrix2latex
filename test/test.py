@@ -201,8 +201,8 @@ def test_pandas_dataframe():
         m = [[1, 1], [2, 4], [3, 9]] # python nested list
         m = pd.DataFrame(m)
         #m = pd.DataFrame.from_csv('http://chymera.eu/data/test/r_data.csv', parse_dates=False, index_col=False)
-        # print 'PANDAS\n', m
-        # print 'PANDAS\n', m.to_records()
+        # print('PANDAS\n', m)
+        # print('PANDAS\n', m.to_records())
         t = matrix2latex(m)
         assertEqual(t, "pandas_dataframe")
     except ImportError:
@@ -213,12 +213,12 @@ def test_pandas_series():
         import pandas as pd
         import numpy as np
         s = pd.Series([2, 4, 2, 42, 5], index=['a', 'b', 'c', 'd', 'e'])
-        # print 'PANDAS\n', s
-        # print 'PANDAS\n', s.to_dict(), s.tolist(), hasattr(s, 'to_dict')
+        # print('PANDAS\n', s)
+        # print('PANDAS\n', s.to_dict(), s.tolist(), hasattr(s, 'to_dict'))
         t = matrix2latex(s)
-        # print 'pandas Series', t
+        # print('pandas Series', t)
         t2 = matrix2latex(pd.DataFrame(s))
-        # print 'pandas DataFrame', t2
+        # print('pandas DataFrame', t2)
         assertEqual(t, "pandas_series")
         assertEqual(t2, "pandas_series_dataFrame")
     except ImportError:
@@ -232,7 +232,7 @@ def test_pandas_columns():
              'two' : pd.Series([1., 2., 3., 4.], index=['a', 'b', 'c', 'd'])}
         df = pd.DataFrame(d)
         t = matrix2latex(df)
-        # print 'pandas', t, df.to_records()
+        # print('pandas', t, df.to_records())
         assertEqual(t, "pandas_columns")
 
         t = matrix2latex(df, headerRow=None, headerColumn=None)
@@ -250,7 +250,7 @@ def test_pandas_Panel():
         frame = panel.to_frame()
         # TODO: Needs support for multiple headerColumns
         #t = matrix2latex(frame) 
-        #print t
+        #print(t)
         #assert False
     except ImportError:
         pass

@@ -450,4 +450,4 @@ if __name__ == '__main__':
 
     # TODO:
 #     m = [[1], [2,2,1], [2,1,2]]
-#     print matrix2latex(m, transpose=True)
+#     print(matrix2latex(m, transpose=True))

@@ -53,4 +53,4 @@ c = "Does 'python test.py' return 0?"
 compatibleTable = matrix2latex(table, '../doc/compatibleTable',
                                headerColumn=pythonVersions, headerRow=['Compatible'],
                                caption=c)
-print compatibleTable
+print(compatibleTable)

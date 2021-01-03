@@ -5,10 +5,10 @@ the code for either matlab or python.
 import os
 
 def callSystem(command):
-    print '>' + command
+    print('>' + command)
     ret = os.system(command)
     if ret != 0:
-        print 'Command failed, exiting'
+        print('Command failed, exiting')
         exit(1)
 
 version = '1.0.0'
