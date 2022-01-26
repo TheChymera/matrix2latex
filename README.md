@@ -6,6 +6,15 @@ A number of configuration options are available.
 The default table output is geared towards the standard recommended by IEEE, and uses the latex package booktabs.
 Check out the [documentation](https://github.com/TheChymera/matrix2latex/raw/master/doc/doc.pdf "doc.pdf") for more example output and usage.
 
+Installation
+------------
+From source:
+```bash
+pip install git+https://github.com/TheChymera/matrix2latex.git
+```
+Note that on some systems you may have to replace `pip` by `pip3` to use Python 3 for the installation.
+Furthermore, if you only wish to install the package for the current user, you should supply the `--user` flag to the above command.
+
 Example
 -------
 The following python code:
